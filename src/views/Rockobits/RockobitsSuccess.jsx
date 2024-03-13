@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { updateUserBalance } from "../../features/authSlice";
 import { useSelector } from "react-redux";
+import api from "../../api/api";
 
 function RockobitsSuccess() {
   const location = useLocation();
@@ -14,33 +15,26 @@ function RockobitsSuccess() {
   useEffect(() => {
     const handleSuccess = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:5000/api/stripe/checkout-session-subscription",
+        const response = await api.post(
+          `stripe/checkout-session-subscription`,
           {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ sessionId }),
+            sessionId: sessionId,
           }
         );
-        const data = await response.json();
+
+        const data = await response.data;
 
         setStatus(data.payment_status);
         if (data.payment_status === "paid") {
-
           // Realiza una petición al módulo de wallet para obtener el balance actualizado
-          const walletResponse = await fetch(
-            `http://localhost:5000/api/wallet/${user.wallet.id}/amount`, // Reemplaza con la ruta correcta
-            {
-              method: "GET",
-            }
+          const walletResponse = await api.get(
+            `wallet/${user.wallet.id}/amount` // Reemplaza con la ruta correcta
           );
 
-          const walletData = await walletResponse.json();
+          const walletData = await walletResponse.data;
 
           // Actualiza el balance en el store de Redux
-          console.log()
+          console.log();
           dispatch(updateUserBalance(walletData.data.decryptedAmount));
         }
       } catch (error) {
