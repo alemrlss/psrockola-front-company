@@ -3,10 +3,12 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Box from "@mui/material/Box";
-import { useAuth } from "../../auth/AuthProvider";
+import { logout } from "../../features/authSlice";
+import { useDispatch } from "react-redux";
 
 function SidebarItemLogout({ item }) {
-  const { logout } = useAuth();
+
+  const dispatch = useDispatch();
   return (
     <ListItemButton
       sx={{
@@ -23,7 +25,7 @@ function SidebarItemLogout({ item }) {
         },
       }}
       onClick={() => {
-        logout();
+        dispatch(logout());
       }}
     >
       <Box
