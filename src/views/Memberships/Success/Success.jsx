@@ -1,37 +1,35 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { useUser } from "../../contexts/UserContext";
+import api from "../../../api/api";
+import { useDispatch } from "react-redux";
+import { updateUserMembership } from "../../../features/authSlice";
 
 function Success() {
   const location = useLocation();
   const sessionId = new URLSearchParams(location.search).get("session_id");
   const [status, setStatus] = useState(null);
-  const { updateUser, user } = useUser();
+  const dispatch = useDispatch();
+  
   useEffect(() => {
     const handleSuccess = async () => {
       try {
-        const response = await fetch(
-          "https://rockola-backend.onrender.com/api/stripe/checkout-session-subscription",
+        const response = await api.post(
+          "stripe/checkout-session-subscription",
           {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ sessionId }),
+            sessionId,
           }
         );
-        const data = await response.json();
+        const data = await response.data;
 
         setStatus(data.payment_status);
         if (data.payment_status === "paid") {
-          updateUser({
-            ...user,
-            membership: {
+          dispatch(
+            updateUserMembership({
               name: data.metadata.membership_name,
               type: parseInt(data.metadata.membership_type),
               expiration: data.metadata.membership_expiration,
-            },
-          });
+            })
+          );
         }
       } catch (error) {
         console.error("Error en la petición al backend:", error);

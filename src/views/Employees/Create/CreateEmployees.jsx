@@ -3,9 +3,9 @@ import { jwtDecode } from "jwt-decode";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import api from "../../../api/api";
+import { useSelector } from "react-redux";
 
 function CreateEmployees() {
-  const [userId, setUserId] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
     lastName: "",
@@ -16,19 +16,7 @@ function CreateEmployees() {
   });
   const [message, setMessage] = useState(null);
 
-  useEffect(() => {
-    try {
-      const token = localStorage.getItem("token");
-      if (token) {
-        const decodedToken = jwtDecode(token);
-        setUserId(decodedToken.id);
-      } else {
-        console.error("El token no está presente en el LocalStorage");
-      }
-    } catch (error) {
-      console.error("Error al obtener las membresías:", error);
-    }
-  }, []);
+  const user = useSelector((state) => state.auth.user);
 
   const handleChange = (e) => {
     setMessage(null);
@@ -41,7 +29,7 @@ function CreateEmployees() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!userId) {
+    if (!user.id) {
       console.error("No se ha podido obtener el id del usuario");
       return;
     }
@@ -65,7 +53,7 @@ function CreateEmployees() {
       // Realiza la solicitud para crear el empleado
       const response = await api.post("/employee/create", {
         ...formData,
-        userId,
+        userId: user.id,
       });
       setMessage({ type: "success", content: "Empleado creado con éxito." });
       setFormData({

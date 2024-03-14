@@ -62,13 +62,17 @@ function SidebarItemCollapse({
         <List>
           {item.subItems.map((subItem, index) => (
             <Link
-              to={`${item.id}/${subItem.id}`}
+              to={`${subItem.id}`}
               key={index}
               onClick={handleDrawerToggle}
             >
               <ListItemButton
                 selected={subItem.id === activeItem}
-                onClick={() => handleItemClick(subItem.id)}
+                onClick={() => {
+
+                  handleItemClick(subItem.id)
+                  console.log(`Subitem: ${subItem.id} y ActiveItem: ${activeItem}`)
+                }}
                 sx={{
                   display: "flex",
                   flexDirection: "column",

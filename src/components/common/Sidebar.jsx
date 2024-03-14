@@ -5,26 +5,37 @@ import SidebarItem from "./SidebarItem";
 import SidebarItemCollapse from "./SidebarItemCollapse";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PeopleIcon from "@mui/icons-material/People";
+import ScreenShareIcon from "@mui/icons-material/ScreenShare";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import BusinessIcon from "@mui/icons-material/Business";
-import PersonIcon from "@mui/icons-material/Person";
-import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import ListIcon from "@mui/icons-material/List";
+import TransferWithinAStationIcon from "@mui/icons-material/TransferWithinAStation";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SidebarItemLogout from "./SidebarItemLogout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import GetAppIcon from "@mui/icons-material/GetApp";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 function Sidebar({ handleDrawerToggle }) {
-  const [activeItem, setActiveItem] = useState("dashboard");
+  const [activeItem, setActiveItem] = useState(localStorage.getItem("test") || "/dashboard");
+  const user = useSelector((state) => state.auth.user);
   const handleItemClick = (itemId) => {
-    console.log(itemId);
+    localStorage.setItem('test', itemId)
     setActiveItem(itemId);
     handleDrawerToggle();
   };
+  useEffect(() => {
+    const pathname = location.pathname;
+    setActiveItem(pathname)
+
+  }, [location.pathname]);
 
   const menuItems = [
     {
-      id: "dashboard",
+      id: "/dashboard",
       translationKey: "menu_dashboard",
       name: "Dashboard",
       icon: <DashboardIcon />,
@@ -32,95 +43,94 @@ function Sidebar({ handleDrawerToggle }) {
     },
 
     {
-      id: "owner",
-      translationKey: "menu_payments",
-      name: "Owner",
-      icon: <MonetizationOnIcon />,
-      subItems: null,
-    },
-    {
-      id: "employees",
+      id: "/employees",
       translationKey: "menu_employees",
       name: "Employees",
       icon: <PeopleIcon />,
       subItems: [
         {
-          id: "create",
+          id: "/employees/create",
           translationKey: "menu_create",
           name: "Create",
-          icon: <SupervisorAccountIcon />,
+          icon: <AddCircleOutlineIcon />,
         },
         {
-          id: "list",
+          id: "/employees/list",
           translationKey: "menu_list",
           name: "List",
-          icon: <SupervisorAccountIcon />,
+          icon: <ListIcon />,
         },
         {
-          id: "transfer",
+          id: "/employees/transfer",
           translationKey: "menu_transfer",
           name: "Transfer",
-          icon: <SupervisorAccountIcon />,
+          icon: <TransferWithinAStationIcon />,
         },
       ],
     },
     {
-      id: "subscriptions",
+      id: "/subscriptions",
       translationKey: "menu_help",
       name: "Subscriptions",
-      icon: <HelpOutlineIcon />,
+      icon: <MonetizationOnIcon />,
       subItems: [
         {
-          id: "get",
+          id: "/subscriptions/get",
           translationKey: "menu_companies",
           name: "Get",
-          icon: <BusinessIcon />,
+          icon: <GetAppIcon />,
         },
         {
-          id: "cancel",
+          id: "/subscriptions/cancel",
           translationKey: "menu_clients",
           name: "Cancel",
-          icon: <PersonIcon />,
+          icon: <CancelIcon />,
         },
       ],
     },
     {
-      id: "screens",
+      id: "/screens",
       translationKey: "menu_screens",
       name: "Screens",
-      icon: <HelpOutlineIcon />,
+      icon: <ScreenShareIcon />,
       subItems: null,
     },
     {
-      id: "rockobits",
+      id: "/rockobits",
       translationKey: "menu_rockobits",
       name: "Rockobits",
-      icon: <HelpOutlineIcon />,
+      icon: <AttachMoneyIcon />,
       subItems: [
         {
-          id: "buy",
+          id: "/rockobits/sale",
           translationKey: "menu_buy",
           name: "Buy",
-          icon: <SupervisorAccountIcon />,
+          icon: <ShoppingCartIcon />,
         },
         {
-          id: "sale",
+          id: "/rockobits/sale",
           translationKey: "menu_sale",
           name: "Sale",
-          icon: <SupervisorAccountIcon />,
-        }
+          icon: <MonetizationOnIcon />,
+        },
       ],
     },
   ];
 
   return (
     <div className="bg-[#555CB3] overflow-y-auto h-full flex flex-col">
-      <div className="flex mx-8 justify-center items-center space-x-2 my-8">
+      <div className="flex flex-col mx-8 justify-center items-center space-x-2 my-4">
         <h2
           style={{ textShadow: "2px 2px 1px #B45946", color: "white" }}
           className="font-semibold text-white text-xl tracking-widest text-shadow-lg"
         >
           PSROCKOLA
+        </h2>
+        <h2
+          style={{ textShadow: "2px 2px 1px #B45946", color: "white" }}
+          className="font-semibold text-white text-xl tracking-widest text-shadow-lg"
+        >
+          {user.type === 23 ? "Owner" : "Employee"}
         </h2>
       </div>
       <Divider />

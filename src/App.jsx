@@ -8,7 +8,7 @@ import Login from "./views/Login/Login";
 import Dashboard from "./views/Dashboard/Dashboard";
 import Layout from "./components/Layout/Layout";
 import Stripe from "./views/Stripe/Stripe";
-import Success from "./views/Success/Success";
+import Success from "./views/Memberships/Success/Success";
 import PublicRoute from "./components/Routes/PublicRoute";
 import ProtectedRoute from "./components/Routes/ProtectedRoute";
 import { AuthProvider } from "./auth/AuthProvider";

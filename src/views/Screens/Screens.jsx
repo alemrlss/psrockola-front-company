@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import api from "../../api/api";
-import { jwtDecode } from "jwt-decode";
 import Switch from "@mui/material/Switch";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
+import { useSelector } from "react-redux";
 
 const stripePromise = loadStripe(
   "pk_test_51M4ShsFeiEj6y242YNiI1u9Kf1HZM4eHjMZYMeHYrTCHwRfSIA3JwC5znJfpmk0EZWlLbsvQ9wXQZbLAdJZsdhUD00dehK0IeW"
@@ -17,7 +17,6 @@ function Screens() {
   const [screenName, setScreenName] = useState("");
   const [sessionId, setSessionId] = useState(null);
   const [openCheckout, setOpenCheckout] = useState(false);
-  const [userId, setUserId] = useState(null);
   const [userScreens, setUserScreens] = useState([]);
   const [error, setError] = useState(null);
   const [loadingSwitch, setLoadingSwitch] = useState(false);
@@ -26,21 +25,13 @@ function Screens() {
   const [editedPassword, setEditedPassword] = useState("");
   const [editError, setEditError] = useState(null);
 
+  const user = useSelector((state) => state.auth.user);
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const token = localStorage.getItem("token");
-        if (token) {
-          // Decodificar el token
-          const decodedToken = jwtDecode(token);
-          setUserId(decodedToken.id);
-
-          // Obtener las pantallas asociadas al usuario
-          const response = await api.get(`/screen/company/${decodedToken.id}`);
-          setUserScreens(response.data.data);
-        } else {
-          console.error("El token no está presente en el LocalStorage");
-        }
+        const response = await api.get(`/screen/company/${user.id}`);
+        setUserScreens(response.data.data);
       } catch (error) {
         console.error("Error al obtener las membresías:", error);
       }
@@ -57,10 +48,9 @@ function Screens() {
 
   const handleCreateScreen = async () => {
     try {
-      // Llama al backend para obtener el sessionId
       const response = await api.post("stripe/create-checkout-session-screen", {
         screenName,
-        userId,
+        userId: user.id,
         screenNameTwo: "Screen xD",
       });
 
@@ -133,7 +123,7 @@ function Screens() {
 
       // Realizar la llamada al backend para cambiar el estado 'active'
       await api.patch(`/screen/toggle/${screenId}`, {
-        userId: parseInt(userId),
+        userId: user.id,
       });
 
       // Actualizar localmente el estado de la pantalla solo si la llamada al backend tiene éxito
@@ -218,11 +208,11 @@ function Screens() {
 
   return (
     <div className="p-4">
-      <h2 className="text-2xl font-bold mt-10">Crear Pantalla</h2>
+      <h2 className="text-2xl font-bold mt-10">Create Screen</h2>
       <form className="flex items-center mt-4">
         <input
           type="text"
-          placeholder="Nombre de la pantalla"
+          placeholder="Name screen"
           value={screenName}
           onChange={(e) => setScreenName(e.target.value)}
           className="border p-2 mb-2"
@@ -232,13 +222,15 @@ function Screens() {
           onClick={handleCreateScreen}
           className="bg-blue-500 text-white px-4 py-2 rounded"
         >
-          Crear pantalla
+          Create
         </button>
       </form>
       {error && <p className="text-red-500 mt-2">{error}</p>}
 
       <div>
-        <h2 className="text-2xl font-bold mb-4">Tus Pantallas:</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          Screens: {userScreens.length}
+        </h2>
         <ul className="grid grid-cols-2 gap-4">
           {userScreens.map((screen) => (
             <li
@@ -267,7 +259,7 @@ function Screens() {
                   onClick={() => handleEditClick(screen)}
                   className="ml-2"
                 >
-                  Editar
+                  Edit
                 </Button>
               </div>
             </li>
@@ -286,9 +278,9 @@ function Screens() {
         aria-labelledby="modal-edit-screen"
       >
         <Box className="p-4 bg-white w-96 mx-auto mt-20 space-y-6">
-          <h2 className="text-2xl font-bold mb-4">Editar Pantalla</h2>
+          <h2 className="text-2xl font-bold mb-4">Edit Screen</h2>
           <TextField
-            label="Nuevo Nombre"
+            label="New Name"
             variant="outlined"
             fullWidth
             value={editedScreenName}
@@ -296,7 +288,7 @@ function Screens() {
             className="mb-2"
           />
           <TextField
-            label="Nueva Contraseña"
+            label="New Password"
             variant="outlined"
             fullWidth
             type="text"
@@ -311,7 +303,7 @@ function Screens() {
             onClick={handleEditSave}
             className="mt-4"
           >
-            Guardar Cambios
+            Save
           </Button>
         </Box>
       </Modal>

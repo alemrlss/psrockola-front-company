@@ -5,25 +5,23 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import getBenefits from "../../../utils/getBenefits";
 import api from "../../../api/api";
-import { jwtDecode } from "jwt-decode";
-import { useUser } from "../../../contexts/UserContext";
+import { useSelector, useDispatch } from "react-redux";
+import { updateUserMembership } from "../../../features/authSlice";
 
 function Cancel() {
   const [membership, setMembership] = useState(null);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-  const user = useUser();
+
+  const user = useSelector((state) => state.auth.user);
+
+  console.log(user);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchMembership = async () => {
       try {
-        const token = localStorage.getItem("token");
-        if (token) {
-          const decodedToken = jwtDecode(token);
-          const userId = decodedToken.id;
-          const user = await api.get(`/user/${userId}`);
-          setMembership(user.data.data.activeMembership);
-          console.log(user.data.data.activeMembership);
-        }
+        const userFound = await api.get(`/user/${user.id}`);
+        setMembership(userFound.data.data.activeMembership);
       } catch (error) {
         console.log(error);
       }
@@ -35,25 +33,20 @@ function Cancel() {
   const handleCancelConfirmation = () => {
     const cancelMembership = async () => {
       try {
-        const token = localStorage.getItem("token");
-        if (token) {
-          const decodedToken = jwtDecode(token);
-          const userId = decodedToken.id;
-          const response = await api.post(
-            `/membership/cancel-subscription/${userId}`
-          );
-          console.log(response);
-          setMembership(null);
-          setShowConfirmationModal(false);
-          user.updateUser({
-            ...user.user,
-            membership: {
-              name: null,
-              type: null,
-              expiration: null,
-            },
-          });
-        }
+        const response = await api.post(
+          `/membership/cancel-subscription/${user.id}`
+        );
+        console.log(response);
+        setMembership(null);
+        setShowConfirmationModal(false);
+
+        dispatch(
+          updateUserMembership({
+            name: null,
+            type: null,
+            expiration: null,
+          })
+        );
       } catch (error) {
         console.log(error);
       }

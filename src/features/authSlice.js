@@ -76,6 +76,12 @@ const authSlice = createSlice({
         localStorage.setItem("user", JSON.stringify(state.user));
       }
     },
+    updateUserMembership: (state, action) => {
+      if (state.user) {
+        state.user.membership = action.payload;
+        localStorage.setItem("user", JSON.stringify(state.user));
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -120,5 +126,6 @@ export const {
   setTokenExpiration,
   logout,
   updateUserBalance,
+  updateUserMembership,
 } = authSlice.actions;
 export default authSlice.reducer;

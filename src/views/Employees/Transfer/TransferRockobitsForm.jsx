@@ -1,44 +1,36 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../../../api/api";
 import { Button, MenuItem, Select, TextField } from "@mui/material";
-import { jwtDecode } from "jwt-decode";
-
+import { useSelector } from "react-redux";
 
 function TransferRockobitsForm() {
   const [employeeId, setEmployeeId] = useState("Select Employee");
   const [amount, setAmount] = useState("");
   const [transferResult, setTransferResult] = useState("");
-  const [companyId, setCompanyId] = useState(null);
   const [employees, setEmployees] = useState([]);
+
+  const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
     try {
-      const token = localStorage.getItem("token");
-      if (token) {
-        const decodedToken = jwtDecode(token);
-        setCompanyId(decodedToken.id);
         const getEmployees = async () => {
           const response = await api.get(
-            `employee/employees/${decodedToken.id}`
+            `employee/employees/${user.id}`
           );
           setEmployees(response.data.data);
         };
 
         getEmployees();
-      } else {
-        console.error("El token no está presente en el LocalStorage");
-      }
     } catch (error) {
       console.error("Error al obtener las membresías:", error);
     }
   }, []);
 
-
   const handleTransfer = async () => {
     try {
       const body = {
         employee_id: employeeId,
-        company_id: companyId,
+        company_id: user.id,
         amount: parseInt(amount),
       };
 

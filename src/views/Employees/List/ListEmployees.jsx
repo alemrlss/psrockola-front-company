@@ -1,26 +1,19 @@
 import { useEffect, useState } from "react";
 import api from "../../../api/api";
-import { jwtDecode } from "jwt-decode";
-
+import { useSelector } from "react-redux";
 function ListEmployees() {
   const [employees, setEmployees] = useState([]);
 
+  const user = useSelector((state) => state.auth.user);
+
   useEffect(() => {
     try {
-      const token = localStorage.getItem("token");
-      if (token) {
-        const decodedToken = jwtDecode(token);
-        const getEmployees = async () => {
-          const response = await api.get(
-            `employee/employees/${decodedToken.id}`
-          );
-          setEmployees(response.data.data);
-        };
+      const getEmployees = async () => {
+        const response = await api.get(`employee/employees/${user.id}`);
+        setEmployees(response.data.data);
+      };
 
-        getEmployees();
-      } else {
-        console.error("El token no está presente en el LocalStorage");
-      }
+      getEmployees();
     } catch (error) {
       console.error("Error al obtener las membresías:", error);
     }
@@ -45,8 +38,6 @@ function ListEmployees() {
           </div>
         ))}
       </div>
-
-
     </div>
   );
 }

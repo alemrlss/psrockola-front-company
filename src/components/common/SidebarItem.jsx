@@ -17,7 +17,7 @@ function SidebarItem({
 
   return (
     <Link
-      to={`/${item.id}`}
+      to={`${item.id}`}
       key={item.id}
       onClick={item.subItems ? null : handleDrawerToggle}
     >
