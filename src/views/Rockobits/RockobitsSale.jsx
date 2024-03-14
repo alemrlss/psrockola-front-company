@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -7,18 +7,20 @@ import Button from "@mui/material/Button";
 import { useSelector, useDispatch } from "react-redux";
 import api from "../../api/api";
 import { updateUserBalance } from "../../features/authSlice";
+import apiFormData from "../../api/apiFormData";
 
 function RockobitsSale() {
   const [email, setEmail] = useState("");
   const [quantity, setQuantity] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("");
-  const [bankTransferFile, setBankTransferFile] = useState(null);
+  const [transferFile, setTransferFile] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState("");
 
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
+
   const handleEmailChange = (event) => {
     setError("");
     setEmail(event.target.value);
@@ -34,9 +36,9 @@ function RockobitsSale() {
     setPaymentMethod(event.target.value);
   };
 
-  const handleBankTransferFileChange = (event) => {
+  const handletransferFileChange = (event) => {
     setError("");
-    setBankTransferFile(event.target.files[0]);
+    setTransferFile(event.target.files[0]);
   };
 
   const handleSubmit = async (event) => {
@@ -52,7 +54,7 @@ function RockobitsSale() {
       return;
     }
 
-    if (paymentMethod === "bankTransfer" && !bankTransferFile) {
+    if (paymentMethod === "transfer" && !transferFile) {
       setError("Debes subir el archivo de transferencia bancaria");
       return;
     }
@@ -88,23 +90,47 @@ function RockobitsSale() {
     setEmail("");
     setQuantity(0);
     setPaymentMethod("");
-    setBankTransferFile(null);
+    setTransferFile(null);
   };
 
   const transferRockobits = async () => {
     try {
+      let formData = new FormData();
+
       // Construir el objeto de datos para la transferencia
       const transferData = {
         client_id: userData.id,
         company_id: user.id /* Aquí debes obtener el company_id del token */,
         amount: parseInt(quantity),
-        type: user.type
+        type: user.type,
       };
 
+      // Agregar los datos de transferencia al FormData
+      Object.entries(transferData).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+
+      // Verificar el método de pago seleccionado
+      if (paymentMethod === "transfer") {
+        formData.append("paymentMethod", "transfer");
+        // Verificar si se ha adjuntado un archivo de transferencia bancaria
+        if (!transferFile) {
+          setError("Debes subir el archivo de transferencia bancaria");
+          return;
+        }
+
+        console.log(transferFile);
+
+        // Agregar el archivo de transferencia bancaria al FormData
+        formData.append("voucher", transferFile);
+      }
+
       // Realizar la petición POST para transferir los Rockobits
-      const response = await api.post(
+
+      console.log(formData);
+      const response = await apiFormData.post(
         "rockobits/transferToClient",
-        transferData
+        formData
       );
 
       // Verificar si la transferencia fue exitosa
@@ -114,7 +140,7 @@ function RockobitsSale() {
         setEmail("");
         setQuantity(0);
         setPaymentMethod("");
-        setBankTransferFile(null);
+        setTransferFile(null);
 
         const newBalance = user.balance - parseInt(quantity);
 
@@ -188,15 +214,15 @@ function RockobitsSale() {
             <div className="flex items-center mt-2">
               <input
                 type="radio"
-                id="bankTransfer"
-                value="bankTransfer"
-                checked={paymentMethod === "bankTransfer"}
+                id="transfer"
+                value="transfer"
+                checked={paymentMethod === "transfer"}
                 onChange={handlePaymentMethodChange}
                 className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                 required
               />
               <label
-                htmlFor="bankTransfer"
+                htmlFor="transfer"
                 className="ml-3 block text-sm font-medium text-gray-700"
               >
                 Transferencia Bancaria
@@ -204,19 +230,18 @@ function RockobitsSale() {
             </div>
           </div>
         </div>
-        {paymentMethod === "bankTransfer" && (
+        {paymentMethod === "transfer" && (
           <div className="mb-4">
             <label
-              htmlFor="bankTransferFile"
+              htmlFor="transferFile"
               className="block text-sm font-medium text-gray-700"
             >
               Subir Archivo de Transferencia Bancaria:
             </label>
             <input
               type="file"
-              id="bankTransferFile"
-              accept=".pdf,.doc,.docx"
-              onChange={handleBankTransferFileChange}
+              id="transferFile"
+              onChange={handletransferFileChange}
               className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
             />
           </div>
