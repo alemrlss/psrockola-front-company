@@ -23,6 +23,7 @@ import LoginEmployee from "./views/LoginEmployee/LoginEmployee";
 import Test from "./views/Test";
 import RockobitsSuccess from "./views/Rockobits/RockobitsSuccess";
 import RockobitsSale from "./views/Rockobits/RockobitsSale";
+import Unauthorized from "./components/Unauthorized/Unauthorized";
 
 function App() {
   return (
@@ -34,12 +35,26 @@ function App() {
             <Route path="/" element={<PublicRoute />}>
               <Route index element={<Navigate to="/login" />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/test" element={<Test />} />
               <Route path="/login-employee" element={<LoginEmployee />} />
             </Route>
-            <Route path="/" element={<ProtectedRoute />}>
+            {/* Rutas protegidas */}
+            <Route path="/" element={<ProtectedRoute allowEmployee={true} />}>
               <Route element={<Layout />}>
                 <Route path="/dashboard" element={<Dashboard />}></Route>
+                <Route
+                  path="/rockobits/sale"
+                  element={<RockobitsSale />}
+                ></Route>
+                <Route path="/rockobits/buy" element={<Rockobits />}></Route>
+                <Route
+                  path="/rockobits/success"
+                  element={<RockobitsSuccess />}
+                ></Route>
+              </Route>
+            </Route>
+
+            <Route path="/" element={<ProtectedRoute allowEmployee={false} />}>
+              <Route element={<Layout />}>
                 <Route path="/screens" element={<Screens />}></Route>
                 <Route
                   path="/employees/create"
@@ -59,15 +74,12 @@ function App() {
                   element={<Cancel />}
                 ></Route>
                 <Route path="/success" element={<Success />}></Route>
-                <Route path="/rockobits/buy" element={<Rockobits />}></Route>
-                <Route path="/rockobits/sale" element={<RockobitsSale />}></Route>
-                <Route
-                  path="/rockobits/success"
-                  element={<RockobitsSuccess />}
-                ></Route>
-                <Route path="*" element={<div> Page not found</div>} />
+
+                <Route path="*" element={<Navigate to="/" />} />
               </Route>
             </Route>
+            {/* Ruta para mostrar cuando el acceso está no autorizado */}
+            <Route path="/unauthorized" element={<Unauthorized />} />
           </Routes>
         </Router>
       </UserProvider>

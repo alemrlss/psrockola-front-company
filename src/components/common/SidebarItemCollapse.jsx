@@ -9,6 +9,7 @@ import Box from "@mui/material/Box";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import List from "@mui/material/List";
+import { useSelector } from "react-redux";
 
 function SidebarItemCollapse({
   item,
@@ -17,6 +18,7 @@ function SidebarItemCollapse({
   activeItem,
 }) {
   const [open, setOpen] = useState(false);
+  const user = useSelector((state) => state.auth.user);
 
   const handleClick = () => {
     setOpen(!open);
@@ -60,71 +62,81 @@ function SidebarItemCollapse({
       </ListItemButton>
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List>
-          {item.subItems.map((subItem, index) => (
-            <Link
-              to={`${subItem.id}`}
-              key={index}
-              onClick={handleDrawerToggle}
-            >
-              <ListItemButton
-                selected={subItem.id === activeItem}
-                onClick={() => {
-
-                  handleItemClick(subItem.id)
-                  console.log(`Subitem: ${subItem.id} y ActiveItem: ${activeItem}`)
-                }}
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "start",
-                  alignItems: "start",
-                  marginLeft: "50px",
-                  marginRight: "30px",
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "#8087DF",
-                    borderRadius: "60px",
-                    fontWeight: "bold",
-                  },
-                  "&:not(:hover)": {
-                    backgroundColor: "transparent",
-                    borderRadius: "40px",
-                    fontWeight: "bold",
-                  },
-                  "&.Mui-selected": {
-                    backgroundColor: "#f0f0f0",
-                    color: "#555CB3",
-                    fontWeight: "bold",
-                    borderRadius: "60px",
-                  },
-                  "&.Mui-selected:hover": {
-                    backgroundColor: "#f0f0f0",
-                    color: "#555CB3",
-                    fontWeight: "bold",
-                    borderRadius: "60px",
-                  },
-                }}
+          {item.subItems
+            .filter((item) => {
+              // Si el usuario es de tipo 22 (empleado), filtra los items que permiten empleados
+              if (user.type === 22) {
+                return item.allowEmployee !== false;
+              }
+              // Si el usuario no es de tipo 22, no aplica ningún filtro
+              return true;
+            })
+            .map((subItem, index) => (
+              <Link
+                to={`${subItem.id}`}
+                key={index}
+                onClick={handleDrawerToggle}
               >
-                <Box
+                <ListItemButton
+                  selected={subItem.id === activeItem}
+                  onClick={() => {
+                    handleItemClick(subItem.id);
+                    console.log(
+                      `Subitem: ${subItem.id} y ActiveItem: ${activeItem}`
+                    );
+                  }}
                   sx={{
                     display: "flex",
-                    alignItems: "center",
+                    flexDirection: "column",
+                    justifyContent: "start",
+                    alignItems: "start",
+                    marginLeft: "50px",
+                    marginRight: "30px",
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "#8087DF",
+                      borderRadius: "60px",
+                      fontWeight: "bold",
+                    },
+                    "&:not(:hover)": {
+                      backgroundColor: "transparent",
+                      borderRadius: "40px",
+                      fontWeight: "bold",
+                    },
+                    "&.Mui-selected": {
+                      backgroundColor: "#f0f0f0",
+                      color: "#555CB3",
+                      fontWeight: "bold",
+                      borderRadius: "60px",
+                    },
+                    "&.Mui-selected:hover": {
+                      backgroundColor: "#f0f0f0",
+                      color: "#555CB3",
+                      fontWeight: "bold",
+                      borderRadius: "60px",
+                    },
                   }}
-                  className="space-x-4"
                 >
-                  <ListItemIcon
+                  <Box
                     sx={{
-                      color: subItem.id === activeItem ? "#555CB3" : "white",
-                      minWidth: 0,
+                      display: "flex",
+                      alignItems: "center",
                     }}
+                    className="space-x-4"
                   >
-                    {subItem.icon}
-                  </ListItemIcon>
-                  <ListItemText sx={{ ml: 0 }} primary={subItem.name} />
-                </Box>
-              </ListItemButton>
-            </Link>
-          ))}
+                    <ListItemIcon
+                      sx={{
+                        color: subItem.id === activeItem ? "#555CB3" : "white",
+                        minWidth: 0,
+                      }}
+                    >
+                      {subItem.icon}
+                    </ListItemIcon>
+                    <ListItemText sx={{ ml: 0 }} primary={subItem.name} />
+                  </Box>
+                </ListItemButton>
+              </Link>
+            ))}
         </List>
       </Collapse>
     </>
