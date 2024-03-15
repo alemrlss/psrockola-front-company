@@ -151,11 +151,9 @@ function Sidebar({ handleDrawerToggle }) {
       <List>
         {menuItems
           .filter((item) => {
-            // Si el usuario es de tipo 22 (empleado), filtra los items que permiten empleados
             if (user.type === 22) {
               return item.allowEmployee !== false;
             }
-            // Si el usuario no es de tipo 22, no aplica ningún filtro
             return true;
           })
           .map((item, index) =>

@@ -68,7 +68,6 @@ function SidebarItemCollapse({
               if (user.type === 22) {
                 return item.allowEmployee !== false;
               }
-              // Si el usuario no es de tipo 22, no aplica ningún filtro
               return true;
             })
             .map((subItem, index) => (

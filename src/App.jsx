@@ -45,11 +45,11 @@ function App() {
                   path="/rockobits/sale"
                   element={<RockobitsSale />}
                 ></Route>
-                <Route path="/rockobits/buy" element={<Rockobits />}></Route>
                 <Route
                   path="/rockobits/success"
                   element={<RockobitsSuccess />}
                 ></Route>
+                <Route path="/unauthorized" element={<Unauthorized />} />
               </Route>
             </Route>
 
@@ -74,12 +74,12 @@ function App() {
                   element={<Cancel />}
                 ></Route>
                 <Route path="/success" element={<Success />}></Route>
+                <Route path="/rockobits/buy" element={<Rockobits />}></Route>
+                <Route path="/unauthorized" element={<Unauthorized />} />
 
                 <Route path="*" element={<Navigate to="/" />} />
               </Route>
             </Route>
-            {/* Ruta para mostrar cuando el acceso está no autorizado */}
-            <Route path="/unauthorized" element={<Unauthorized />} />
           </Routes>
         </Router>
       </UserProvider>
