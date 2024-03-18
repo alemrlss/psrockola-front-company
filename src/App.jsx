@@ -20,10 +20,10 @@ import Screens from "./views/Screens/Screens";
 import Rockobits from "./views/Rockobits/Rockobits";
 import TransferRockobitsForm from "./views/Employees/Transfer/TransferRockobitsForm";
 import LoginEmployee from "./views/LoginEmployee/LoginEmployee";
-import Test from "./views/Test";
 import RockobitsSuccess from "./views/Rockobits/RockobitsSuccess";
 import RockobitsSale from "./views/Rockobits/RockobitsSale";
 import Unauthorized from "./components/Unauthorized/Unauthorized";
+import Qr from "./views/Rockobits/Qr";
 
 function App() {
   return (
@@ -49,6 +49,9 @@ function App() {
                   path="/rockobits/success"
                   element={<RockobitsSuccess />}
                 ></Route>
+
+                <Route path="/rockobits/qr" element={<Qr />}></Route>
+
                 <Route path="/unauthorized" element={<Unauthorized />} />
               </Route>
             </Route>

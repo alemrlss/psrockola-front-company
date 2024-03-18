@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import GetAppIcon from "@mui/icons-material/GetApp";
 import CancelIcon from "@mui/icons-material/Cancel";
+import QrCode2Icon from '@mui/icons-material/QrCode2';
 
 function Sidebar({ handleDrawerToggle }) {
   const [activeItem, setActiveItem] = useState(
@@ -125,6 +126,13 @@ function Sidebar({ handleDrawerToggle }) {
           translationKey: "menu_sale",
           name: "Sale",
           icon: <MonetizationOnIcon />,
+          allowEmployee: true,
+        },
+        {
+          id: "/rockobits/qr",
+          translationKey: "menu_qr",
+          name: "QR Code",
+          icon: <QrCode2Icon />,
           allowEmployee: true,
         },
       ],
