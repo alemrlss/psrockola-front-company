@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import api from "../../../api/api";
 import { Button, MenuItem, Select, TextField } from "@mui/material";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { updateUserBalance } from "../../../features/authSlice";
 
 function TransferRockobitsForm() {
   const [employeeId, setEmployeeId] = useState("Select Employee");
@@ -10,17 +11,15 @@ function TransferRockobitsForm() {
   const [employees, setEmployees] = useState([]);
 
   const user = useSelector((state) => state.auth.user);
-
+  const dispatch = useDispatch();
   useEffect(() => {
     try {
-        const getEmployees = async () => {
-          const response = await api.get(
-            `employee/employees/${user.id}`
-          );
-          setEmployees(response.data.data);
-        };
+      const getEmployees = async () => {
+        const response = await api.get(`employee/employees/${user.id}`);
+        setEmployees(response.data.data);
+      };
 
-        getEmployees();
+      getEmployees();
     } catch (error) {
       console.error("Error al obtener las membresías:", error);
     }
@@ -39,11 +38,13 @@ function TransferRockobitsForm() {
         body
       );
 
-      console.log(response);
       if (response.status === 201) {
         setTransferResult(`${amount} Rockobits transfered successfully`);
         setAmount("");
         setEmployeeId("Select Employee");
+        const newBalance = user.balance - parseInt(amount);
+
+        dispatch(updateUserBalance(newBalance)); // Actualizar el balance en el store de Redux
       } else {
         setTransferResult("Error transferring rockobits");
       }
