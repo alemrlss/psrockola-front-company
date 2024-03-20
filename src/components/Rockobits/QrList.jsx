@@ -122,7 +122,6 @@ function QrList({ qrList, fetchQrList }) {
                   textAlign: "center",
                 }}
               >
-                Show QR
               </TableCell>
             </TableRow>
           </TableHead>
@@ -130,13 +129,19 @@ function QrList({ qrList, fetchQrList }) {
             {qrList.map((qr) => (
               <TableRow
                 key={qr.id}
-                className={`${
-                  qr.state === 1
-                    ? "bg-gray-200"
+                className={
+                  qr.state === 1 && new Date(qr.expiration) < new Date()
+                    ? "bg-yellow-300"
                     : qr.state === 0
-                    ? "bg-red-400"
-                    : "bg-green-300"
-                }`}
+                    ? "bg-red-300"
+                    : qr.state === 2
+                    ? "bg-green-300"
+                    : qr.state === 1
+                    ? "bg-gray-300"
+                    : qr.state === 3
+                    ? "bg-yellow-200"
+                    : "bg-gray-300"
+                }
               >
                 <TableCell
                   sx={{
@@ -165,6 +170,8 @@ function QrList({ qrList, fetchQrList }) {
                     ? "Active"
                     : qr.state === 2
                     ? "Consumed"
+                    : qr.state === 3
+                    ? "Expired"
                     : "Unknown"}
                 </TableCell>
                 <TableCell
@@ -172,7 +179,7 @@ function QrList({ qrList, fetchQrList }) {
                     textAlign: "center",
                   }}
                 >
-                  {qr.state !== 2 && (
+                  {qr.state === 1 && new Date(qr.expiration) > new Date() && (
                     <Button
                       onClick={() => handleShowQr(qr)}
                       variant="contained"
@@ -187,6 +194,7 @@ function QrList({ qrList, fetchQrList }) {
           </TableBody>
         </Table>
       </TableContainer>
+
       <Modal
         open={isModalOpen}
         onClose={handleCloseModal}

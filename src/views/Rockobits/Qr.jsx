@@ -10,12 +10,14 @@ import {
   FormLabel,
   Divider,
 } from "@mui/material";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import QrList from "../../components/Rockobits/QrList";
 import api from "../../api/api";
+import { updateUserBalance } from "../../features/authSlice";
 
 function Qr() {
-  const idCompany = useSelector((state) => state.auth.user.id);
+  const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
   const [amount, setAmount] = useState("");
   const [expirationTime, setExpirationTime] = useState("1h");
   const [successMessage, setSuccessMessage] = useState("");
@@ -25,11 +27,11 @@ function Qr() {
 
   useEffect(() => {
     fetchQrList();
-  }, [idCompany, filterState]); // Se vuelve a cargar la lista cuando cambia el estado del filtro
+  }, [user.id, filterState]); // Se vuelve a cargar la lista cuando cambia el estado del filtro
 
   const fetchQrList = async () => {
     try {
-      let url = `qr/rockobits?companyId=${idCompany}`;
+      let url = `qr/rockobits?companyId=${user.id}`;
 
       if (filterState !== null) {
         url += `&state=${filterState}`;
@@ -37,8 +39,31 @@ function Qr() {
 
       const response = await api.get(url);
       setQrList(response.data.data);
+
+      const activeExpiredQrs = response.data.data.filter(
+        (qr) => qr.state === 1 && new Date(qr.expiration) < new Date()
+      );
+
+      if (activeExpiredQrs.length > 0) {
+        fetchExpiredFunds();
+      }
     } catch (error) {
       console.error("Error fetching QR list:", error);
+    }
+  };
+  const fetchExpiredFunds = async () => {
+    try {
+      console.log(qrList);
+      const response = await api.get(`/qr/return-expired-funds/${user.id}`);
+      const totalReturnedAmount = response.data.data;
+      if (totalReturnedAmount > 0) {
+        const newBalance = user.balance + totalReturnedAmount;
+        dispatch(updateUserBalance(newBalance));
+      }
+
+      fetchQrList();
+    } catch (error) {
+      console.error("Error returning expired funds:", error);
     }
   };
 
@@ -46,18 +71,21 @@ function Qr() {
     try {
       const requestData = {
         amount: parseInt(amount),
-        companyId: idCompany,
+        companyId: user.id,
         expiration: expirationTime,
       };
 
       const response = await api.post("/qr/generate-rockobits", requestData);
+      if (response.status === 201) {
+        setSuccessMessage("QR generated successfully");
+        setErrorMessage("");
+        setAmount("");
+        setExpirationTime("1h");
 
-      setSuccessMessage("QR generated successfully");
-      setErrorMessage("");
-      setAmount("");
-      setExpirationTime("1h");
-
-      fetchQrList();
+        const newBalance = user.balance - parseInt(amount);
+        dispatch(updateUserBalance(newBalance));
+        fetchQrList();
+      }
     } catch (error) {
       setErrorMessage("Error generating QR");
       setSuccessMessage("");
@@ -105,6 +133,11 @@ function Qr() {
                   setSuccessMessage("");
                 }}
               >
+                <FormControlLabel
+                  value="1m"
+                  control={<Radio />}
+                  label="1 Minute"
+                />
                 <FormControlLabel
                   value="1h"
                   control={<Radio />}
@@ -166,6 +199,7 @@ function Qr() {
             <FormControlLabel value="1" control={<Radio />} label="Active" />
             <FormControlLabel value="0" control={<Radio />} label="Inactive" />
             <FormControlLabel value="2" control={<Radio />} label="Consumed" />
+            <FormControlLabel value="3" control={<Radio />} label="Expired" />
           </RadioGroup>
         </FormControl>
       </div>
