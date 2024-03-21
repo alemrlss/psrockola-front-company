@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import {
   Table,
@@ -10,13 +11,15 @@ import {
   Button,
   Modal,
 } from "@mui/material";
-import { QRCode } from "react-qrcode";
+import { QRCodeCanvas } from "qrcode.react";
+import html2canvas from "html2canvas";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import api from "../../api/api";
+import { updateUserBalance } from "../../features/authSlice";
 
-function QrList({ qrList, fetchQrList }) {
+function QrList({ qrList, fetchQrList, errorQrList, user, dispatch }) {
   const [selectedQr, setSelectedQr] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -29,31 +32,23 @@ function QrList({ qrList, fetchQrList }) {
     setIsModalOpen(false);
   };
 
-  const handleDownloadQR = () => {
-    const qrImage = document.getElementById("qr-image");
-    const fileName = `QR-${selectedQr.amount}_${formatDateToFile(
-      selectedQr.expiration
-    )}.png`;
-    const link = document.createElement("a");
-    link.href = qrImage.src;
-    link.download = fileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   const handleToggleQr = async (newState) => {
     try {
       const qrUpdated = await api.patch(
         `/qr/rockobits/toggleState/${selectedQr.id}`,
         {
           state: newState,
+          isEmployee: user.type === 22 ? true : user.type === 23 ? false : null,
+          userId: user.id,
         }
       );
 
       if (qrUpdated.status === 200) {
         handleCloseModal();
         fetchQrList();
+
+        const newBalance = user.balance + parseInt(qrUpdated.data.data.amount);
+        dispatch(updateUserBalance(newBalance));
       }
     } catch (error) {
       console.error("Error deleting QR:", error);
@@ -71,7 +66,23 @@ function QrList({ qrList, fetchQrList }) {
     const seconds = String(date.getSeconds()).padStart(2, "0");
     return `${day}/${month}/${year}-${hours}-${minutes}-${seconds}`;
   };
+  const handleDownloadQR = async () => {
+    const canvas = await (
+      await html2canvas(document.getElementById("canvas"))
+    ).toDataURL();
 
+    const fileName = `QR-${selectedQr.amount}_${formatDateToFile(
+      selectedQr.expiration
+    )}.png`;
+    if (canvas) {
+      const a = document.createElement("a");
+      a.download = fileName;
+      a.href = canvas;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  };
   const formatExpirationDate = (expiration) => {
     const options = {
       month: "long",
@@ -121,76 +132,93 @@ function QrList({ qrList, fetchQrList }) {
                 sx={{
                   textAlign: "center",
                 }}
-              >
-              </TableCell>
+              ></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {qrList.map((qr) => (
-              <TableRow
-                key={qr.id}
-                className={
-                  qr.state === 1 && new Date(qr.expiration) < new Date()
-                    ? "bg-yellow-300"
-                    : qr.state === 0
-                    ? "bg-red-300"
-                    : qr.state === 2
-                    ? "bg-green-300"
-                    : qr.state === 1
-                    ? "bg-gray-300"
-                    : qr.state === 3
-                    ? "bg-yellow-200"
-                    : "bg-gray-300"
-                }
-              >
+            {errorQrList ? (
+              <p className="text-red-500 text-2xl text-center my-4 font-bold">
+                {" "}
+                {errorQrList}
+              </p>
+            ) : qrList.length > 0 ? (
+              qrList.map((qr) => (
+                <TableRow
+                  key={qr.id}
+                  className={
+                    qr.state === 1 && new Date(qr.expiration) < new Date()
+                      ? "bg-yellow-300"
+                      : qr.state === 0
+                      ? "bg-red-300"
+                      : qr.state === 2
+                      ? "bg-green-300"
+                      : qr.state === 1
+                      ? "bg-gray-300"
+                      : qr.state === 3
+                      ? "bg-yellow-200"
+                      : "bg-gray-300"
+                  }
+                >
+                  <TableCell
+                    sx={{
+                      textAlign: "center",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {qr.amount}
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      textAlign: "center",
+                    }}
+                  >
+                    {formatExpirationDate(qr.expiration)}
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      textAlign: "center",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {qr.state === 0
+                      ? "Inactive"
+                      : qr.state === 1
+                      ? "Active"
+                      : qr.state === 2
+                      ? "Consumed"
+                      : qr.state === 3
+                      ? "Expired"
+                      : "Unknown"}
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      textAlign: "center",
+                    }}
+                  >
+                    {qr.state === 1 && new Date(qr.expiration) > new Date() && (
+                      <Button
+                        onClick={() => handleShowQr(qr)}
+                        variant="contained"
+                        color="primary"
+                      >
+                        Show QR
+                      </Button>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
                 <TableCell
+                  colSpan={4}
                   sx={{
                     textAlign: "center",
-                    fontWeight: "bold",
                   }}
                 >
-                  {qr.amount}
-                </TableCell>
-                <TableCell
-                  sx={{
-                    textAlign: "center",
-                  }}
-                >
-                  {formatExpirationDate(qr.expiration)}
-                </TableCell>
-                <TableCell
-                  sx={{
-                    textAlign: "center",
-                    fontWeight: "bold",
-                  }}
-                >
-                  {qr.state === 0
-                    ? "Inactive"
-                    : qr.state === 1
-                    ? "Active"
-                    : qr.state === 2
-                    ? "Consumed"
-                    : qr.state === 3
-                    ? "Expired"
-                    : "Unknown"}
-                </TableCell>
-                <TableCell
-                  sx={{
-                    textAlign: "center",
-                  }}
-                >
-                  {qr.state === 1 && new Date(qr.expiration) > new Date() && (
-                    <Button
-                      onClick={() => handleShowQr(qr)}
-                      variant="contained"
-                      color="primary"
-                    >
-                      Show QR
-                    </Button>
-                  )}
+                  No QR codes found
                 </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </TableContainer>
@@ -224,12 +252,24 @@ function QrList({ qrList, fetchQrList }) {
               </svg>
             </button>
             <div className="flex justify-center">
-              <QRCode
-                className="flex justify-center bg-red-500 "
-                value={selectedQr.token}
-                id="qr-image"
-                level="H"
-              />
+              <div id="canvas" className="border p-2 relative">
+                <QRCodeCanvas
+                  value={selectedQr.token}
+                  size={300}
+                  bgColor={"#ffffff"}
+                  fgColor={"#000"}
+                  level={"H"}
+                  includeMargin={false}
+                  imageSettings={{
+                    src: "/logo.png",
+                    x: undefined,
+                    y: undefined,
+                    height: 80,
+                    width: 80,
+                    excavate: false,
+                  }}
+                />
+              </div>
             </div>
             <div className="p-1">
               <p className="text-center">
@@ -254,27 +294,10 @@ function QrList({ qrList, fetchQrList }) {
                     variant="contained"
                     startIcon={<DeleteIcon />}
                   >
-                    Delete
+                    Deactivate
                   </Button>
                 )}
-                {selectedQr.state === 0 && (
-                  <Button
-                    sx={{
-                      backgroundColor: "#F0CC41",
-                      color: "white",
-                      "&:hover": {
-                        backgroundColor: "#D7B73A",
-                      },
-                    }}
-                    onClick={() => {
-                      handleToggleQr(1);
-                    }}
-                    variant="contained"
-                    startIcon={<DeleteIcon />}
-                  >
-                    Active
-                  </Button>
-                )}
+
                 <Button
                   onClick={handleDownloadQR}
                   variant="contained"

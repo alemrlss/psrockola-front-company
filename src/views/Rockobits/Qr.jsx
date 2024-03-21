@@ -23,7 +23,8 @@ function Qr() {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [qrList, setQrList] = useState([]);
-  const [filterState, setFilterState] = useState(null);
+  const [filterState, setFilterState] = useState("1");
+  const [errorQrList, setErrorQrList] = useState(null);
 
   useEffect(() => {
     fetchQrList();
@@ -31,13 +32,17 @@ function Qr() {
 
   const fetchQrList = async () => {
     try {
-      let url = `qr/rockobits?companyId=${user.id}`;
+      setErrorQrList(null);
+      let url = `qr/rockobits?companyId=${user.id}&isEmployee=${
+        user.type === 22 ? true : user.type === 23 ? false : null
+      }`;
 
       if (filterState !== null) {
         url += `&state=${filterState}`;
       }
 
       const response = await api.get(url);
+
       setQrList(response.data.data);
 
       const activeExpiredQrs = response.data.data.filter(
@@ -48,7 +53,13 @@ function Qr() {
         fetchExpiredFunds();
       }
     } catch (error) {
-      console.error("Error fetching QR list:", error);
+      if (
+        error.response.data.statusCode === 400 &&
+        error.response.data.message === "NO_MEMBERSHIP_ACTIVATED"
+      ) {
+        setQrList([]);
+        setErrorQrList("NO MEMBERSHIP ACTIVATE");
+      }
     }
   };
   const fetchExpiredFunds = async () => {
@@ -71,25 +82,46 @@ function Qr() {
     try {
       const requestData = {
         amount: parseInt(amount),
-        companyId: user.id,
+        userId: user.id,
         expiration: expirationTime,
+        isEmployee: user.type === 22 ? true : user.type === 23 ? false : null,
       };
 
       const response = await api.post("/qr/generate-rockobits", requestData);
       if (response.status === 201) {
-        setSuccessMessage("QR generated successfully");
         setErrorMessage("");
+        setSuccessMessage("QR generated successfully");
         setAmount("");
         setExpirationTime("1h");
 
         const newBalance = user.balance - parseInt(amount);
         dispatch(updateUserBalance(newBalance));
         fetchQrList();
+
+        setTimeout(() => {
+          setSuccessMessage("");
+        }, 3000);
       }
     } catch (error) {
+      console.log(error.response.data);
+      if (
+        error.response.data.statusCode === 400 &&
+        error.response.data.message === "NO_MEMBERSHIP_ACTIVATED"
+      ) {
+        setErrorMessage("NO MEMBERHSIP ACTIVATE");
+        return;
+      }
+
+      if (
+        error.response.data.statusCode === 400 &&
+        error.response.data.message === "INSUFFICIENT_FUNDS"
+      ) {
+        setErrorMessage("INSUFFICIENT FUNDS");
+        return;
+      }
+
       setErrorMessage("Error generating QR");
       setSuccessMessage("");
-      console.error("Error generating QR:", error);
     }
   };
 
@@ -195,15 +227,22 @@ function Qr() {
               );
             }}
           >
-            <FormControlLabel value="null" control={<Radio />} label="All" />
             <FormControlLabel value="1" control={<Radio />} label="Active" />
             <FormControlLabel value="0" control={<Radio />} label="Inactive" />
             <FormControlLabel value="2" control={<Radio />} label="Consumed" />
             <FormControlLabel value="3" control={<Radio />} label="Expired" />
+            <FormControlLabel value="null" control={<Radio />} label="All" />
           </RadioGroup>
         </FormControl>
       </div>
-      <QrList qrList={qrList} setQrList={setQrList} fetchQrList={fetchQrList} />
+      <QrList
+        qrList={qrList}
+        setQrList={setQrList}
+        fetchQrList={fetchQrList}
+        errorQrList={errorQrList}
+        user={user}
+        dispatch={dispatch}
+      />
     </div>
   );
 }
