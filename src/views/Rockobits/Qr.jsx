@@ -26,6 +26,8 @@ function Qr() {
   const [filterState, setFilterState] = useState("1");
   const [errorQrList, setErrorQrList] = useState(null);
 
+  const [selectedQr, setSelectedQr] = useState({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
   useEffect(() => {
     fetchQrList();
   }, [user.id, filterState]); // Se vuelve a cargar la lista cuando cambia el estado del filtro
@@ -65,7 +67,11 @@ function Qr() {
   const fetchExpiredFunds = async () => {
     try {
       console.log(qrList);
-      const response = await api.get(`/qr/return-expired-funds/${user.id}`);
+      const response = await api.get(
+        `/qr/return-expired-funds/${user.id}?&isEmployee=${
+          user.type === 22 ? true : user.type === 23 ? false : null
+        }`
+      );
       const totalReturnedAmount = response.data.data;
       if (totalReturnedAmount > 0) {
         const newBalance = user.balance + totalReturnedAmount;
@@ -98,6 +104,7 @@ function Qr() {
         dispatch(updateUserBalance(newBalance));
         fetchQrList();
 
+        handleShowQr(response.data);
         setTimeout(() => {
           setSuccessMessage("");
         }, 3000);
@@ -123,6 +130,15 @@ function Qr() {
       setErrorMessage("Error generating QR");
       setSuccessMessage("");
     }
+  };
+
+  const handleShowQr = (qr) => {
+    setSelectedQr(qr);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
@@ -242,6 +258,10 @@ function Qr() {
         errorQrList={errorQrList}
         user={user}
         dispatch={dispatch}
+        selectedQr={selectedQr}
+        isModalOpen={isModalOpen}
+        handleShowQr={handleShowQr}
+        handleCloseModal={handleCloseModal}
       />
     </div>
   );

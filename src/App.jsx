@@ -24,6 +24,7 @@ import RockobitsSuccess from "./views/Rockobits/RockobitsSuccess";
 import RockobitsSale from "./views/Rockobits/RockobitsSale";
 import Unauthorized from "./components/Unauthorized/Unauthorized";
 import Qr from "./views/Rockobits/Qr";
+import Transactions from "./views/Transactions/Transactions";
 
 function App() {
   return (
@@ -49,8 +50,9 @@ function App() {
                   path="/rockobits/success"
                   element={<RockobitsSuccess />}
                 ></Route>
-
                 <Route path="/rockobits/qr" element={<Qr />}></Route>
+
+                <Route path="/transactions" element={<Transactions />}></Route>
 
                 <Route path="/unauthorized" element={<Unauthorized />} />
               </Route>

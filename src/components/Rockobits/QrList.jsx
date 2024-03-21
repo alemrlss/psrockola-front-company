@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
 import {
   Table,
   TableBody,
@@ -19,19 +18,17 @@ import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import api from "../../api/api";
 import { updateUserBalance } from "../../features/authSlice";
 
-function QrList({ qrList, fetchQrList, errorQrList, user, dispatch }) {
-  const [selectedQr, setSelectedQr] = useState({});
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleShowQr = (qr) => {
-    setSelectedQr(qr);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
+function QrList({
+  qrList,
+  fetchQrList,
+  errorQrList,
+  user,
+  dispatch,
+  selectedQr,
+  isModalOpen,
+  handleCloseModal,
+  handleShowQr,
+}) {
   const handleToggleQr = async (newState) => {
     try {
       const qrUpdated = await api.patch(

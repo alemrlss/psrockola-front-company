@@ -18,7 +18,8 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import GetAppIcon from "@mui/icons-material/GetApp";
 import CancelIcon from "@mui/icons-material/Cancel";
-import QrCode2Icon from '@mui/icons-material/QrCode2';
+import QrCode2Icon from "@mui/icons-material/QrCode2";
+import PaymentIcon from '@mui/icons-material/Payment';
 
 function Sidebar({ handleDrawerToggle }) {
   const [activeItem, setActiveItem] = useState(
@@ -112,7 +113,6 @@ function Sidebar({ handleDrawerToggle }) {
       name: "Rockobits",
       icon: <AttachMoneyIcon />,
       allowEmployee: true,
-
       subItems: [
         {
           id: "/rockobits/buy",
@@ -136,6 +136,13 @@ function Sidebar({ handleDrawerToggle }) {
           allowEmployee: true,
         },
       ],
+    },
+    {
+      id: "/transactions",
+      translationKey: "menu_transactions",
+      name: "Transactions",
+      icon: <PaymentIcon  />,
+      subItems: null,
     },
   ];
 
