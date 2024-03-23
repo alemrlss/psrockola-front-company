@@ -207,7 +207,6 @@ function Screens() {
   };
 
   return (
-    
     <div className="p-4">
       <h2 className="text-2xl font-bold mt-10">Create Screen</h2>
       <form className="flex items-center mt-4">
@@ -269,10 +268,8 @@ function Screens() {
       </div>
 
       <Elements stripe={stripePromise}>
-        {/* Renderiza tu componente CheckoutModal aquí si lo necesitas */}
       </Elements>
 
-      {/* Modal de Edición */}
       <Modal
         open={!!editingScreen}
         onClose={() => setEditingScreen(null)}

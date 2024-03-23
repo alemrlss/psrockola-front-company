@@ -9,11 +9,13 @@ import {
   FormControl,
   FormLabel,
   Divider,
+  Typography,
+  Box,
 } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
-import QrList from "../../components/Rockobits/QrList";
-import api from "../../api/api";
-import { updateUserBalance } from "../../features/authSlice";
+import QrList from "../../../components/Rockobits/Qr/QrList";
+import api from "../../../api/api";
+import { updateUserBalance } from "../../../features/authSlice";
 
 function Qr() {
   const user = useSelector((state) => state.auth.user);
@@ -74,8 +76,9 @@ function Qr() {
       );
       const totalReturnedAmount = response.data.data;
       if (totalReturnedAmount > 0) {
-        const newBalance = user.balance + totalReturnedAmount;
-        dispatch(updateUserBalance(newBalance));
+        const newBalance =
+          parseInt(user.balance) + parseInt(totalReturnedAmount);
+        dispatch(updateUserBalance(newBalance.toString()));
       }
 
       fetchQrList();
@@ -143,16 +146,18 @@ function Qr() {
 
   return (
     <div>
-      <div
-        style={{
-          maxWidth: "400px",
-          margin: "0 auto",
-          marginTop: "10px",
-          padding: "15px",
-          borderRadius: "8px",
-          boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-        }}
+      <Box
+        maxWidth="md"
+        mx="auto"
+        mt={2}
+        mb={4}
+        p={6}
+        borderRadius={4}
+        boxShadow={3}
       >
+        <Typography variant="h4" align="center" gutterBottom>
+          Generate Qr Rockobits
+        </Typography>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
@@ -221,7 +226,7 @@ function Qr() {
             </Button>
           </Grid>
         </Grid>
-      </div>
+      </Box>
       <div style={{ textAlign: "center", marginTop: "20px" }}>
         {successMessage && (
           <div style={{ color: "green" }}>{successMessage}</div>
@@ -230,7 +235,7 @@ function Qr() {
       </div>
       <div>
         <Divider />
-        <h2 className="text-3xl text-center">Qr Codes</h2>
+        <h2 className="text-3xl text-center mt-2">Qr Codes</h2>
         <FormControl component="fieldset">
           <RadioGroup
             row

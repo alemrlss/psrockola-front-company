@@ -182,13 +182,13 @@ function AppBarComponent({ drawerWidth, handleDrawerToggle }) {
                 color="textSecondary"
                 sx={{
                   fontStyle: "italic",
-                  fontSize: "0.8rem",
+                  fontSize: "10px",
                 }}
               >
                 {user.type === 22
-                  ? "Empleado"
+                  ? "Employee"
                   : user.type === 23
-                  ? "Empresa"
+                  ? "Company"
                   : "No Role"}
               </Typography>
             </Box>

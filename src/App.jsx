@@ -8,7 +8,6 @@ import Login from "./views/Login/Login";
 import Dashboard from "./views/Dashboard/Dashboard";
 import Layout from "./components/Layout/Layout";
 import Stripe from "./views/Stripe/Stripe";
-import Success from "./views/Memberships/Success/Success";
 import PublicRoute from "./components/Routes/PublicRoute";
 import ProtectedRoute from "./components/Routes/ProtectedRoute";
 import { AuthProvider } from "./auth/AuthProvider";
@@ -17,14 +16,15 @@ import Cancel from "./views/Memberships/Cancel/Cancel";
 import ListEmployees from "./views/Employees/List/ListEmployees";
 import CreateEmployees from "./views/Employees/Create/CreateEmployees";
 import Screens from "./views/Screens/Screens";
-import Rockobits from "./views/Rockobits/Rockobits";
 import TransferRockobitsForm from "./views/Employees/Transfer/TransferRockobitsForm";
 import LoginEmployee from "./views/LoginEmployee/LoginEmployee";
-import RockobitsSuccess from "./views/Rockobits/RockobitsSuccess";
-import RockobitsSale from "./views/Rockobits/RockobitsSale";
 import Unauthorized from "./components/Unauthorized/Unauthorized";
-import Qr from "./views/Rockobits/Qr";
 import Transactions from "./views/Transactions/Transactions";
+import RockobitsBuy from "./views/Rockobits/Buy/RockobitsBuy";
+import RockobitsSale from "./views/Rockobits/Sale/RockobitsSale";
+import RockobitsSuccess from "./views/Rockobits/Buy/RockobitsSuccess";
+import MembershipsSuccess from "./views/Memberships/Success/MembershipSuccess";
+import Qr from "./views/Rockobits/Qr/Qr";
 
 function App() {
   return (
@@ -51,9 +51,7 @@ function App() {
                   element={<RockobitsSuccess />}
                 ></Route>
                 <Route path="/rockobits/qr" element={<Qr />}></Route>
-
                 <Route path="/transactions" element={<Transactions />}></Route>
-
                 <Route path="/unauthorized" element={<Unauthorized />} />
               </Route>
             </Route>
@@ -78,8 +76,11 @@ function App() {
                   path="/subscriptions/cancel"
                   element={<Cancel />}
                 ></Route>
-                <Route path="/success" element={<Success />}></Route>
-                <Route path="/rockobits/buy" element={<Rockobits />}></Route>
+                <Route
+                  path="/subscriptions/success"
+                  element={<MembershipsSuccess />}
+                ></Route>
+                <Route path="/rockobits/buy" element={<RockobitsBuy />}></Route>
                 <Route path="/unauthorized" element={<Unauthorized />} />
 
                 <Route path="*" element={<Navigate to="/" />} />

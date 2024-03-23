@@ -3,13 +3,14 @@ import { useLocation } from "react-router-dom";
 import api from "../../../api/api";
 import { useDispatch } from "react-redux";
 import { updateUserMembership } from "../../../features/authSlice";
+import { Box, Typography } from "@mui/material";
 
-function Success() {
+function MembershipsSuccess() {
   const location = useLocation();
   const sessionId = new URLSearchParams(location.search).get("session_id");
   const [status, setStatus] = useState(null);
   const dispatch = useDispatch();
-  
+
   useEffect(() => {
     const handleSuccess = async () => {
       try {
@@ -41,24 +42,45 @@ function Success() {
       handleSuccess();
     }
   }, [sessionId]);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-green-200 p-8 rounded-lg shadow-md">
+    <Box
+      minHeight="100vh"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+    >
+      <Box
+        bgcolor="#E6FFFA"
+        p={4}
+        borderRadius={8}
+        boxShadow={3}
+        textAlign="center"
+      >
         {status && (
           <div>
-            <p className="text-2xl font-semibold mb-4">
-              El pago se encuentra en estado:{" "}
-              {status === "paid" ? "Exitoso" : "Fallido"}
-            </p>
-            <p className="text-gray-600">
-              ¡Gracias por completar tu pago! Si tienes alguna pregunta, no
-              dudes en contactarnos.
-            </p>
+            <Typography
+              variant="h4"
+              color="primary"
+              gutterBottom
+              sx={{
+                fontWeight: 600,
+              }}
+            >
+              {status === "paid"
+                ? "Successful Membership Payment"
+                : "Membership Payment Failed"}
+            </Typography>
+            <Typography variant="body1" color="textSecondary">
+              {status === "paid"
+                ? "Thank you for completing your payment! If you have any questions, please do not hesitate to contact us."
+                : "We're sorry, your payment has failed. Please try again later or contact support if the problem persists."}
+            </Typography>
           </div>
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
 
-export default Success;
+export default MembershipsSuccess;
