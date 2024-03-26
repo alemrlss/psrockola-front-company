@@ -24,6 +24,7 @@ function RockobitsSale() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
@@ -126,7 +127,7 @@ function RockobitsSale() {
       );
 
       if (response.status === 201) {
-        console.log("Transferencia exitosa:", response.data);
+        setSuccess(`${quantity} Rockobits transferred successfully to ${userData.email}`);
         setIsModalOpen(false);
         setEmail("");
         setQuantity(0);
@@ -134,8 +135,11 @@ function RockobitsSale() {
         setTransferFile(null);
 
         const newBalance = user.balance - parseInt(quantity);
-
         dispatch(updateUserBalance(newBalance));
+
+        setTimeout(() => {
+          setSuccess("");
+        }, 3000);
       } else {
         console.error("Error en la transferencia:", response.data);
       }
@@ -198,6 +202,9 @@ function RockobitsSale() {
             variant="outlined"
             margin="normal"
             InputLabelProps={{ shrink: true }}
+            inputProps={{
+              accept: "image/png, image/jpeg, image/webp, image/jpg",
+            }} // Limitar a archivos PNG y JPEG
           />
         )}
         <Button
@@ -217,8 +224,29 @@ function RockobitsSale() {
         </Button>
       </form>
       {error && (
-        <Typography variant="body2" color="error" mt={2}>
+        <Typography
+          variant="body2"
+          color="error"
+          mt={2}
+          sx={{
+            color: "#F44336",
+            fontWeight: "bold",
+          }}
+        >
           {error}
+        </Typography>
+      )}
+      {success && (
+        <Typography
+          variant="body2"
+          color="success"
+          mt={2}
+          sx={{
+            color: "#4CAF50",
+            fontWeight: "bold",
+          }}
+        >
+          {success}
         </Typography>
       )}
       <ModalSale

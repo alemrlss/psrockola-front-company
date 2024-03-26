@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import api from "../../../api/api";
 import { useSelector } from "react-redux";
 import { Typography, Button, Card, CardContent, Grid } from "@mui/material";
+import { formatNumbers } from "../../../utils/formatNumbers";
 
 function RockobitsBuy() {
   const [packages, setPackages] = useState([]);
@@ -77,7 +78,7 @@ function RockobitsBuy() {
             <Card variant="outlined">
               <CardContent>
                 <Typography variant="h5" component="div" gutterBottom>
-                  {pkg.rockobitsAmount} Rockobits
+                  {formatNumbers(pkg.rockobitsAmount)} Rockobits
                 </Typography>
                 <Typography variant="body1" gutterBottom>
                   Price: ${(pkg.price / 100).toFixed(2)} USD

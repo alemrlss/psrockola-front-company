@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import api from "../../api/api";
 import { useSelector } from "react-redux";
+import { formatNumbers } from "../../utils/formatNumbers";
 
 function Transactions() {
   const [transactions, setTransactions] = useState([]);
@@ -79,7 +80,7 @@ function Transactions() {
               <TableCell>Description</TableCell>
               <TableCell>Type</TableCell>
               <TableCell>Date</TableCell>
-              <TableCell>Voucher</TableCell>
+              <TableCell>Payment Type</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -101,19 +102,29 @@ function Transactions() {
                     fontWeight: "bold",
                   }}
                 >
-                  {transaction.amount}
+                  {formatNumbers(transaction.amount)}
                 </TableCell>
                 <TableCell>{transaction.description}</TableCell>
                 <TableCell>{transaction.type}</TableCell>
                 <TableCell>{formatDateTime(transaction.date)}</TableCell>
-                <TableCell>
+                <TableCell
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
                   {transaction.type === 2 && transaction.voucher !== null && (
                     <Button
                       onClick={() => handleOpenModal(transaction.voucher)}
                       variant="contained"
                       color="primary"
                     >
-                      Show Voucher
+                      Banking transaction{" "}
+                    </Button>
+                  )}
+                  {transaction.type === 2 && transaction.voucher === null && (
+                    <Button variant="contained" color="primary" disabled>
+                      CASH{" "}
                     </Button>
                   )}
                 </TableCell>
@@ -157,6 +168,27 @@ function Transactions() {
             alt="Voucher"
             style={{ width: "500px", height: "500px" }}
           />
+          <Box sx={{ textAlign: "center", marginTop: "20px" }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                window.open(selectedVoucher, "_blank");
+              }}
+              sx={{ marginRight: "10px" }}
+            >
+              Open in New Tab
+            </Button>
+            <Button variant="contained" color="primary">
+              <a
+                href="http://resources.path.ps.psrockola.com//files/6601cab6daa7c.webp"
+                download="voucher.webp"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                Download
+              </a>
+            </Button>
+          </Box>
         </Box>
       </Modal>
     </div>

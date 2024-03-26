@@ -13,6 +13,7 @@ import html2canvas from "html2canvas";
 import api from "../../../api/api";
 import { updateUserBalance } from "../../../features/authSlice";
 import ModalQr from "./ModalQr";
+import { formatNumbers } from "../../../utils/formatNumbers";
 
 function QrList({
   qrList,
@@ -87,7 +88,7 @@ function QrList({
     };
     const date = new Date(expiration);
     const formattedDate = date.toLocaleDateString("en-US", options);
-    return `expires ${formattedDate}`;
+    return `${formattedDate}`;
   };
 
   return (
@@ -100,6 +101,13 @@ function QrList({
             }}
           >
             <TableRow>
+              <TableCell
+                sx={{
+                  textAlign: "center",
+                }}
+              >
+                Created Date
+              </TableCell>
               <TableCell
                 sx={{
                   textAlign: "center",
@@ -155,10 +163,17 @@ function QrList({
                   <TableCell
                     sx={{
                       textAlign: "center",
+                    }}
+                  >
+                    {formatExpirationDate(qr.createdAt)}
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      textAlign: "center",
                       fontWeight: "bold",
                     }}
                   >
-                    {qr.amount}
+                    {formatNumbers(qr.amount)}
                   </TableCell>
                   <TableCell
                     sx={{

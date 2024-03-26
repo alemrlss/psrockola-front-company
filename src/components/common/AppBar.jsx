@@ -9,13 +9,13 @@ import {
 } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MenuIcon from "@mui/icons-material/Menu";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import StarIcon from "@mui/icons-material/Star";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { useSelector } from "react-redux";
 import { formatExpirationDate } from "../../utils/formatDate";
+import { formatNumbers } from "../../utils/formatNumbers";
 
 function AppBarComponent({ drawerWidth, handleDrawerToggle }) {
   const user = useSelector((state) => state.auth.user);
@@ -154,7 +154,7 @@ function AppBarComponent({ drawerWidth, handleDrawerToggle }) {
                   color: "white",
                 }}
               >
-                Wallet: {user.balance}
+                Wallet: {formatNumbers(user.balance)}
               </Typography>
             </Box>
           )}

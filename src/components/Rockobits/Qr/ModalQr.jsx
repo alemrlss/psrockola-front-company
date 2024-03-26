@@ -65,7 +65,7 @@ function ModalQr({
               <b>{selectedQr.amount} Rockobits</b>
             </p>
             <p className="text-center">
-              {formatExpirationDate(selectedQr.expiration)}
+              Expired {formatExpirationDate(selectedQr.expiration)}
             </p>
             <div className="flex justify-center space-x-5 mt-2">
               {selectedQr.state === 1 && (
