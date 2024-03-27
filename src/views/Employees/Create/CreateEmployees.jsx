@@ -144,7 +144,7 @@ function CreateEmployees() {
             disabled={loading}
           >
             {loading ? (
-              <div className="flex">
+              <div className="flex">x
                 <CircularProgress size={24} color="inherit" />
                 <span className="ml-2">Creando Empleado...</span>
               </div>

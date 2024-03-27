@@ -64,7 +64,7 @@ function RockobitsBuy() {
   return (
     <div className="container mx-auto">
       <p className="text-gray-400 ml-10 absolute text-2xl">
-        Wallet: {walletBalance} <b>Rockobits</b>
+        Wallet: {formatNumbers(parseInt(walletBalance))} <b>Rockobits</b>
       </p>
       <div className="flex justify-center items-center">
         <Typography variant="h4" align="center" gutterBottom>
