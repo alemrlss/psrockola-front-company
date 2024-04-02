@@ -25,6 +25,7 @@ import RockobitsSale from "./views/Rockobits/Sale/RockobitsSale";
 import RockobitsSuccess from "./views/Rockobits/Buy/RockobitsSuccess";
 import MembershipsSuccess from "./views/Memberships/Success/MembershipSuccess";
 import Qr from "./views/Rockobits/Qr/Qr";
+import CurrentPlays from "./views/CurrentPlays/CurrentPlays";
 
 function App() {
   return (
@@ -81,6 +82,8 @@ function App() {
                   element={<MembershipsSuccess />}
                 ></Route>
                 <Route path="/rockobits/buy" element={<RockobitsBuy />}></Route>
+                <Route path="/currentplays" element={<CurrentPlays />}></Route>
+
                 <Route path="/unauthorized" element={<Unauthorized />} />
 
                 <Route path="*" element={<Navigate to="/" />} />

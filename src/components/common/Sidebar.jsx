@@ -19,7 +19,8 @@ import { useSelector } from "react-redux";
 import GetAppIcon from "@mui/icons-material/GetApp";
 import CancelIcon from "@mui/icons-material/Cancel";
 import QrCode2Icon from "@mui/icons-material/QrCode2";
-import PaymentIcon from '@mui/icons-material/Payment';
+import PaymentIcon from "@mui/icons-material/Payment";
+import YouTubeIcon from '@mui/icons-material/YouTube';
 
 function Sidebar({ handleDrawerToggle }) {
   const [activeItem, setActiveItem] = useState(
@@ -141,8 +142,16 @@ function Sidebar({ handleDrawerToggle }) {
       id: "/transactions",
       translationKey: "menu_transactions",
       name: "Transactions",
-      icon: <PaymentIcon  />,
+      icon: <PaymentIcon />,
       subItems: null,
+    },
+    {
+      id: "/currentplays",
+      translationKey: "menu_currentplays",
+      name: "Current Plays",
+      icon: <YouTubeIcon />,
+      subItems: null,
+      allowEmployee: false,
     },
   ];
 
