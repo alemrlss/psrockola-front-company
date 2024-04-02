@@ -9,6 +9,7 @@ import {
   Modal,
   Box,
   TextField,
+  Switch,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -31,6 +32,7 @@ function ListEmployees() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [employeeToDelete, setEmployeeToDelete] = useState(null);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false); // Nuevo estado para el estado de carga
 
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
@@ -38,10 +40,13 @@ function ListEmployees() {
   useEffect(() => {
     const getEmployees = async () => {
       try {
+        setLoading(true); // Establecer loading a true al comenzar la solicitud
         const response = await api.get(`employee/employees/${user.id}`);
         setEmployees(response.data.data);
       } catch (error) {
         console.error("Error al obtener las membresías:", error);
+      } finally {
+        setLoading(false); // Establecer loading a false después de completar la solicitud
       }
     };
 
@@ -50,6 +55,7 @@ function ListEmployees() {
 
   const handleDelete = async (employeeId) => {
     try {
+      setLoading(true); // Establecer loading a true al comenzar la solicitud
       const response = await api.delete(`/employee/${employeeId}`);
       console.log("Empleado eliminado:", response.data);
 
@@ -65,6 +71,8 @@ function ListEmployees() {
       if (error.response.data.message === "EMPLOYEE_HAVE_ROCKOBITS") {
         setError("Employee has Rockobits, can't be deleted");
       }
+    } finally {
+      setLoading(false); // Establecer loading a false después de completar la solicitud
     }
   };
 
@@ -80,6 +88,7 @@ function ListEmployees() {
 
   const handleEdit = async () => {
     try {
+      setLoading(true); // Establecer loading a true al comenzar la solicitud
       // Realiza la solicitud PATCH al servidor para editar el empleado
       const response = await api.patch(`/employee/${editedEmployee.id}`, {
         name: editedEmployee.name,
@@ -112,11 +121,14 @@ function ListEmployees() {
       setEditModalOpen(false); // Cierra el modal de edición después de editar
     } catch (error) {
       console.error("Error al editar empleado:", error);
+    } finally {
+      setLoading(false); // Establecer loading a false después de completar la solicitud
     }
   };
 
   const handleClaimRB = async (employeeId) => {
     try {
+      setLoading(true); // Establecer loading a true al comenzar la solicitud
       const response = await api.get(
         `/employee/claim-rockobits-employee-to-company`,
         {
@@ -149,6 +161,8 @@ function ListEmployees() {
       );
     } catch (error) {
       console.error("Error al reclamar RB:", error);
+    } finally {
+      setLoading(false); // Establecer loading a false después de completar la solicitud
     }
   };
 
@@ -160,6 +174,33 @@ function ListEmployees() {
   const handleDeleteModalClose = () => {
     setDeleteModalOpen(false);
     setError(null);
+  };
+
+  const handlePermissionChange = async (employeeId, checked) => {
+    console.log(`Cambiar permisos para el empleado ${employeeId}: ${checked}`);
+
+    try {
+      setLoading(true); // Establecer loading a true al comenzar la solicitud
+      await api.patch(`/employee/${employeeId}/currentPlaylistPermission`, {
+        enable: checked,
+      });
+
+      setEmployees((prevEmployees) =>
+        prevEmployees.map((emp) => {
+          if (emp.id === employeeId) {
+            return {
+              ...emp,
+              enableCurrentPlaylist: checked,
+            };
+          }
+          return emp;
+        })
+      );
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false); // Establecer loading a false después de completar la solicitud
+    }
   };
 
   return (
@@ -219,6 +260,7 @@ function ListEmployees() {
                 startIcon={<EditIcon />}
                 onClick={() => handleEditModalOpen(employee)}
                 sx={{ mb: 1 }} // Agrega espacio en la parte inferior del botón
+                disabled={loading} // Deshabilitar el botón mientras se está realizando una solicitud
               >
                 Edit
               </Button>
@@ -235,6 +277,7 @@ function ListEmployees() {
                 }}
                 startIcon={<MoneyIcon />}
                 onClick={() => handleClaimRB(employee.id)}
+                disabled={loading} // Deshabilitar el botón mientras se está realizando una solicitud
               >
                 Claim RB
               </Button>{" "}
@@ -244,9 +287,20 @@ function ListEmployees() {
                 startIcon={<DeleteIcon />}
                 onClick={() => handleDeleteModalOpen(employee.id)}
                 sx={{ mb: 1 }} // Agrega espacio en la parte inferior del botón
+                disabled={loading} // Deshabilitar el botón mientras se está realizando una solicitud
               >
                 Delete
               </Button>
+              <Typography variant="subtitle1" className="font-bold">
+                Playlist current permission:
+              </Typography>
+              <Switch
+                checked={employee.enableCurrentPlaylist}
+                onChange={(event) =>
+                  handlePermissionChange(employee.id, event.target.checked)
+                }
+                disabled={loading} // Deshabilitar el switch mientras se está realizando una solicitud
+              />
             </Grid>
           </Grid>
         </Box>
@@ -381,6 +435,7 @@ function ListEmployees() {
               variant="contained"
               onClick={handleDeleteModalClose}
               sx={{ mr: 2 }}
+              disabled={loading} // Deshabilitar el botón mientras se está realizando una solicitud
             >
               Cancel
             </Button>
@@ -390,6 +445,7 @@ function ListEmployees() {
               onClick={() => {
                 handleDelete(employeeToDelete);
               }}
+              disabled={loading} // Deshabilitar el botón mientras se está realizando una solicitud
             >
               Delete
             </Button>

@@ -32,7 +32,6 @@ function Login() {
       .then((result) => {
         // Resultado exitoso del inicio de sesión
         if (result.payload && result.payload.token) {
-          console.log("first")
           goTo("/dashboard");
         }
       })

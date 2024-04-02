@@ -53,6 +53,8 @@ const authService = {
           balance: response.data.user.balance,
           wallet: response.data.user.wallet,
           membership: null,
+          enableCurrentPlaylist: response.data.user.enableCurrentPlaylist,
+          companyId: response.data.user.companyId,
         },
         token: response.data.token,
         tokenExpiration: response.data.tokenExpiration,

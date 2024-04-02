@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import {
   Button,
@@ -7,10 +7,12 @@ import {
   Typography,
   Box,
   Modal,
+  Grid,
 } from "@mui/material";
 import api from "../../api/api";
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { formatExpirationDate } from "../../utils/formatDate";
 
 function CurrentPlays() {
   const [screens, setScreens] = useState([]);
@@ -24,8 +26,15 @@ function CurrentPlays() {
 
   useEffect(() => {
     const fetchData = async () => {
+      let userId;
+      if (user.type === 22) {
+        userId = user.companyId;
+      } else {
+        userId = user.id;
+      }
+
       try {
-        const response = await api.get(`/screen/company/${user.id}`);
+        const response = await api.get(`/screen/company/${userId}`);
         setScreens(response.data.data);
       } catch (error) {
         console.error("Error fetching screens:", error);
@@ -154,14 +163,14 @@ function CurrentPlays() {
           </div>
           {currentVideos[currentScreen.id] && (
             <div>
-              <div className="flex space-x-4">
+              <div className="flex space-x-4 mb-4">
                 <Button
                   variant="contained"
                   color="primary"
                   onClick={handleSelectAllChange}
                   className="mb-2"
                 >
-                  {selectAll ? "Deselect All" : "Select All"}{" "}
+                  {selectAll ? `Deselect All` : `Select All `}{" "}
                 </Button>
                 <Button
                   variant="contained"
@@ -171,14 +180,29 @@ function CurrentPlays() {
                 >
                   Ban Selected
                 </Button>
+
+                <Typography
+                  sx={{
+                    display: "flex",
+                    justifyContent: "end",
+                    alignItems: "end",
+                    margin: "auto",
+                    fontWeight: "bold",
+                    fontSize: "1.2rem",
+                  }}
+                >
+                  {selectedVideos.length} of{" "}
+                  {currentVideos[currentScreen.id].length} selected
+                </Typography>
               </div>
-              <ul className="list-none p-6">
+              <Grid container spacing={2}>
                 {currentVideos[currentScreen.id].map((video) => (
-                  <li key={video.id} className="mb-4">
+                  <Grid item xs={12} key={video.id}>
                     <Box
                       className="p-4 border border-gray-300 rounded"
                       display="flex"
                       alignItems="center"
+                      flexDirection={{ xs: "column", sm: "row" }}
                     >
                       <Checkbox
                         checked={selectAll || selectedVideos.includes(video)}
@@ -190,22 +214,23 @@ function CurrentPlays() {
                         alt="Thumbnail"
                         className="mb-1"
                         style={{
-                          width: 100,
-                          height: 100,
+                          width: "100px",
+                          height: "100px",
                           objectFit: "cover",
                         }}
                       />
                       <Box
                         sx={{
                           display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          mx: 2,
+                          flexDirection: "column",
+                          flex: 1,
+                          marginLeft: { xs: 0, sm: 2 }, // Agregamos margen a la izquierda solo en dispositivos de escritorio
+                          marginTop: { xs: 2, sm: 0 }, // Agregamos margen superior solo en dispositivos móviles
                         }}
                       >
                         <Typography variant="h6">{video.title}</Typography>
                         <Typography variant="body2">
-                          {video.createdAt}
+                          {formatExpirationDate(video.createdAt)}
                         </Typography>
                         <Typography variant="body2">
                           {video.duration}
@@ -213,19 +238,20 @@ function CurrentPlays() {
                         <Typography variant="body2">
                           {video.channelTitle}
                         </Typography>
-
-                        <Button
-                          variant="contained"
-                          color="error"
-                          onClick={() => handleBanClick(video)}
-                        >
-                          Ban
-                        </Button>
                       </Box>
+                      <Button
+                        variant="contained"
+                        color="error"
+                        onClick={() => handleBanClick(video)}
+                        sx={{ mt: { xs: 2, sm: 0 } }} // Agregamos margen superior solo en dispositivos móviles
+                      >
+                        Ban
+                      </Button>
                     </Box>
-                  </li>
+                  </Grid>
                 ))}
-              </ul>
+              </Grid>
+              ;
             </div>
           )}
         </div>

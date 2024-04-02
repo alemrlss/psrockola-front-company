@@ -20,7 +20,7 @@ import GetAppIcon from "@mui/icons-material/GetApp";
 import CancelIcon from "@mui/icons-material/Cancel";
 import QrCode2Icon from "@mui/icons-material/QrCode2";
 import PaymentIcon from "@mui/icons-material/Payment";
-import YouTubeIcon from '@mui/icons-material/YouTube';
+import YouTubeIcon from "@mui/icons-material/YouTube";
 
 function Sidebar({ handleDrawerToggle }) {
   const [activeItem, setActiveItem] = useState(
@@ -151,7 +151,8 @@ function Sidebar({ handleDrawerToggle }) {
       name: "Current Plays",
       icon: <YouTubeIcon />,
       subItems: null,
-      allowEmployee: false,
+      allowEmployee: true,
+      enableCurrentPlaylist: user.enableCurrentPlaylist === true ? true : false,
     },
   ];
 
@@ -175,13 +176,25 @@ function Sidebar({ handleDrawerToggle }) {
       <List>
         {menuItems
           .filter((item) => {
-            if (user.type === 22) {
-              return item.allowEmployee !== false;
+
+            //Si 
+            if (item.allowEmployee === false && user.type === 22) {
+              return false;
             }
+
+            // Si el usuario no es una empresa y el acceso no está permitido para empleados, redirige a Unauthorized
+            if (
+              item.enableCurrentPlaylist === false &&
+              user.enableCurrentPlaylist === false
+            ) {
+              return false;
+            }
+            
             return true;
           })
-          .map((item, index) =>
-            item.subItems ? (
+          .map((item, index) => {
+            // Renderizar el elemento normalmente si no se cumple la condición anterior
+            return item.subItems ? (
               <SidebarItemCollapse
                 item={item}
                 key={index}
@@ -197,9 +210,10 @@ function Sidebar({ handleDrawerToggle }) {
                 handleItemClick={handleItemClick}
                 activeItem={activeItem}
               />
-            )
-          )}
+            );
+          })}
       </List>
+
       <div className="mt-auto mb-5">
         <SidebarItemLogout
           item={{
