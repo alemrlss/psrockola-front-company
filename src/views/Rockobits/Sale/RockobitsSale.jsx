@@ -18,13 +18,14 @@ import {
 
 function RockobitsSale() {
   const [email, setEmail] = useState("");
-  const [quantity, setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState();
   const [paymentMethod, setPaymentMethod] = useState("");
   const [transferFile, setTransferFile] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [errorModal, setErrorModal] = useState("");
 
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
@@ -94,6 +95,7 @@ function RockobitsSale() {
     setQuantity(0);
     setPaymentMethod("");
     setTransferFile(null);
+    setErrorModal("");
   };
 
   const transferRockobits = async () => {
@@ -127,12 +129,15 @@ function RockobitsSale() {
       );
 
       if (response.status === 201) {
-        setSuccess(`${quantity} Rockobits transferred successfully to ${userData.email}`);
+        setSuccess(
+          `${quantity} Rockobits transferred successfully to ${userData.email}`
+        );
         setIsModalOpen(false);
         setEmail("");
         setQuantity(0);
         setPaymentMethod("");
         setTransferFile(null);
+        setErrorModal("");
 
         const newBalance = user.balance - parseInt(quantity);
         dispatch(updateUserBalance(newBalance));
@@ -140,11 +145,11 @@ function RockobitsSale() {
         setTimeout(() => {
           setSuccess("");
         }, 3000);
-      } else {
-        console.error("Error en la transferencia:", response.data);
       }
     } catch (error) {
-      console.error("Error al transferir Rockobits:", error);
+      if (error.response.data.message === "INSUFFICIENT_FUNDS") {
+        setErrorModal("Insufficient funds");
+      }
     }
   };
 
@@ -255,6 +260,7 @@ function RockobitsSale() {
         userData={userData}
         quantity={quantity}
         transferRockobits={transferRockobits}
+        errorModal={errorModal}
       />
     </Box>
   );

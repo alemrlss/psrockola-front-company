@@ -1,10 +1,12 @@
 /* eslint-disable react/prop-types */
+import React from "react";
 import {
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   Button,
+  Box,
   Typography,
 } from "@mui/material";
 
@@ -14,6 +16,7 @@ function ModalSale({
   userData,
   quantity,
   transferRockobits,
+  errorModal,
 }) {
   return (
     <Dialog open={isModalOpen} onClose={handleCloseModal}>
@@ -28,13 +31,13 @@ function ModalSale({
         <Typography variant="body1" gutterBottom>
           <strong>Transaction amount:</strong> {quantity}
         </Typography>
-        {/* Agregar más información del cliente aquí si es necesario */}
       </DialogContent>
       <DialogActions
         sx={{
           display: "flex",
           justifyContent: "center",
-          padding: "16px",
+          gap: "10px",
+          pt: "16px",
         }}
       >
         <Button
@@ -66,6 +69,38 @@ function ModalSale({
           Cancel
         </Button>
       </DialogActions>
+
+      {errorModal && (
+        <DialogContent sx={{ textAlign: "center" }}>
+          <Typography
+            variant="body2"
+            color="error"
+            sx={{
+              color: "#F44336",
+              fontWeight: "bold",
+              mb: 1,
+            }}
+          >
+            {errorModal}
+          </Typography>
+          <Button
+            onClick={() => {
+              handleCloseModal();
+              window.location.href = "/rockobits/buy";
+            }}
+            variant="contained"
+            sx={{
+              bgcolor: "#06DA30",
+              color: "white",
+              "&:hover": {
+                bgcolor: "#06DA30",
+              },
+            }}
+          >
+            Buy Rockobits
+          </Button>
+        </DialogContent>
+      )}
     </Dialog>
   );
 }

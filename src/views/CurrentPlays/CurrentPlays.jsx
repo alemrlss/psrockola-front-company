@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import {
   Button,
@@ -13,6 +13,7 @@ import api from "../../api/api";
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { formatExpirationDate } from "../../utils/formatDate";
+import msToTime from "../../utils/formatMsToTime";
 
 function CurrentPlays() {
   const [screens, setScreens] = useState([]);
@@ -61,12 +62,18 @@ function CurrentPlays() {
   const handleBackButtonClick = () => {
     setCurrentScreen(null);
   };
-
   const handleCheckboxChange = (event, video) => {
+    console.log(event.target.checked);
     if (event.target.checked) {
       setSelectedVideos([...selectedVideos, video]);
     } else {
-      setSelectedVideos(selectedVideos.filter((id) => id !== video));
+      setSelectedVideos(selectedVideos.filter((v) => v.id !== video.id));
+    }
+
+    if (selectedVideos.length + 1 === currentVideos[currentScreen.id].length) {
+      setSelectAll(true);
+    } else {
+      setSelectAll(false);
     }
   };
 
@@ -205,7 +212,7 @@ function CurrentPlays() {
                       flexDirection={{ xs: "column", sm: "row" }}
                     >
                       <Checkbox
-                        checked={selectAll || selectedVideos.includes(video)}
+                        checked={selectedVideos.includes(video)}
                         onChange={(e) => handleCheckboxChange(e, video)}
                       />
 
@@ -233,7 +240,7 @@ function CurrentPlays() {
                           {formatExpirationDate(video.createdAt)}
                         </Typography>
                         <Typography variant="body2">
-                          {video.duration}
+                          {msToTime(video.duration)}
                         </Typography>
                         <Typography variant="body2">
                           {video.channelTitle}
@@ -251,7 +258,6 @@ function CurrentPlays() {
                   </Grid>
                 ))}
               </Grid>
-              ;
             </div>
           )}
         </div>

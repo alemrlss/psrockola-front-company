@@ -15,6 +15,7 @@ const stripePromise = loadStripe(
 
 function Screens() {
   const [screenName, setScreenName] = useState("");
+  const [password, setPassword] = useState("");
   const [sessionId, setSessionId] = useState(null);
   const [openCheckout, setOpenCheckout] = useState(false);
   const [userScreens, setUserScreens] = useState([]);
@@ -25,6 +26,7 @@ function Screens() {
   const [editedPassword, setEditedPassword] = useState("");
   const [editError, setEditError] = useState(null);
 
+  const [errorEmpty, setErrorEmpty] = useState("");
   const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
@@ -47,11 +49,18 @@ function Screens() {
   }, [openCheckout, sessionId]);
 
   const handleCreateScreen = async () => {
+    setEditError(null);
+
+    if (!screenName || !password) {
+      setErrorEmpty("Please fill in all fields");
+      return;
+    }
+
     try {
       const response = await api.post("stripe/create-checkout-session-screen", {
         screenName,
         userId: user.id,
-        screenNameTwo: "Screen xD",
+        password,
       });
 
       // Extrae el sessionId de la respuesta
@@ -208,23 +217,37 @@ function Screens() {
 
   return (
     <div className="p-4">
-      <h2 className="text-2xl font-bold mt-10">Create Screen</h2>
-      <form className="flex items-center mt-4">
-        <input
-          type="text"
-          placeholder="Name screen"
-          value={screenName}
-          onChange={(e) => setScreenName(e.target.value)}
-          className="border p-2 mb-2"
-        />
-        <button
-          type="button"
-          onClick={handleCreateScreen}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          Create
-        </button>
-      </form>
+      <div>
+        <h2 className="text-2xl font-bold mt-10">Create Screen</h2>
+        <div className="flex flex-col gap-4 mt-4">
+          <input
+            type="text"
+            placeholder="Name screen"
+            value={screenName}
+            onChange={(e) => setScreenName(e.target.value)}
+            className="border rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            type="text"
+            placeholder="Password Screen"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="border rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            type="button"
+            className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            onClick={handleCreateScreen}
+          >
+            Create
+          </button>
+        </div>
+        {error && <p className="text-red-500 mt-2">{error}</p>}
+        {errorEmpty && (
+          <p className="text-red-500 mt-2 font-bold">{errorEmpty}</p>
+        )}
+      </div>
+
       {error && <p className="text-red-500 mt-2">{error}</p>}
 
       <div>
@@ -267,8 +290,7 @@ function Screens() {
         </ul>
       </div>
 
-      <Elements stripe={stripePromise}>
-      </Elements>
+      <Elements stripe={stripePromise}></Elements>
 
       <Modal
         open={!!editingScreen}
