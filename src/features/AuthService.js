@@ -5,31 +5,43 @@ import api from "../api/api";
 const authService = {
   async login(credentials) {
     try {
-      // Realiza una solicitud al backend para iniciar sesión
       const response = await api.post("auth/login/companies", {
         email: credentials.email,
         password: credentials.password,
       });
-      if (response.status !== 201) {
-        throw new Error("Credenciales inválidas");
-      }
 
-      return {
-        user: {
-          id: response.data.user.id,
-          name: response.data.user.name,
-          email: response.data.user.email,
-          type: response.data.user.type,
-          balance: response.data.user.balance,
-          wallet: response.data.user.wallet,
-          membership: response.data.user.membership,
-        },
-        token: response.data.token,
-        tokenExpiration: response.data.tokenExpiration,
-      };
+      if (response.status === 201) {
+        return {
+          user: {
+            id: response.data.user.id,
+            name: response.data.user.name,
+            email: response.data.user.email,
+            type: response.data.user.type,
+            balance: response.data.user.balance,
+            wallet: response.data.user.wallet,
+            membership: response.data.user.membership,
+          },
+          token: response.data.token,
+          tokenExpiration: response.data.tokenExpiration,
+        };
+      } else {
+        throw new Error("Error during login");
+      }
     } catch (error) {
-      console.log(error);
-      throw error;
+      console.log(error.response.data);
+      if (error.response && error.response.data) {
+        if (error.response.data.message === "PASSWORD_INCORRECT") {
+          throw new Error("Password incorrect");
+        } else if (error.response.data.message === "USER_NOT_FOUND") {
+          throw new Error("Company not found");
+        } else if (error.response.data.message === "USER_IS_NOT_ACTIVE") {
+          throw new Error("Company not active");
+        } else {
+          throw new Error("Connection error, try again later");
+        }
+      } else {
+        throw new Error("Connection error, try again later");
+      }
     }
   },
   async loginEmployee(credentials) {
@@ -40,31 +52,40 @@ const authService = {
         password: credentials.password,
       });
 
-      if (response.status !== 201) {
-        throw new Error("Credenciales inválidas");
+      if (response.status === 201) {
+        return {
+          user: {
+            id: response.data.user.id,
+            name: response.data.user.name,
+            email: response.data.user.email,
+            type: response.data.user.type,
+            balance: response.data.user.balance,
+            wallet: response.data.user.wallet,
+            membership: null,
+            enableCurrentPlaylist: response.data.user.enableCurrentPlaylist,
+            companyId: response.data.user.companyId,
+          },
+          token: response.data.token,
+          tokenExpiration: response.data.tokenExpiration,
+        };
+      } else {
+        throw new Error("Error during login");
       }
-
-      return {
-        user: {
-          id: response.data.user.id,
-          name: response.data.user.name,
-          email: response.data.user.email,
-          type: response.data.user.type,
-          balance: response.data.user.balance,
-          wallet: response.data.user.wallet,
-          membership: null,
-          enableCurrentPlaylist: response.data.user.enableCurrentPlaylist,
-          companyId: response.data.user.companyId,
-        },
-        token: response.data.token,
-        tokenExpiration: response.data.tokenExpiration,
-      };
     } catch (error) {
-      throw error;
+      console.log(error.response.data);
+      if (error.response && error.response.data) {
+        if (error.response.data.message === "PASSWORD_INCORRECT") {
+          throw new Error("Password incorrect");
+        } else if (error.response.data.message === "EMPLOYEE_NOT_FOUND") {
+          throw new Error("Employee not found");
+        } else {
+          throw new Error("Connection error, try again later");
+        }
+      } else {
+        throw new Error("Connection error, try again later");
+      }
     }
   },
-
-  // Otros métodos relacionados con la autenticación, como verificar la sesión, renovar el token, etc.
 };
 
 export default authService;

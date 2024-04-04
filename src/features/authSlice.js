@@ -55,6 +55,9 @@ const authSlice = createSlice({
     error: null,
   },
   reducers: {
+    clearError(state) {
+      state.error = null; // Funcion para limpiar el Error del Auth.
+    },
     setUser: (state, action) => {
       state.user = action.payload;
     },
@@ -127,5 +130,6 @@ export const {
   logout,
   updateUserBalance,
   updateUserMembership,
+  clearError,
 } = authSlice.actions;
 export default authSlice.reducer;
