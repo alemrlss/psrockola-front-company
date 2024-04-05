@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -6,6 +6,8 @@ import {
   Box,
   Typography,
   Avatar,
+  Modal,
+  Button,
 } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -16,9 +18,19 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { useSelector } from "react-redux";
 import { formatExpirationDate } from "../../utils/formatDate";
 import { formatNumbers } from "../../utils/formatNumbers";
+import ModalEditUser from "./ModalEditUser";
 
 function AppBarComponent({ drawerWidth, handleDrawerToggle }) {
   const user = useSelector((state) => state.auth.user);
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
 
   const getMembershipType = (type) => {
     switch (type) {
@@ -168,7 +180,13 @@ function AppBarComponent({ drawerWidth, handleDrawerToggle }) {
               <NotificationsIcon />
             </IconButton>
 
-            <Box sx={{ mr: 1, textAlign: "right" }}>
+            <Box
+              sx={{
+                mr: 1,
+                textAlign: "right",
+                cursor: "pointer",
+              }}
+            >
               <Typography
                 variant="caption"
                 component="div"
@@ -196,11 +214,25 @@ function AppBarComponent({ drawerWidth, handleDrawerToggle }) {
             <Avatar
               alt="Andy Avatar"
               src="/path/to/avatar.jpg"
-              sx={{ width: 32, height: 32 }}
+              sx={{ width: 32, height: 32, cursor: "pointer" }}
+              onClick={handleOpenModal}
             />
           </Box>
         </Box>
       </Toolbar>
+
+      {/* Modal para las configuraciones del usuario */}
+      <ModalEditUser
+        openModal={openModal}
+        handleCloseModal={handleCloseModal}
+        user={{
+          name: user.name,
+          email: user.email,
+          type: user.type,
+          membership: user.membership,
+          balance: user.balance,
+        }}
+      />
     </AppBar>
   );
 }

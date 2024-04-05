@@ -12,8 +12,9 @@ import {
 import api from "../../api/api";
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { formatExpirationDate } from "../../utils/formatDate";
 import msToTime from "../../utils/formatMsToTime";
+import Stack from "@mui/material/Stack";
+import Avatar from "@mui/material/Avatar";
 
 function CurrentPlays() {
   const [screens, setScreens] = useState([]);
@@ -23,6 +24,8 @@ function CurrentPlays() {
   const [selectAll, setSelectAll] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [videoToBan, setVideoToBan] = useState(null);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [isBanning, setIsBanning] = useState(false); // Nuevo estado para el loader de "baneando"
   const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
@@ -62,6 +65,7 @@ function CurrentPlays() {
   const handleBackButtonClick = () => {
     setCurrentScreen(null);
   };
+
   const handleCheckboxChange = (event, video) => {
     console.log(event.target.checked);
     if (event.target.checked) {
@@ -83,6 +87,7 @@ function CurrentPlays() {
   };
 
   const confirmBanVideo = async () => {
+    setIsBanning(true); // Activar el estado de "baneando"
     try {
       await api.patch(`play-list-company/${videoToBan.id}`, {
         state: 3,
@@ -100,13 +105,23 @@ function CurrentPlays() {
       setIsModalOpen(false);
     } catch (error) {
       console.error("Error banning video:", error);
+    } finally {
+      setIsBanning(false); // Desactivar el estado de "baneando" cuando termina
     }
   };
+
   const handleBanSelected = async () => {
     if (selectedVideos.length === 0) {
       alert("Please select at least one video to ban");
+      return;
     }
 
+    // Abrir el modal de confirmación
+    setShowConfirmationModal(true);
+  };
+
+  const confirmBanSelected = async () => {
+    setIsBanning(true); // Activar el estado de "baneando"
     try {
       // Baneando los videos seleccionados
       await Promise.all(
@@ -134,8 +149,13 @@ function CurrentPlays() {
       // Limpiando la lista de videos seleccionados y desactivando la selección de todos
       setSelectedVideos([]);
       setSelectAll(false);
+
+      // Cerrar el modal de confirmación
+      setShowConfirmationModal(false);
     } catch (error) {
       console.error("Error banning videos:", error);
+    } finally {
+      setIsBanning(false); // Desactivar el estado de "baneando" cuando termina
     }
   };
 
@@ -147,6 +167,43 @@ function CurrentPlays() {
       setSelectedVideos([]);
     }
   };
+  function formatDateTime(isoDate) {
+    const date = new Date(isoDate);
+    const day = date.getDate();
+    const monthNames = [
+      "ene",
+      "feb",
+      "mar",
+      "abr",
+      "may",
+      "jun",
+      "jul",
+      "ago",
+      "sep",
+      "oct",
+      "nov",
+      "dic",
+    ];
+    const monthName = monthNames[date.getMonth()];
+    const year = date.getFullYear();
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const seconds = date.getSeconds();
+
+    // Formatear los componentes de la fecha para que tengan dos dígitos
+    const formattedDay = String(day).padStart(2, "0");
+    const formattedHours = String(hours).padStart(2, "0");
+    const formattedMinutes = String(minutes).padStart(2, "0");
+    const formattedSeconds = String(seconds).padStart(2, "0");
+
+    // Devolver la fecha formateada
+    return `${formattedDay} ${monthName} ${year} - ${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+  }
+
+  // Ejemplo de uso
+  const isoDate = "2024-04-05T02:42:12.036Z";
+  const formattedDate = formatDateTime(isoDate);
+  console.log(formattedDate); // Salida: "05 abr 2024 - 02:42:12"
 
   return (
     <Container maxWidth="lg">
@@ -177,7 +234,7 @@ function CurrentPlays() {
                   onClick={handleSelectAllChange}
                   className="mb-2"
                 >
-                  {selectAll ? `Deselect All` : `Select All `}{" "}
+                  {selectAll ? `Deselect All` : `Select All `}
                 </Button>
                 <Button
                   variant="contained"
@@ -235,9 +292,31 @@ function CurrentPlays() {
                           marginTop: { xs: 2, sm: 0 }, // Agregamos margen superior solo en dispositivos móviles
                         }}
                       >
-                        <Typography variant="h6">{video.title}</Typography>
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <Avatar
+                            src={
+                              video.typeModeplay === 1
+                                ? "/modeplays/vip.png"
+                                : video.typeModeplay === 2
+                                ? "/modeplays/normal.png"
+                                : "/modeplays/platinum.png"
+                            }
+                            alt="Emblem"
+                            variant="rounded"
+                            className="mb-1 mr-5"
+                          />
+                          <Typography
+                            variant="h6"
+                            sx={{
+                              fontWeight: "bold",
+                              alignSelf: "center",
+                            }}
+                          >
+                            {video.title}
+                          </Typography>
+                        </div>
                         <Typography variant="body2">
-                          {formatExpirationDate(video.createdAt)}
+                          {formatDateTime(video.createdAt)}
                         </Typography>
                         <Typography variant="body2">
                           {msToTime(video.duration)}
@@ -302,37 +381,145 @@ function CurrentPlays() {
             p: 4,
           }}
         >
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Are you sure you want to ban this video?
-          </Typography>
-          {videoToBan && (
-            <div>
-              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                Title: {videoToBan.title}
-              </Typography>
-              <Typography sx={{ mt: 1 }}>
-                Created At: {videoToBan.createdAt}
-              </Typography>
-              <Typography sx={{ mt: 1 }}>
-                Duration: {videoToBan.duration}
-              </Typography>
-              <Typography sx={{ mt: 1 }}>
-                Channel Title: {videoToBan.channelTitle}
-              </Typography>
-            </div>
+          {isBanning ? null : (
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Are you sure you want to ban this video?
+            </Typography>
           )}
-          <Button onClick={confirmBanVideo}>Yes, I'm sure</Button>
-          <Button
-            onClick={() => {
-              setIsModalOpen(false);
-              setVideoToBan(null);
-            }}
-            sx={{
-              color: "red",
-            }}
-          >
-            No, cancel
-          </Button>
+          {isBanning ? ( // Si se está realizando la acción de "baneo", muestra un loader
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+              <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+                <Typography
+                  variant="body"
+                  sx={{ fontWeight: "bold", fontSize: "30px" }}
+                >
+                  Banning video...
+                </Typography>
+              </Box>{" "}
+            </Box>
+          ) : (
+            <>
+              {videoToBan && (
+                <div>
+                  <Typography
+                    id="modal-modal-description"
+                    sx={{ mt: 2, fontWeight: "bold" }}
+                  >
+                    {videoToBan.title}
+                  </Typography>
+                  <Typography sx={{ mt: 1 }}>
+                    Created At: {formatDateTime(videoToBan.createdAt)}
+                  </Typography>
+                  <Typography sx={{ mt: 1 }}>
+                    Duration: {msToTime(videoToBan.duration)}
+                  </Typography>
+                  <Typography sx={{ mt: 1 }}>
+                    Channel Title: {videoToBan.channelTitle}
+                  </Typography>
+                </div>
+              )}
+              <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={confirmBanVideo}
+                  fullWidth
+                >
+                  Yes, I'm sure
+                </Button>
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={() => {
+                    setIsModalOpen(false);
+                    setVideoToBan(null);
+                  }}
+                  fullWidth
+                >
+                  No, cancel
+                </Button>
+              </Stack>
+            </>
+          )}
+        </Box>
+      </Modal>
+
+      {/* Modal de confirmación */}
+      <Modal
+        open={showConfirmationModal}
+        onClose={() => setShowConfirmationModal(false)}
+        aria-labelledby="confirmation-modal-title"
+        aria-describedby="confirmation-modal-description"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            border: "2px solid #000",
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          {isBanning ? null : (
+            <Typography
+              id="confirmation-modal-title"
+              variant="h6"
+              component="h2"
+            >
+              Are you sure you want to ban the selected videos?
+            </Typography>
+          )}
+          <div style={{ maxHeight: "300px", overflowY: "auto" }}>
+            {" "}
+            {isBanning ? (
+              <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+                <Typography
+                  variant="body"
+                  sx={{ fontWeight: "bold", fontSize: "30px" }}
+                >
+                  Banning videos...
+                </Typography>
+              </Box>
+            ) : (
+              selectedVideos.map((video) => (
+                <div
+                  key={video.id}
+                  className="bg-gray-200 mt-2 p-2 rounded-lg overflow-y-auto"
+                >
+                  <Typography variant="h6">{video.title}</Typography>
+                  <Typography>
+                    Created At: {formatDateTime(video.createdAt)}
+                  </Typography>
+                  <Typography>Duration: {msToTime(video.duration)}</Typography>
+                  <Typography>Channel Title: {video.channelTitle}</Typography>
+                </div>
+              ))
+            )}
+          </div>
+          {isBanning ? null : (
+            <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={confirmBanSelected}
+                fullWidth
+              >
+                Yes, I'm sure
+              </Button>
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => setShowConfirmationModal(false)}
+                fullWidth
+              >
+                Cancel
+              </Button>
+            </Stack>
+          )}
         </Box>
       </Modal>
     </Container>
