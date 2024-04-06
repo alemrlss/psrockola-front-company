@@ -8,6 +8,7 @@ import {
   Box,
   Modal,
   Grid,
+  Divider,
 } from "@mui/material";
 import api from "../../api/api";
 import IconButton from "@mui/material/IconButton";
@@ -15,6 +16,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import msToTime from "../../utils/formatMsToTime";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 function CurrentPlays() {
   const [screens, setScreens] = useState([]);
@@ -25,7 +27,7 @@ function CurrentPlays() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [videoToBan, setVideoToBan] = useState(null);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-  const [isBanning, setIsBanning] = useState(false); // Nuevo estado para el loader de "baneando"
+  const [isBanning, setIsBanning] = useState(false);
   const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
@@ -57,6 +59,8 @@ function CurrentPlays() {
     try {
       const response = await api.get(`play-list-company/${screen.code}`);
       setCurrentVideos({ [screen.id]: response.data.data.videos });
+      setSelectAll(false);
+      setSelectedVideos([]);
     } catch (error) {
       console.error("Error fetching current playlist:", error);
     }
@@ -86,7 +90,7 @@ function CurrentPlays() {
     setIsModalOpen(true);
   };
 
-  const confirmBanVideo = async () => {
+  const confirmBanVideo = async (screen) => {
     setIsBanning(true); // Activar el estado de "baneando"
     try {
       await api.patch(`play-list-company/${videoToBan.id}`, {
@@ -104,6 +108,9 @@ function CurrentPlays() {
       });
       setIsModalOpen(false);
     } catch (error) {
+      setIsModalOpen(false);
+      currentPlayListData(currentScreen);
+
       console.error("Error banning video:", error);
     } finally {
       setIsBanning(false); // Desactivar el estado de "baneando" cuando termina
@@ -126,11 +133,28 @@ function CurrentPlays() {
       // Baneando los videos seleccionados
       await Promise.all(
         selectedVideos.map(async (video) => {
-          await api.patch(`play-list-company/${video.id}`, {
-            state: 3,
-            idCompany: video.id_company,
-            codeScreen: video.codeScreen,
-          });
+          try {
+            // Borrar el video
+            await api.patch(`play-list-company/${video.id}`, {
+              state: 3,
+              idCompany: video.id_company,
+              codeScreen: video.codeScreen,
+            });
+          } catch (error) {
+            // Manejar el error si el video ya está completado
+            if (
+              error.response &&
+              error.response.status === 400 &&
+              error.response.data.message === "VIDEO_ALREADY_FINISHED"
+            ) {
+              console.log(
+                `El video ${video.id} ya está completado, no se puede borrar.`
+              );
+              return; // Salir del bucle y no hacer nada con este video
+            }
+            // Si el error no es debido a que el video está completado, imprimir el error
+            console.error("Error banning video:", error);
+          }
         })
       );
 
@@ -196,14 +220,8 @@ function CurrentPlays() {
     const formattedMinutes = String(minutes).padStart(2, "0");
     const formattedSeconds = String(seconds).padStart(2, "0");
 
-    // Devolver la fecha formateada
     return `${formattedDay} ${monthName} ${year} - ${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
   }
-
-  // Ejemplo de uso
-  const isoDate = "2024-04-05T02:42:12.036Z";
-  const formattedDate = formatDateTime(isoDate);
-  console.log(formattedDate); // Salida: "05 abr 2024 - 02:42:12"
 
   return (
     <Container maxWidth="lg">
@@ -212,7 +230,7 @@ function CurrentPlays() {
       </Typography>
       {currentScreen ? (
         <div>
-          <div className="flex space-x-2 mb-6">
+          <div className="flex space-x-2 mb-6 items-center">
             <IconButton
               onClick={handleBackButtonClick}
               sx={{
@@ -224,6 +242,23 @@ function CurrentPlays() {
             <Typography variant="h3" className="text-xl font-semibold mb-2">
               {currentScreen.code}
             </Typography>
+            <IconButton
+              onClick={() => {
+                currentPlayListData(currentScreen);
+              }}
+              sx={{
+                color: "#ACA6A6",
+                width: "50px",
+                height: "50px",
+              }}
+            >
+              <RefreshIcon
+                sx={{
+                  width: "30px",
+                  height: "30px",
+                }}
+              />
+            </IconButton>
           </div>
           {currentVideos[currentScreen.id] && (
             <div>
@@ -329,7 +364,7 @@ function CurrentPlays() {
                         variant="contained"
                         color="error"
                         onClick={() => handleBanClick(video)}
-                        sx={{ mt: { xs: 2, sm: 0 } }} // Agregamos margen superior solo en dispositivos móviles
+                        sx={{ mt: { xs: 2, sm: 0 } }}
                       >
                         Ban
                       </Button>
@@ -342,15 +377,28 @@ function CurrentPlays() {
         </div>
       ) : (
         <div>
-          <Typography variant="h4" className="text-xl font-semibold mb-2">
+          <Typography
+            variant="h3"
+            sx={{
+              fontWeight: "bold",
+              my: 1,
+            }}
+          >
             Screens
           </Typography>
+          <Divider
+            sx={{
+              my: 2,
+            }}
+          />
           {screens.map((screen) => (
             <div
               key={screen.id}
               className="mb-4 p-2 border border-gray-300 flex justify-between items-center"
             >
-              <Typography variant="h6">{screen.name}</Typography>
+              <Typography variant="h6">
+                {screen.code} - {screen.name}{" "}
+              </Typography>
               <Button
                 variant="contained"
                 color="primary"

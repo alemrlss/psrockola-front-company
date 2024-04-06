@@ -6,8 +6,6 @@ import {
   Box,
   Typography,
   Avatar,
-  Modal,
-  Button,
 } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -225,13 +223,7 @@ function AppBarComponent({ drawerWidth, handleDrawerToggle }) {
       <ModalEditUser
         openModal={openModal}
         handleCloseModal={handleCloseModal}
-        user={{
-          name: user.name,
-          email: user.email,
-          type: user.type,
-          membership: user.membership,
-          balance: user.balance,
-        }}
+        user={user}
       />
     </AppBar>
   );
