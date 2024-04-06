@@ -6,7 +6,7 @@ import axios from "axios";
 
 
 const apiFormData = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: "https://psrockola-backend-develop.onrender.com/api",
   headers: {
     "Content-Type": "multipart/form-data",
   },
