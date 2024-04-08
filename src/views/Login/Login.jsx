@@ -146,6 +146,7 @@ function Login() {
               </Typography>
             )}
           </form>
+          <Link to={"/forgot-password"}> Forgot Password? </Link>
         </Grid>
       </Grid>
       <Tooltip title="Go to employee panel" arrow>

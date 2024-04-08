@@ -72,6 +72,9 @@ const authSlice = createSlice({
       state.token = null;
       state.tokenExpiration = null;
       state.isAuthenticated = false;
+      localStorage.removeItem("token");
+      localStorage.removeItem("tokenExpiration");
+      localStorage.removeItem("user");
     },
     updateUserBalance: (state, action) => {
       if (state.user) {
