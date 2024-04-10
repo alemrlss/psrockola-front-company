@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -23,7 +23,11 @@ function SidebarItemCollapse({
   const handleClick = () => {
     setOpen(!open);
   };
-
+  useEffect(() => {
+    if (item.subItems.some((subItem) => subItem.id === activeItem)) {
+      setOpen(true);
+    }
+  }, [activeItem, item]);
   return (
     <>
       <ListItemButton

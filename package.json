@@ -19,14 +19,17 @@
     "@stripe/stripe-js": "^2.3.0",
     "axios": "^1.6.5",
     "html2canvas": "^1.4.1",
+    "i18next": "^23.11.0",
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
     "qrcode.react": "^3.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-i18next": "^14.1.0",
     "react-qrcode": "^0.3.6",
     "react-redux": "^9.1.0",
-    "react-router-dom": "^6.21.1"
+    "react-router-dom": "^6.21.1",
+    "react-world-flags": "^1.6.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",

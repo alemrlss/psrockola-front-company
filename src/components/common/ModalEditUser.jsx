@@ -1,8 +1,6 @@
 import {
   Box,
-  Typography,
   Modal,
-  Button,
   Tab,
   Tabs,
   IconButton,
@@ -11,6 +9,7 @@ import { useState } from "react";
 import UpdateUser from "./Settings/UpdateUser";
 import ChangePassword from "./Settings/ChangePassword";
 import CloseIcon from "@mui/icons-material/Close";
+import UpdatePhoto from "./Settings/UpdatePhoto";
 
 function ModalEditUser({ openModal, handleCloseModal, user }) {
   const [tabValue, setTabValue] = useState(0);
@@ -19,9 +18,7 @@ function ModalEditUser({ openModal, handleCloseModal, user }) {
     setTabValue(newValue);
   };
 
-  const handleUploadPhoto = () => {
-    // Lógica para actualizar la foto de perfil del usuario
-  };
+
 
   return (
     <Modal
@@ -83,11 +80,7 @@ function ModalEditUser({ openModal, handleCloseModal, user }) {
 
             {tabValue === 1 && <ChangePassword user={user} />}
 
-            {tabValue === 2 && (
-              <Box>
-                <Typography variant="h6">Update photo</Typography>
-              </Box>
-            )}
+            {tabValue === 2 && <UpdatePhoto user={user} />}
           </Box>
         </Box>
       </Box>

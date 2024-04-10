@@ -15,6 +15,9 @@ import {
 import api from "../../api/api";
 import { useSelector } from "react-redux";
 import { formatNumbers } from "../../utils/formatNumbers";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance"; // Importa el icono de Material Icons
+import MoneyIcon from "@mui/icons-material/Money"; // Importar el icono de efectivo
+import { Filter, MonetizationOn } from "@mui/icons-material";
 
 function Transactions() {
   const [transactions, setTransactions] = useState([]);
@@ -76,55 +79,178 @@ function Transactions() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Amount</TableCell>
-              <TableCell>Description</TableCell>
-              <TableCell>Type</TableCell>
-              <TableCell>Date</TableCell>
-              <TableCell>Payment Type</TableCell>
+              <TableCell
+                sx={{
+                  textAlign: "center",
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                }}
+              >
+                Amount
+              </TableCell>
+              <TableCell
+                sx={{
+                  textAlign: "center",
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                }}
+              >
+                Description
+              </TableCell>
+              <TableCell
+                sx={{
+                  textAlign: "center",
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                }}
+              >
+                Type
+              </TableCell>
+              <TableCell
+                sx={{
+                  textAlign: "center",
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                }}
+              >
+                Date
+              </TableCell>
+              <TableCell
+                sx={{
+                  textAlign: "center",
+                  fontSize: "10px",
+                  fontWeight: "bold",
+                }}
+              >
+                Payment Type
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {transactions.map((transaction) => (
-              <TableRow
-                key={transaction.id}
-                className={
-                  transaction.type === 0 ||
-                  transaction.type === 2 ||
-                  transaction.type === 5 ||
-                  transaction.type === 8 ||
-                  transaction.type === 6
-                    ? "bg-red-200"
-                    : "bg-green-200"
-                }
-              >
+              <TableRow key={transaction.id}>
                 <TableCell
                   sx={{
                     fontWeight: "bold",
+                    textAlign: "center",
+
+                    fontSize: "16px",
+                    color:
+                      transaction.type === 0 ||
+                      transaction.type === 2 ||
+                      transaction.type === 5 ||
+                      transaction.type === 8 ||
+                      transaction.type === 6
+                        ? "#FF0000" // rojo
+                        : "#12A839", // verde
                   }}
                 >
+                  {
+                    transaction.type === 0 ||
+                    transaction.type === 2 ||
+                    transaction.type === 5 ||
+                    transaction.type === 8 ||
+                    transaction.type === 6
+                      ? "-" // Agrega el signo - si el color es rojo
+                      : "+" // Agrega el signo + si el color es verde
+                  }
                   {formatNumbers(transaction.amount)}
                 </TableCell>
-                <TableCell>{transaction.description}</TableCell>
-                <TableCell>{transaction.type}</TableCell>
-                <TableCell>{formatDateTime(transaction.date)}</TableCell>
+
                 <TableCell
                   sx={{
-                    display: "flex",
-                    justifyContent: "center",
+                    fontSize: "12px",
+                    textAlign: "center",
+                  }}
+                >
+                  {transaction.description}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    color:
+                      transaction.type === 0 ||
+                      transaction.type === 2 ||
+                      transaction.type === 5 ||
+                      transaction.type === 8 ||
+                      transaction.type === 6
+                        ? "#FF0000" // rojo
+                        : "#12A839", // verde
+                    fontWeight: "bold",
+                    fontSize: "10px",
+                    textAlign: "center",
+                  }}
+                >
+                  {(() => {
+                    switch (transaction.type) {
+                      case 0:
+                        return "GASTO CLIENTE DE ROCKOBITS";
+                      case 1:
+                        return "RECIBO CLIENTE DE ROCKOBITS";
+                      case 2:
+                        return "TRANSFERENCIA A CLIENTE";
+                      case 3:
+                        return "COMPRA DE ROCKOBITS POR PLATAFORMA";
+                      case 4:
+                        return "RECIBO DE ROCKOBITS POR FACTOR EXTERNO";
+                      case 5:
+                        return "ENVIO DE ROCKOBITS A EMPRESA";
+                      case 6:
+                        return "TRANSFERENCIA DE ROCKOBITS A EMPLEADO";
+                      case 7:
+                        return "RECIBO DE ROCKOBITS DE EMPRESA";
+                      case 8:
+                        return "GENERACION QR";
+                      case 9:
+                        return "ANULACION QR";
+                      case 10:
+                        return "RECIBO QR";
+                      case 11:
+                        return "DEVOLUCION DE EMPLEADO A EMPRESA";
+                      default:
+                        return "";
+                    }
+                  })()}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    fontSize: "10px",
+                    textAlign: "center",
+                  }}
+                >
+                  {formatDateTime(transaction.date)}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    textAlign: "center",
                   }}
                 >
                   {transaction.type === 2 && transaction.voucher !== null && (
                     <Button
                       onClick={() => handleOpenModal(transaction.voucher)}
-                      variant="contained"
-                      color="primary"
+                      sx={{
+                        minWidth: "unset", // Eliminar el ancho mínimo del botón para que se ajuste al icono
+                        borderRadius: "50%", // Hacer que el botón tenga forma de círculo
+                        padding: "8px", // Ajustar el padding del botón
+                        fontSize: "0px", // Establecer el tamaño de fuente a 0 para ocultar el texto
+                      }}
                     >
-                      Banking transaction{" "}
+                      <Filter /> {/* Colocar el icono dentro del botón */}
                     </Button>
                   )}
+
                   {transaction.type === 2 && transaction.voucher === null && (
-                    <Button variant="contained" color="primary" disabled>
-                      CASH{" "}
+                    <Button
+                      sx={{
+                        minWidth: "unset", // Eliminar el ancho mínimo del botón para que se ajuste al icono
+                        borderRadius: "50%", // Hacer que el botón tenga forma de círculo
+                        padding: "8px", // Ajustar el padding del botón
+                        fontSize: "0px", // Establecer el tamaño de fuente a 0 para ocultar el texto
+                        color: "#1BA809", // Establecer el color del texto en gris
+                        pointerEvents: "none", // Desactivar los eventos de puntero para que el botón no sea clickeable
+                      }}
+                    >
+                      <MonetizationOn />{" "}
+                      {/* Colocar el icono dentro del botón */}
                     </Button>
                   )}
                 </TableCell>
@@ -166,7 +292,7 @@ function Transactions() {
           <img
             src={selectedVoucher}
             alt="Voucher"
-            style={{ width: "500px", height: "500px" }}
+            style={{ width: "500px", height: "500px", objectFit: "contain" }} // Ajustar el tamaño de la imagen
           />
           <Box sx={{ textAlign: "center", marginTop: "20px" }}>
             <Button
@@ -179,15 +305,7 @@ function Transactions() {
             >
               Open in New Tab
             </Button>
-            <Button variant="contained" color="primary">
-              <a
-                href="http://resources.path.ps.psrockola.com//files/6601cab6daa7c.webp"
-                download="voucher.webp"
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                Download
-              </a>
-            </Button>
+           
           </Box>
         </Box>
       </Modal>

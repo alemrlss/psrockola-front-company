@@ -94,6 +94,12 @@ const authSlice = createSlice({
         localStorage.setItem("user", JSON.stringify(state.user));
       }
     },
+    updatePhoto: (state, action) => {
+      if (state.user) {
+        state.user.photo = action.payload;
+        localStorage.setItem("user", JSON.stringify(state.user));
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -141,5 +147,6 @@ export const {
   updateUserMembership,
   clearError,
   updateUser,
+  updatePhoto
 } = authSlice.actions;
 export default authSlice.reducer;

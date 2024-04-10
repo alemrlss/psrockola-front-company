@@ -8,7 +8,6 @@ import {
   Typography,
   Avatar,
 } from "@mui/material";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import MenuIcon from "@mui/icons-material/Menu";
 import StarIcon from "@mui/icons-material/Star";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
@@ -18,6 +17,7 @@ import { useSelector } from "react-redux";
 import { formatExpirationDate } from "../../utils/formatDate";
 import { formatNumbers } from "../../utils/formatNumbers";
 import ModalEditUser from "./ModalEditUser";
+import LanguageSwitcher from "../LanguageSwitcher";
 
 function AppBarComponent({ drawerWidth, handleDrawerToggle }) {
   const user = useSelector((state) => state.auth.user);
@@ -176,7 +176,7 @@ function AppBarComponent({ drawerWidth, handleDrawerToggle }) {
                 marginX: { xs: "0px", sm: "10px" },
               }}
             >
-              <NotificationsIcon />
+              <LanguageSwitcher />
             </IconButton>
 
             <Box
@@ -212,7 +212,7 @@ function AppBarComponent({ drawerWidth, handleDrawerToggle }) {
 
             <Avatar
               alt="Andy Avatar"
-              src="/path/to/avatar.jpg"
+              src={user.photo}
               sx={{ width: 32, height: 32, cursor: "pointer" }}
               onClick={handleOpenModal}
             />

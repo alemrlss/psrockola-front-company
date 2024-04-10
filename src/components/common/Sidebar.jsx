@@ -23,9 +23,8 @@ import PaymentIcon from "@mui/icons-material/Payment";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 
 function Sidebar({ handleDrawerToggle }) {
-  const [activeItem, setActiveItem] = useState(
-    localStorage.getItem("test") || "/dashboard"
-  );
+  const [activeItem, setActiveItem] = useState(location.pathname);
+
   const user = useSelector((state) => state.auth.user);
   const handleItemClick = (itemId) => {
     localStorage.setItem("test", itemId);
@@ -176,8 +175,7 @@ function Sidebar({ handleDrawerToggle }) {
       <List>
         {menuItems
           .filter((item) => {
-
-            //Si 
+            //Si
             if (item.allowEmployee === false && user.type === 22) {
               return false;
             }
@@ -189,7 +187,7 @@ function Sidebar({ handleDrawerToggle }) {
             ) {
               return false;
             }
-            
+
             return true;
           })
           .map((item, index) => {
