@@ -171,13 +171,13 @@ function AppBarComponent({ drawerWidth, handleDrawerToggle }) {
           )}
 
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <IconButton
+            <Box
               sx={{
                 marginX: { xs: "0px", sm: "10px" },
               }}
             >
               <LanguageSwitcher />
-            </IconButton>
+            </Box>
 
             <Box
               sx={{
