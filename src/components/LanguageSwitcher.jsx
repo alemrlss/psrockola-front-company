@@ -41,10 +41,7 @@ function LanguageSelector() {
       >
         {languages.map((lang) => (
           <MenuItem key={lang.code} value={lang.code}>
-            <div className="flex justify-center items-center">
-              <Flag code={lang.code} className="text-gray-800 mx-2 w-8 h-8" />
-              <p>{lang.name}</p>
-            </div>
+            <p>{lang.name}</p>
           </MenuItem>
         ))}
       </Select>
