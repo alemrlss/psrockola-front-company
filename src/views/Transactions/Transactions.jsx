@@ -15,8 +15,6 @@ import {
 import api from "../../api/api";
 import { useSelector } from "react-redux";
 import { formatNumbers } from "../../utils/formatNumbers";
-import AccountBalanceIcon from "@mui/icons-material/AccountBalance"; // Importa el icono de Material Icons
-import MoneyIcon from "@mui/icons-material/Money"; // Importar el icono de efectivo
 import { Filter, MonetizationOn } from "@mui/icons-material";
 
 function Transactions() {
@@ -31,8 +29,9 @@ function Transactions() {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const response = await api.get(`/transactions/${user.id}`);
+        const response = await api.get(`/transactions/${user.id}/${user.type}`);
         setTransactions(response.data);
+        console.log(response.data);
         setLoading(false);
       } catch (error) {
         setError(error.message);
@@ -129,33 +128,56 @@ function Transactions() {
           <TableBody>
             {transactions.map((transaction) => (
               <TableRow key={transaction.id}>
-                <TableCell
-                  sx={{
-                    fontWeight: "bold",
-                    textAlign: "center",
-
-                    fontSize: "16px",
-                    color:
-                      transaction.type === 0 ||
-                      transaction.type === 2 ||
-                      transaction.type === 5 ||
-                      transaction.type === 8 ||
-                      transaction.type === 6
-                        ? "#FF0000" // rojo
-                        : "#12A839", // verde
-                  }}
-                >
-                  {
-                    transaction.type === 0 ||
-                    transaction.type === 2 ||
-                    transaction.type === 5 ||
-                    transaction.type === 8 ||
-                    transaction.type === 6
-                      ? "-" // Agrega el signo - si el color es rojo
-                      : "+" // Agrega el signo + si el color es verde
-                  }
-                  {formatNumbers(transaction.amount)}
-                </TableCell>
+                <TableRow key={transaction.id}>
+                  <TableCell
+                    sx={{
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      color:
+                        transaction.type === 0 ||
+                        transaction.type === 2 ||
+                        transaction.type === 5 ||
+                        transaction.type === 8 ||
+                        transaction.type === 6 ||
+                        transaction.type === 12 ||
+                        transaction.type === 13
+                          ? "#FF0000" // rojo
+                          : "#12A839", // verde
+                    }}
+                  >
+                    {transaction.amount ? (
+                      <>
+                        {transaction.type === 0 ||
+                        transaction.type === 2 ||
+                        transaction.type === 5 ||
+                        transaction.type === 8 ||
+                        transaction.type === 6 ||
+                        transaction.type === 12 ||
+                        transaction.type === 13
+                          ? "-" // Signo "-" para transacciones en rojo
+                          : "+"}{" "}
+                        {/* Signo "+" para transacciones en verde */}
+                        {formatNumbers(transaction.amount)}{" "}
+                        {/* Renderizar transaction.amount si existe */}
+                      </>
+                    ) : (
+                      <>
+                        {transaction.type === 0 ||
+                        transaction.type === 2 ||
+                        transaction.type === 5 ||
+                        transaction.type === 8 ||
+                        transaction.type === 6 ||
+                        transaction.type === 12 ||
+                        transaction.type === 13
+                          ? "-" // Signo "-" para transacciones en rojo
+                          : "+"}{" "}
+                        {/* Signo "+" para transacciones en verde */}$
+                        {formatNumbers(transaction.amountInCents / 100)}{" "}
+                        {/* Renderizar transaction.amountInCents si transaction.amount es null */}
+                      </>
+                    )}
+                  </TableCell>
+                </TableRow>
 
                 <TableCell
                   sx={{
@@ -168,13 +190,15 @@ function Transactions() {
                 <TableCell
                   sx={{
                     color:
-                      transaction.type === 0 ||
-                      transaction.type === 2 ||
-                      transaction.type === 5 ||
-                      transaction.type === 8 ||
-                      transaction.type === 6
-                        ? "#FF0000" // rojo
-                        : "#12A839", // verde
+                    transaction.type === 0 ||
+                    transaction.type === 2 ||
+                    transaction.type === 5 ||
+                    transaction.type === 8 ||
+                    transaction.type === 6 ||
+                    transaction.type === 12 ||
+                    transaction.type === 13
+                      ? "#FF0000" // rojo
+                      : "#12A839", // verde
                     fontWeight: "bold",
                     fontSize: "10px",
                     textAlign: "center",
@@ -206,6 +230,11 @@ function Transactions() {
                         return "RECIBO QR";
                       case 11:
                         return "DEVOLUCION DE EMPLEADO A EMPRESA";
+                      case 12:
+                        return "COMPRA DE MEMBRESIA";
+                      case 13:
+                        return "COMPRA DE PANTALLA";
+
                       default:
                         return "";
                     }
@@ -217,42 +246,44 @@ function Transactions() {
                     textAlign: "center",
                   }}
                 >
-                  {formatDateTime(transaction.date)}
+                  {formatDateTime(transaction.createdAt)}
                 </TableCell>
                 <TableCell
                   sx={{
                     textAlign: "center",
                   }}
                 >
-                  {transaction.type === 2 && transaction.voucher !== null && (
-                    <Button
-                      onClick={() => handleOpenModal(transaction.voucher)}
-                      sx={{
-                        minWidth: "unset", // Eliminar el ancho mínimo del botón para que se ajuste al icono
-                        borderRadius: "50%", // Hacer que el botón tenga forma de círculo
-                        padding: "8px", // Ajustar el padding del botón
-                        fontSize: "0px", // Establecer el tamaño de fuente a 0 para ocultar el texto
-                      }}
-                    >
-                      <Filter /> {/* Colocar el icono dentro del botón */}
-                    </Button>
-                  )}
+                  {transaction.type === 2 &&
+                    transaction.voucher_url !== null && (
+                      <Button
+                        onClick={() => handleOpenModal(transaction.voucher)}
+                        sx={{
+                          minWidth: "unset", // Eliminar el ancho mínimo del botón para que se ajuste al icono
+                          borderRadius: "50%", // Hacer que el botón tenga forma de círculo
+                          padding: "8px", // Ajustar el padding del botón
+                          fontSize: "0px", // Establecer el tamaño de fuente a 0 para ocultar el texto
+                        }}
+                      >
+                        <Filter /> {/* Colocar el icono dentro del botón */}
+                      </Button>
+                    )}
 
-                  {transaction.type === 2 && transaction.voucher === null && (
-                    <Button
-                      sx={{
-                        minWidth: "unset", // Eliminar el ancho mínimo del botón para que se ajuste al icono
-                        borderRadius: "50%", // Hacer que el botón tenga forma de círculo
-                        padding: "8px", // Ajustar el padding del botón
-                        fontSize: "0px", // Establecer el tamaño de fuente a 0 para ocultar el texto
-                        color: "#1BA809", // Establecer el color del texto en gris
-                        pointerEvents: "none", // Desactivar los eventos de puntero para que el botón no sea clickeable
-                      }}
-                    >
-                      <MonetizationOn />{" "}
-                      {/* Colocar el icono dentro del botón */}
-                    </Button>
-                  )}
+                  {transaction.type === 2 &&
+                    transaction.voucher_url === null && (
+                      <Button
+                        sx={{
+                          minWidth: "unset", // Eliminar el ancho mínimo del botón para que se ajuste al icono
+                          borderRadius: "50%", // Hacer que el botón tenga forma de círculo
+                          padding: "8px", // Ajustar el padding del botón
+                          fontSize: "0px", // Establecer el tamaño de fuente a 0 para ocultar el texto
+                          color: "#1BA809", // Establecer el color del texto en gris
+                          pointerEvents: "none", // Desactivar los eventos de puntero para que el botón no sea clickeable
+                        }}
+                      >
+                        <MonetizationOn />{" "}
+                        {/* Colocar el icono dentro del botón */}
+                      </Button>
+                    )}
                 </TableCell>
               </TableRow>
             ))}
@@ -305,7 +336,6 @@ function Transactions() {
             >
               Open in New Tab
             </Button>
-           
           </Box>
         </Box>
       </Modal>
