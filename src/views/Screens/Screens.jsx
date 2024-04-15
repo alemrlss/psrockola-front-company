@@ -191,7 +191,6 @@ function Screens() {
       // Realizar la llamada al backend para guardar los cambios
       await api.patch(`/screen/${editingScreen.id}`, {
         name: editedScreenName,
-        password: editedPassword,
       });
 
       // Actualizar localmente la información en el estado userScreens

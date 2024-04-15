@@ -15,6 +15,7 @@ import {
 import api from "../../api/api";
 import { useSelector } from "react-redux";
 import { formatNumbers } from "../../utils/formatNumbers";
+import TablePagination from "@mui/material/TablePagination";
 import { Filter, MonetizationOn } from "@mui/icons-material";
 
 function Transactions() {
@@ -24,14 +25,27 @@ function Transactions() {
   const [selectedVoucher, setSelectedVoucher] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(20);
+
+  const [totalCount, setTotalCount] = useState(0);
+
   const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const response = await api.get(`/transactions/${user.id}/${user.type}`);
-        setTransactions(response.data);
-        console.log(response.data);
+        const response = await api.get(
+          `/transactions/${user.id}/${user.type}`,
+          {
+            params: {
+              take: rowsPerPage,
+              skip: page * rowsPerPage,
+            },
+          }
+        );
+        setTransactions(response.data.data.transactions);
+        setTotalCount(response.data.data.total);
         setLoading(false);
       } catch (error) {
         setError(error.message);
@@ -40,7 +54,16 @@ function Transactions() {
     };
 
     fetchTransactions();
-  }, []);
+  }, [page, rowsPerPage, user.id, user.type]);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   const handleOpenModal = (voucher) => {
     setSelectedVoucher(voucher);
@@ -190,15 +213,15 @@ function Transactions() {
                 <TableCell
                   sx={{
                     color:
-                    transaction.type === 0 ||
-                    transaction.type === 2 ||
-                    transaction.type === 5 ||
-                    transaction.type === 8 ||
-                    transaction.type === 6 ||
-                    transaction.type === 12 ||
-                    transaction.type === 13
-                      ? "#FF0000" // rojo
-                      : "#12A839", // verde
+                      transaction.type === 0 ||
+                      transaction.type === 2 ||
+                      transaction.type === 5 ||
+                      transaction.type === 8 ||
+                      transaction.type === 6 ||
+                      transaction.type === 12 ||
+                      transaction.type === 13
+                        ? "#FF0000" // rojo
+                        : "#12A839", // verde
                     fontWeight: "bold",
                     fontSize: "10px",
                     textAlign: "center",
@@ -290,6 +313,16 @@ function Transactions() {
           </TableBody>
         </Table>
       </TableContainer>
+      <TablePagination
+        component="div"
+        count={totalCount}
+        page={page}
+        onPageChange={handleChangePage}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        rowsPerPageOptions={[20]}
+        labelRowsPerPage={"Filas por página:"}
+      />
       <Modal
         open={isModalOpen}
         onClose={handleCloseModal}

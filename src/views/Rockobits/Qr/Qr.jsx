@@ -16,6 +16,7 @@ import { useSelector, useDispatch } from "react-redux";
 import QrList from "../../../components/Rockobits/Qr/QrList";
 import api from "../../../api/api";
 import { updateUserBalance } from "../../../features/authSlice";
+import TablePagination from "@mui/material/TablePagination";
 
 function Qr() {
   const user = useSelector((state) => state.auth.user);
@@ -30,10 +31,24 @@ function Qr() {
 
   const [selectedQr, setSelectedQr] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(20);
+
+  const [totalCount, setTotalCount] = useState(0);
+
   useEffect(() => {
     fetchQrList();
-  }, [user.id, filterState]); // Se vuelve a cargar la lista cuando cambia el estado del filtro
+  }, [user.id, filterState, page, rowsPerPage]); // Se vuelve a cargar la lista cuando cambia el estado del filtro
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   const fetchQrList = async () => {
     try {
       setErrorQrList(null);
@@ -45,11 +60,17 @@ function Qr() {
         url += `&state=${filterState}`;
       }
 
-      const response = await api.get(url);
+      const response = await api.get(url, {
+        params: {
+          take: rowsPerPage,
+          skip: page * rowsPerPage,
+        },
+      });
 
-      setQrList(response.data.data);
+      setQrList(response.data.data.qrs);
+      setTotalCount(response.data.data.total);
 
-      const activeExpiredQrs = response.data.data.filter(
+      const activeExpiredQrs = response.data.data.qrs.filter(
         (qr) => qr.state === 1 && new Date(qr.expiration) < new Date()
       );
 
@@ -267,6 +288,16 @@ function Qr() {
         isModalOpen={isModalOpen}
         handleShowQr={handleShowQr}
         handleCloseModal={handleCloseModal}
+      />
+      <TablePagination
+        component="div"
+        count={totalCount}
+        page={page}
+        onPageChange={handleChangePage}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        rowsPerPageOptions={[20]}
+        labelRowsPerPage={"Filas por página:"}
       />
     </div>
   );
