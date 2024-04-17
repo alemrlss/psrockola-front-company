@@ -15,10 +15,12 @@ function ModalScreenEdit({
   setNewPassword,
   handlePasswordSave,
   passwordError,
+  setPasswordError,
 }) {
   const [selectedTab, setSelectedTab] = useState(0);
 
   const handleTabChange = (event, newValue) => {
+    setPasswordError("");
     setSelectedTab(newValue);
   };
 
@@ -30,6 +32,7 @@ function ModalScreenEdit({
         setEditedScreenName("");
         setCurrentPassword("");
         setNewPassword("");
+        setPasswordError("");
       }}
       aria-labelledby="modal-edit-screen"
     >
@@ -52,11 +55,13 @@ function ModalScreenEdit({
               variant="outlined"
               fullWidth
               value={editedScreenName}
-              onChange={(e) => setEditedScreenName(e.target.value)}
+              onChange={(e) => {
+                setPasswordError("");
+                setEditedScreenName(e.target.value);
+              }}
               className="mb-2"
             />
             {editError && <p className="text-red-500 mt-2">{editError}</p>}
-           
           </Box>
         )}
         {selectedTab === 1 && (
@@ -73,7 +78,10 @@ function ModalScreenEdit({
               fullWidth
               type="password"
               value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
+              onChange={(e) => {
+                setCurrentPassword(e.target.value);
+                setPasswordError("");
+              }}
               className="mb-2"
             />
             <TextField
@@ -84,9 +92,10 @@ function ModalScreenEdit({
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               className="mb-2"
-            /> {passwordError && (
-                <p className="text-red-500 mt-2">{passwordError}</p>
-              )}
+            />{" "}
+            {passwordError && (
+              <p className="text-red-500 mt-2">{passwordError}</p>
+            )}
           </Box>
         )}
 

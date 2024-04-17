@@ -341,6 +341,7 @@ function Screens() {
         setNewPassword={setNewPassword}
         handlePasswordSave={handlePasswordSave}
         passwordError={passwordError}
+        setPasswordError={setPasswordError}
       />
     </div>
   );
