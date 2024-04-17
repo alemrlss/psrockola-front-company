@@ -5,9 +5,11 @@ import api from "../../api/api";
 import Switch from "@mui/material/Switch";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import { useSelector } from "react-redux";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+import ModalScreenEdit from "../../components/Screens/ModalScreenEdit";
 
 const stripePromise = loadStripe(
   "pk_test_51M4ShsFeiEj6y242YNiI1u9Kf1HZM4eHjMZYMeHYrTCHwRfSIA3JwC5znJfpmk0EZWlLbsvQ9wXQZbLAdJZsdhUD00dehK0IeW"
@@ -28,6 +30,34 @@ function Screens() {
 
   const [errorEmpty, setErrorEmpty] = useState("");
   const user = useSelector((state) => state.auth.user);
+
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+
+  const [passwordError, setPasswordError] = useState(null);
+
+  const handlePasswordSave = async () => {
+    try {
+      const response = await api.patch(
+        `/screen/change-password/${editingScreen.id}`,
+        {
+          currentPassword,
+          newPassword,
+        }
+      );
+
+      console.log(response.data.data);
+      setCurrentPassword("");
+      setNewPassword("");
+      // Cerrar el modal de edición solo después de que la solicitud se complete con éxito
+      setEditingScreen(null);
+    } catch (error) {
+      console.error(error.response.data.message);
+      if (error.response.data.message === "Current password is incorrect") {
+        setPasswordError("Current password is incorrect");
+      }
+    }
+  };
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -215,42 +245,49 @@ function Screens() {
   };
 
   return (
-    <div className="p-4">
-      <div>
-        <h2 className="text-2xl font-bold mt-10">Create Screen</h2>
-        <div className="flex flex-col gap-4 mt-4">
-          <input
-            type="text"
-            placeholder="Name screen"
+    <div className="p-2">
+      <Box mt={4} sx={{ textAlign: "center" }}>
+        <Paper elevation={3} sx={{ padding: 3, display: "inline-block" }}>
+          <Typography variant="h4" gutterBottom>
+            Create Screen
+          </Typography>
+          <TextField
+            label="Name Screen"
+            variant="outlined"
+            fullWidth
             value={screenName}
             onChange={(e) => setScreenName(e.target.value)}
-            className="border rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            margin="normal"
           />
-          <input
-            type="text"
-            placeholder="Password Screen"
+          <TextField
+            label="Password Screen"
+            variant="outlined"
+            fullWidth
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="border rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            margin="normal"
           />
-          <button
-            type="button"
-            className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          <Button
+            variant="contained"
+            color="primary"
             onClick={handleCreateScreen}
+            sx={{ mt: 2 }}
           >
             Create
-          </button>
-        </div>
-        {error && <p className="text-red-500 mt-2">{error}</p>}
-        {errorEmpty && (
-          <p className="text-red-500 mt-2 font-bold">{errorEmpty}</p>
-        )}
-      </div>
+          </Button>
+          {error && <Typography color="error">{error}</Typography>}
+          {errorEmpty && <Typography color="error">{errorEmpty}</Typography>}
+        </Paper>
+      </Box>
+      {error && <p className="text-red-500 mt-2">{error}</p>}
+      {errorEmpty && (
+        <p className="text-red-500 mt-2 font-bold">{errorEmpty}</p>
+      )}
 
       {error && <p className="text-red-500 mt-2">{error}</p>}
 
       <div>
-        <h2 className="text-2xl font-bold mb-4">
+        <h2 className="text-3xl font-bold my-4">
           Screens: {userScreens.length}
         </h2>
         <ul className="grid grid-cols-2 gap-4">
@@ -291,41 +328,20 @@ function Screens() {
 
       <Elements stripe={stripePromise}></Elements>
 
-      <Modal
-        open={!!editingScreen}
-        onClose={() => setEditingScreen(null)}
-        aria-labelledby="modal-edit-screen"
-      >
-        <Box className="p-4 bg-white w-96 mx-auto mt-20 space-y-6">
-          <h2 className="text-2xl font-bold mb-4">Edit Screen</h2>
-          <TextField
-            label="New Name"
-            variant="outlined"
-            fullWidth
-            value={editedScreenName}
-            onChange={(e) => setEditedScreenName(e.target.value)}
-            className="mb-2"
-          />
-          <TextField
-            label="New Password"
-            variant="outlined"
-            fullWidth
-            type="text"
-            value={editedPassword}
-            onChange={(e) => setEditedPassword(e.target.value)}
-            className="mb-2"
-          />
-          {editError && <p className="text-red-500 mt-2">{editError}</p>}
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleEditSave}
-            className="mt-4"
-          >
-            Save
-          </Button>
-        </Box>
-      </Modal>
+      <ModalScreenEdit
+        editingScreen={editingScreen}
+        setEditingScreen={setEditingScreen}
+        editedScreenName={editedScreenName}
+        setEditedScreenName={setEditedScreenName}
+        editError={editError}
+        handleEditSave={handleEditSave}
+        currentPassword={currentPassword}
+        setCurrentPassword={setCurrentPassword}
+        newPassword={newPassword}
+        setNewPassword={setNewPassword}
+        handlePasswordSave={handlePasswordSave}
+        passwordError={passwordError}
+      />
     </div>
   );
 }

@@ -2,7 +2,6 @@ import { useTranslation } from "react-i18next";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
-import Flag from "react-world-flags";
 
 const languages = [
   { code: "us", name: "English" },
