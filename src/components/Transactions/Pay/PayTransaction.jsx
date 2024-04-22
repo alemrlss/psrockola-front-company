@@ -71,16 +71,17 @@ function PayTransaction() {
               textAlign: "center",
             }}
           >
-            {transaction.amount / 100}$
+            Compra de {transaction.rockobits} Rockobits
           </TableCell>
-
           <TableCell
             sx={{
               textAlign: "center",
             }}
           >
-            Compra de {transaction.rockobits} Rockobits
+            {transaction.amount / 100}$
           </TableCell>
+
+         
         </TableRow>
       );
     }
@@ -100,16 +101,17 @@ function PayTransaction() {
               textAlign: "center",
             }}
           >
-            {transaction.amount / 100}$
+            Compra de Screen: {transaction.screen.code}
           </TableCell>
-
           <TableCell
             sx={{
               textAlign: "center",
             }}
           >
-            Compra de Screen: {transaction.screen.code}
+            {transaction.amount / 100}$
           </TableCell>
+
+        
         </TableRow>
       );
     }
@@ -128,16 +130,17 @@ function PayTransaction() {
               textAlign: "center",
             }}
           >
-            {transaction.amount / 100}$
+            Compra de Membresia: {getTypeString(transaction.membership.type)}
           </TableCell>
-
           <TableCell
             sx={{
               textAlign: "center",
             }}
           >
-            Compra de Membresia: {getTypeString(transaction.membership.type)}
+            {transaction.amount / 100}$
           </TableCell>
+
+         
         </TableRow>
       );
     }
@@ -200,15 +203,14 @@ function PayTransaction() {
                     textAlign: "center",
                   }}
                 >
-                  Amount
+                  Type
                 </TableCell>
-
                 <TableCell
                   sx={{
                     textAlign: "center",
                   }}
                 >
-                  Type
+                  Amount
                 </TableCell>
               </TableRow>
             </TableHead>

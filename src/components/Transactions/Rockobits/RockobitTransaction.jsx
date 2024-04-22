@@ -77,6 +77,13 @@ function TransactionsRockobits() {
           <TableCell
             sx={{
               textAlign: "center",
+            }}
+          >
+            Pago de Musica
+          </TableCell>
+          <TableCell
+            sx={{
+              textAlign: "center",
               color: "blac",
               fontWeight: "bold",
               fontSize: "20px",
@@ -92,13 +99,7 @@ function TransactionsRockobits() {
             {transaction.emitter.name}
           </TableCell>
 
-          <TableCell
-            sx={{
-              textAlign: "center",
-            }}
-          >
-            Pago de Musica
-          </TableCell>
+        
         </TableRow>
       );
     }
@@ -113,6 +114,21 @@ function TransactionsRockobits() {
             }}
           >
             {formatDate(transaction.createdAt)}
+          </TableCell>
+          <TableCell
+            sx={{
+              textAlign: "center",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            Transferencia a Cliente
+            {transaction.voucher && (
+              <PhotoCamera
+                sx={{ marginLeft: "8px", cursor: "pointer" }}
+                onClick={() => handleOpenModal(transaction.voucher)}
+              />
+            )}
           </TableCell>
           <TableCell
             sx={{
@@ -132,21 +148,7 @@ function TransactionsRockobits() {
             {transaction.receiver.name}
           </TableCell>
 
-          <TableCell
-            sx={{
-              textAlign: "center",
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            Transferencia a Cliente
-            {transaction.voucher && (
-              <PhotoCamera
-                sx={{ marginLeft: "8px", cursor: "pointer" }}
-                onClick={() => handleOpenModal(transaction.voucher)}
-              />
-            )}
-          </TableCell>
+
         </TableRow>
       );
     }
@@ -161,6 +163,15 @@ function TransactionsRockobits() {
             }}
           >
             {formatDate(transaction.createdAt)}
+          </TableCell>
+          <TableCell
+            sx={{
+              textAlign: "center",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            Transferencia a Empleado
           </TableCell>
           <TableCell
             sx={{
@@ -180,15 +191,7 @@ function TransactionsRockobits() {
             {transaction.receiverEmployee.name}
           </TableCell>
 
-          <TableCell
-            sx={{
-              textAlign: "center",
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            Transferencia a Empleado
-          </TableCell>
+         
         </TableRow>
       );
     }
@@ -203,6 +206,13 @@ function TransactionsRockobits() {
             }}
           >
             {formatDate(transaction.createdAt)}
+          </TableCell>
+          <TableCell
+            sx={{
+              textAlign: "center",
+            }}
+          >
+            Revocacion de Rockobits de Empleado
           </TableCell>
           <TableCell
             sx={{
@@ -222,13 +232,7 @@ function TransactionsRockobits() {
             {transaction.emitterEmployee.name}
           </TableCell>
 
-          <TableCell
-            sx={{
-              textAlign: "center",
-            }}
-          >
-            Revocacion deb Rockobits de Empleado
-          </TableCell>
+         
         </TableRow>
       );
     }
@@ -243,6 +247,13 @@ function TransactionsRockobits() {
             }}
           >
             {formatDate(transaction.createdAt)}
+          </TableCell>
+          <TableCell
+            sx={{
+              textAlign: "center",
+            }}
+          >
+            Compra de Rockobits en la plataforma
           </TableCell>
           <TableCell
             sx={{
@@ -262,13 +273,7 @@ function TransactionsRockobits() {
             PLATAFORMA
           </TableCell>
 
-          <TableCell
-            sx={{
-              textAlign: "center",
-            }}
-          >
-            Compra de Rockobits en la plataforma
-          </TableCell>
+          
         </TableRow>
       );
     }
@@ -283,6 +288,13 @@ function TransactionsRockobits() {
             }}
           >
             {formatDate(transaction.createdAt)}
+          </TableCell>
+          <TableCell
+            sx={{
+              textAlign: "center",
+            }}
+          >
+            Reclamo de QR
           </TableCell>
           <TableCell
             sx={{
@@ -302,13 +314,7 @@ function TransactionsRockobits() {
             {transaction.receiver.name}
           </TableCell>
 
-          <TableCell
-            sx={{
-              textAlign: "center",
-            }}
-          >
-            Reclamo de QR
-          </TableCell>
+
         </TableRow>
       );
     }
@@ -367,6 +373,13 @@ function TransactionsRockobits() {
                     textAlign: "center",
                   }}
                 >
+                  Type
+                </TableCell>
+                <TableCell
+                  sx={{
+                    textAlign: "center",
+                  }}
+                >
                   Amount
                 </TableCell>
                 <TableCell
@@ -375,14 +388,6 @@ function TransactionsRockobits() {
                   }}
                 >
                   User
-                </TableCell>
-
-                <TableCell
-                  sx={{
-                    textAlign: "center",
-                  }}
-                >
-                  Type
                 </TableCell>
               </TableRow>
             </TableHead>

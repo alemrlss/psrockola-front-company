@@ -73,15 +73,14 @@ function QrTransaction() {
               textAlign: "center",
             }}
           >
-            {transaction.amount}
+            Generate QR
           </TableCell>
-
           <TableCell
             sx={{
               textAlign: "center",
             }}
           >
-            Generate QR
+            {transaction.amount}
           </TableCell>
         </TableRow>
       );
@@ -101,15 +100,14 @@ function QrTransaction() {
               textAlign: "center",
             }}
           >
-            {transaction.amount}
+            Cancel QR
           </TableCell>
-
           <TableCell
             sx={{
               textAlign: "center",
             }}
           >
-            Cancel QR
+            {transaction.amount}
           </TableCell>
         </TableRow>
       );
@@ -129,15 +127,14 @@ function QrTransaction() {
               textAlign: "center",
             }}
           >
-            {transaction.amount}
+            Claim QR{" "}
           </TableCell>
-
           <TableCell
             sx={{
               textAlign: "center",
             }}
           >
-            Claim QR {" "}
+            {transaction.amount}
           </TableCell>
         </TableRow>
       );
@@ -187,15 +184,14 @@ function QrTransaction() {
                     textAlign: "center",
                   }}
                 >
-                  Amount
+                  Type
                 </TableCell>
-
                 <TableCell
                   sx={{
                     textAlign: "center",
                   }}
                 >
-                  Type
+                  Amount
                 </TableCell>
               </TableRow>
             </TableHead>
