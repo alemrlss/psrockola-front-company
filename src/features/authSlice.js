@@ -22,6 +22,7 @@ export const loginCompany = createAsyncThunk(
       localStorage.setItem("token", response.token);
       localStorage.setItem("tokenExpiration", response.tokenExpiration);
       localStorage.setItem("user", JSON.stringify(response.user));
+      localStorage.setItem("language", response.user.language);
       return response;
     } catch (error) {
       return rejectWithValue(error.message || "Error during login");
@@ -36,6 +37,7 @@ export const loginEmployee = createAsyncThunk(
       localStorage.setItem("token", response.token);
       localStorage.setItem("tokenExpiration", response.tokenExpiration);
       localStorage.setItem("user", JSON.stringify(response.user));
+      localStorage.setItem("language", response.user.language);
 
       return response;
     } catch (error) {
@@ -75,6 +77,7 @@ const authSlice = createSlice({
       localStorage.removeItem("token");
       localStorage.removeItem("tokenExpiration");
       localStorage.removeItem("user");
+      localStorage.removeItem("language");
     },
     updateUserBalance: (state, action) => {
       if (state.user) {
@@ -147,6 +150,6 @@ export const {
   updateUserMembership,
   clearError,
   updateUser,
-  updatePhoto
+  updatePhoto,
 } = authSlice.actions;
 export default authSlice.reducer;

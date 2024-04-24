@@ -4,22 +4,38 @@ import { useSelector } from "react-redux";
 import {
   Button,
   Container,
-  Grid,
   Typography,
   Modal,
   Box,
   TextField,
   Switch,
+  Avatar,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import MoneyIcon from "@mui/icons-material/Money";
 import { useDispatch } from "react-redux";
 import { updateUserBalance } from "../../../features/authSlice";
+import IconButton from "@mui/material/IconButton";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import { SwapHoriz } from "@mui/icons-material";
+import ModalTransactionsEmployee from "../../../components/Employees/ModalTransactionsEmployees";
 
 function ListEmployees() {
+  const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
+
   const [employees, setEmployees] = useState([]);
-  const [editModalOpen, setEditModalOpen] = useState(false);
+
   const [editedEmployee, setEditedEmployee] = useState({
     id: "",
     name: "",
@@ -29,39 +45,56 @@ function ListEmployees() {
     email: "",
     balance: "",
   });
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [employeeToDelete, setEmployeeToDelete] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false); // Nuevo estado para el estado de carga
 
-  const user = useSelector((state) => state.auth.user);
-  const dispatch = useDispatch();
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [transactionsModalOpen, setTransactionsModalOpen] = useState(false);
+
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+
+  const [employeeToTransactions, setEmployeeToTransactions] = useState(null);
+  const [employeeToDelete, setEmployeeToDelete] = useState(null);
+
+  const [anchorEl, setAnchorEl] = useState(null);
 
   useEffect(() => {
     const getEmployees = async () => {
       try {
-        setLoading(true); // Establecer loading a true al comenzar la solicitud
+        setLoading(true);
         const response = await api.get(`employee/employees/${user.id}`);
         setEmployees(response.data.data);
       } catch (error) {
         console.error("Error al obtener las membresías:", error);
       } finally {
-        setLoading(false); // Establecer loading a false después de completar la solicitud
+        setLoading(false);
       }
     };
 
     getEmployees();
   }, [user.id]);
 
+  // Funciones para abrir y cerrar el menú desplegable
+  const handleMenuOpen = (event, employee) => {
+    setSelectedEmployee(employee);
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   const handleDelete = async (employeeId) => {
     try {
       setLoading(true); // Establecer loading a true al comenzar la solicitud
-      const response = await api.delete(`/employee/${employeeId}`);
+      const response = await api.delete(`/employee/${employeeId.id}`);
       console.log("Empleado eliminado:", response.data);
 
       // Actualiza el estado de los empleados después de eliminar
       setEmployees((prevEmployees) =>
-        prevEmployees.filter((emp) => emp.id !== employeeId)
+        prevEmployees.filter((emp) => emp.id !== employeeId.id)
       );
       setDeleteModalOpen(false);
       setError(null);
@@ -77,7 +110,6 @@ function ListEmployees() {
   };
 
   const handleEditModalOpen = (employee) => {
-    console.log(employee);
     setEditedEmployee(employee);
     setEditModalOpen(true);
   };
@@ -166,19 +198,28 @@ function ListEmployees() {
     }
   };
 
-  const handleDeleteModalOpen = (employeeId) => {
-    setEmployeeToDelete(employeeId);
+  const handleDeleteModalOpen = (employee) => {
+    setEmployeeToDelete(employee);
     setDeleteModalOpen(true);
   };
 
   const handleDeleteModalClose = () => {
     setDeleteModalOpen(false);
+    setEmployeeToDelete(null);
+    setError(null);
+  };
+  const handleTransactionsModalOpen = (employee) => {
+    setEmployeeToTransactions(employee);
+    setTransactionsModalOpen(true);
+  };
+
+  const handleTransactionsModalClose = () => {
+    setTransactionsModalOpen(false);
+    setEmployeeToTransactions(null);
     setError(null);
   };
 
   const handlePermissionChange = async (employeeId, checked) => {
-    console.log(`Cambiar permisos para el empleado ${employeeId}: ${checked}`);
-
     try {
       setLoading(true); // Establecer loading a true al comenzar la solicitud
       await api.patch(`/employee/${employeeId}/currentPlaylistPermission`, {
@@ -213,98 +254,205 @@ function ListEmployees() {
       >
         Employees
       </Typography>
-      {employees.map((employee) => (
-        <Box
-          key={employee.id}
-          className="bg-gray-100 rounded-md p-4 mb-2 border-4 border-gray-200"
-          sx={{ display: "flex", flexDirection: "column" }}
-        >
-          <Grid
-            container
-            spacing={2}
-            className="flex justify-between items-center"
-          >
-            {/* Columna de datos */}
-            <div className="flex justify-center items-center space-x-10 mx-6  px-2">
-              <div>
-                <Typography variant="subtitle1" className="font-bold">
-                  ID: {employee.id}
-                </Typography>
-                <Typography variant="subtitle1" className="font-bold">
-                  Name: {employee.name}
-                </Typography>
-                <Typography variant="subtitle1" className="font-bold">
-                  Lastname: {employee.lastName}
-                </Typography>
-                <Typography variant="subtitle1" className="font-bold">
-                  Email: {employee.email}
-                </Typography>
-              </div>
-              <div>
-                <Typography variant="subtitle1" className="font-bold">
-                  Phone: {employee.phone}
-                </Typography>
-                <Typography variant="subtitle1" className="font-bold">
-                  Address: {employee.address}
-                </Typography>
-                <Typography variant="subtitle1" className="font-bold">
-                  Wallet: {employee.balance}
-                </Typography>
-              </div>
-            </div>
-
-            <Grid item xs={4} sx={{ display: "flex", flexDirection: "column" }}>
-              <Button
-                variant="contained"
-                color="primary"
-                startIcon={<EditIcon />}
-                onClick={() => handleEditModalOpen(employee)}
-                sx={{ mb: 1 }} // Agrega espacio en la parte inferior del botón
-                disabled={loading} // Deshabilitar el botón mientras se está realizando una solicitud
-              >
-                Edit
-              </Button>
-              <Button
-                variant="contained"
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell
                 sx={{
-                  backgroundColor: "#FFD700",
-                  color: "#000",
-                  "&:hover": {
-                    backgroundColor: "#FFD400",
-                    color: "#000",
-                  },
-                  mb: 1,
+                  textAlign: "center",
                 }}
-                startIcon={<MoneyIcon />}
-                onClick={() => handleClaimRB(employee.id)}
-                disabled={loading} // Deshabilitar el botón mientras se está realizando una solicitud
               >
-                Claim RB
-              </Button>{" "}
-              <Button
-                variant="contained"
-                color="error"
-                startIcon={<DeleteIcon />}
-                onClick={() => handleDeleteModalOpen(employee.id)}
-                sx={{ mb: 1 }} // Agrega espacio en la parte inferior del botón
-                disabled={loading} // Deshabilitar el botón mientras se está realizando una solicitud
+                {" "}
+              </TableCell>
+              <TableCell
+                sx={{
+                  textAlign: "center",
+                }}
               >
-                Delete
-              </Button>
-              <Typography variant="subtitle1" className="font-bold">
-                Playlist current permission:
-              </Typography>
-              <Switch
-                checked={employee.enableCurrentPlaylist}
-                onChange={(event) =>
-                  handlePermissionChange(employee.id, event.target.checked)
-                }
-                disabled={loading} // Deshabilitar el switch mientras se está realizando una solicitud
-              />
-            </Grid>
-          </Grid>
-        </Box>
-      ))}
+                Name
+              </TableCell>
+              <TableCell
+                sx={{
+                  textAlign: "center",
+                }}
+              >
+                Lastname
+              </TableCell>
+              <TableCell
+                sx={{
+                  textAlign: "center",
+                }}
+              >
+                Email
+              </TableCell>
+              <TableCell
+                sx={{
+                  textAlign: "center",
+                }}
+              >
+                Phone
+              </TableCell>
+              <TableCell
+                sx={{
+                  textAlign: "center",
+                }}
+              >
+                Address
+              </TableCell>
+              <TableCell
+                sx={{
+                  textAlign: "center",
+                }}
+              >
+                Wallet
+              </TableCell>
+              <TableCell
+                sx={{
+                  textAlign: "center",
+                }}
+              >
+                Playlist Permission
+              </TableCell>
+              <TableCell
+                sx={{
+                  textAlign: "center",
+                }}
+              >
+                Actions
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {employees.map((employee) => (
+              <TableRow key={employee.id}>
+                <TableCell>
+                  <Avatar alt="sds" />
+                </TableCell>
+                <TableCell
+                  sx={{
+                    textAlign: "center",
+                  }}
+                >
+                  {employee.name}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    textAlign: "center",
+                  }}
+                >
+                  {employee.lastName}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    textAlign: "center",
+                  }}
+                >
+                  {employee.email}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    textAlign: "center",
+                  }}
+                >
+                  {employee.phone}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    textAlign: "center",
+                  }}
+                >
+                  {employee.address}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    textAlign: "center",
+                    color: employee.balance > 0 ? "green" : "red",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {employee.balance}
+                </TableCell>
+                <TableCell>
+                  {/* Permiso de playlist */}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Switch
+                      checked={employee.enableCurrentPlaylist}
+                      onChange={(event) =>
+                        handlePermissionChange(
+                          employee.id,
+                          event.target.checked
+                        )
+                      }
+                      disabled={loading} // Deshabilitar el switch mientras se está realizando una solicitud
+                    />
+                  </Box>
+                </TableCell>
+                <TableCell
+                  sx={{
+                    textAlign: "center",
+                  }}
+                >
+                  {/* Botón de acciones */}
+                  <IconButton
+                    aria-controls={`menu-${employee.id}`}
+                    aria-haspopup="true"
+                    onClick={(event) => handleMenuOpen(event, employee)}
+                    disabled={loading}
+                  >
+                    <MoreVertIcon
+                      sx={{
+                        color: "black",
+                      }}
+                    />
+                  </IconButton>
+                  {/* Menú desplegable */}
+                  <Menu
+                    id={`menu-${employee.id}`}
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                  >
+                    <MenuItem
+                      onClick={() => handleEditModalOpen(selectedEmployee)}
+                    >
+                      <EditIcon sx={{ marginRight: "8px", color: "blue" }} />{" "}
+                      Edit
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => handleDeleteModalOpen(selectedEmployee)}
+                    >
+                      <DeleteIcon sx={{ marginRight: "8px", color: "red" }} />{" "}
+                      Delete
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => handleClaimRB(selectedEmployee.id)}
+                    >
+                      <MoneyIcon sx={{ marginRight: "8px", color: "yellow" }} />{" "}
+                      Claim RB
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleTransactionsModalOpen(selectedEmployee);
+                      }}
+                    >
+                      <SwapHoriz sx={{ marginRight: "8px", color: "black" }} />{" "}
+                      Transactions
+                    </MenuItem>
+                  </Menu>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       <Modal
         open={editModalOpen}
@@ -457,6 +605,12 @@ function ListEmployees() {
           )}
         </Box>
       </Modal>
+
+      <ModalTransactionsEmployee
+        isModalOpen={transactionsModalOpen}
+        handleCloseModal={handleTransactionsModalClose}
+        selectedEmployee={employeeToTransactions}
+      />
     </Container>
   );
 }

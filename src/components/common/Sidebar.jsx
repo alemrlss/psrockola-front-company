@@ -21,8 +21,11 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import QrCode2Icon from "@mui/icons-material/QrCode2";
 import PaymentIcon from "@mui/icons-material/Payment";
 import YouTubeIcon from "@mui/icons-material/YouTube";
+import { useTranslation } from "react-i18next";
 
 function Sidebar({ handleDrawerToggle }) {
+  const { t } = useTranslation();
+
   const [activeItem, setActiveItem] = useState(location.pathname);
 
   const user = useSelector((state) => state.auth.user);
@@ -78,21 +81,21 @@ function Sidebar({ handleDrawerToggle }) {
     },
     {
       id: "/subscriptions",
-      translationKey: "menu_help",
+      translationKey: "menu_membership",
       name: "Subscriptions",
       icon: <MonetizationOnIcon />,
       allowEmployee: false,
       subItems: [
         {
           id: "/subscriptions/get",
-          translationKey: "menu_companies",
+          translationKey: "menu_memberships_get",
           name: "Get",
           icon: <GetAppIcon />,
           allowEmployee: false,
         },
         {
           id: "/subscriptions/cancel",
-          translationKey: "menu_clients",
+          translationKey: "menu_memberships_cancel",
           name: "Cancel",
           icon: <CancelIcon />,
           allowEmployee: false,
@@ -168,7 +171,7 @@ function Sidebar({ handleDrawerToggle }) {
           style={{ textShadow: "2px 2px 1px #B45946", color: "white" }}
           className="font-semibold text-white text-xl tracking-widest text-shadow-lg"
         >
-          {user.type === 23 ? "Owner" : "Employee"}
+          {user.type === 23 ? t("psrockola_owner") : t("psrockola_employee")}
         </h2>
       </div>
       <Divider />
@@ -199,6 +202,7 @@ function Sidebar({ handleDrawerToggle }) {
                 handleDrawerToggle={handleDrawerToggle}
                 handleItemClick={handleItemClick}
                 activeItem={activeItem}
+                t={t}
               />
             ) : (
               <SidebarItem
@@ -207,6 +211,7 @@ function Sidebar({ handleDrawerToggle }) {
                 handleDrawerToggle={handleDrawerToggle}
                 handleItemClick={handleItemClick}
                 activeItem={activeItem}
+                t={t}
               />
             );
           })}

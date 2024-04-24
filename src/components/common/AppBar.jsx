@@ -18,8 +18,10 @@ import { formatExpirationDate } from "../../utils/formatDate";
 import { formatNumbers } from "../../utils/formatNumbers";
 import ModalEditUser from "./ModalEditUser";
 import LanguageSwitcher from "../LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 function AppBarComponent({ drawerWidth, handleDrawerToggle }) {
+  const { t } = useTranslation();
   const user = useSelector((state) => state.auth.user);
   const [openModal, setOpenModal] = useState(false);
 
@@ -139,7 +141,9 @@ function AppBarComponent({ drawerWidth, handleDrawerToggle }) {
                 }}
               >
                 {user.membership.expiration
-                  ? `Expire ${formatExpirationDate(user.membership.expiration)}`
+                  ? `${t("psrockola_appbar_expire")} ${formatExpirationDate(
+                      user.membership.expiration
+                    )}`
                   : "No membership"}
               </Typography>
             </Box>
@@ -165,7 +169,7 @@ function AppBarComponent({ drawerWidth, handleDrawerToggle }) {
                   color: "white",
                 }}
               >
-                Wallet: {formatNumbers(user.balance)}
+                {t("psrockola_wallet")}: {formatNumbers(user.balance)}
               </Typography>
             </Box>
           )}
@@ -203,9 +207,9 @@ function AppBarComponent({ drawerWidth, handleDrawerToggle }) {
                 }}
               >
                 {user.type === 22
-                  ? "Employee"
+                  ? t("psrockola_appbar_role_employee")
                   : user.type === 23
-                  ? "Company"
+                  ? t("psrockola_appbar_role_company")
                   : "No Role"}
               </Typography>
             </Box>

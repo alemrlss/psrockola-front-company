@@ -16,6 +16,7 @@ function SidebarItemCollapse({
   handleDrawerToggle,
   handleItemClick,
   activeItem,
+  t,
 }) {
   const [open, setOpen] = useState(false);
   const user = useSelector((state) => state.auth.user);
@@ -56,7 +57,10 @@ function SidebarItemCollapse({
           <ListItemIcon sx={{ color: "white", minWidth: 0 }}>
             {item.icon}
           </ListItemIcon>
-          <ListItemText sx={{ color: "white", ml: 0 }} primary={item.name} />
+          <ListItemText
+            sx={{ color: "white", ml: 0 }}
+            primary={t(item.translationKey)}
+          />
           {open ? (
             <ExpandLess sx={{ color: "white" }} />
           ) : (
@@ -135,7 +139,7 @@ function SidebarItemCollapse({
                     >
                       {subItem.icon}
                     </ListItemIcon>
-                    <ListItemText sx={{ ml: 0 }} primary={subItem.name} />
+                    <ListItemText sx={{ ml: 0 }} primary={t(subItem.translationKey)} />
                   </Box>
                 </ListItemButton>
               </Link>

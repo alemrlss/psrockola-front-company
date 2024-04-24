@@ -10,6 +10,7 @@ function SidebarItem({
   handleDrawerToggle,
   handleItemClick,
   activeItem,
+  t,
 }) {
   const handleClick = () => {
     handleItemClick(item.id);
@@ -69,7 +70,7 @@ function SidebarItem({
           >
             {item.icon}
           </ListItemIcon>
-          <ListItemText sx={{ ml: 0 }} primary={item.name} />
+          <ListItemText sx={{ ml: 0 }} primary={t(item.translationKey)} />
         </Box>
       </ListItemButton>
     </Link>
