@@ -21,6 +21,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import QrCode2Icon from "@mui/icons-material/QrCode2";
 import PaymentIcon from "@mui/icons-material/Payment";
 import YouTubeIcon from "@mui/icons-material/YouTube";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { useTranslation } from "react-i18next";
 
 function Sidebar({ handleDrawerToggle }) {
@@ -155,6 +156,12 @@ function Sidebar({ handleDrawerToggle }) {
       subItems: null,
       allowEmployee: true,
       enableCurrentPlaylist: user.enableCurrentPlaylist === true ? true : false,
+    },
+    {
+      id: "help",
+      translationKey: "menu_help",
+      icon: <HelpOutlineIcon />,
+      subItems: null,
     },
   ];
 

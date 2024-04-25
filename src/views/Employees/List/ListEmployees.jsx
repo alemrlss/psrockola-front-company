@@ -256,7 +256,9 @@ function ListEmployees() {
       </Typography>
       <TableContainer component={Paper}>
         <Table>
-          <TableHead>
+          <TableHead sx={{
+            backgroundColor: "gray",
+          }}>
             <TableRow>
               <TableCell
                 sx={{
@@ -324,132 +326,147 @@ function ListEmployees() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {employees.map((employee) => (
-              <TableRow key={employee.id}>
-                <TableCell>
-                  <Avatar alt="sds" />
-                </TableCell>
+            {employees.length === 0 ? (
+              <TableRow>
                 <TableCell
-                  sx={{
-                    textAlign: "center",
-                  }}
+                  colSpan={9}
+                  sx={{ textAlign: "center", fontSize: "18px", fontWeight: "bold"}}
                 >
-                  {employee.name}
-                </TableCell>
-                <TableCell
-                  sx={{
-                    textAlign: "center",
-                  }}
-                >
-                  {employee.lastName}
-                </TableCell>
-                <TableCell
-                  sx={{
-                    textAlign: "center",
-                  }}
-                >
-                  {employee.email}
-                </TableCell>
-                <TableCell
-                  sx={{
-                    textAlign: "center",
-                  }}
-                >
-                  {employee.phone}
-                </TableCell>
-                <TableCell
-                  sx={{
-                    textAlign: "center",
-                  }}
-                >
-                  {employee.address}
-                </TableCell>
-                <TableCell
-                  sx={{
-                    textAlign: "center",
-                    color: employee.balance > 0 ? "green" : "red",
-                    fontWeight: "bold",
-                  }}
-                >
-                  {employee.balance}
-                </TableCell>
-                <TableCell>
-                  {/* Permiso de playlist */}
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Switch
-                      checked={employee.enableCurrentPlaylist}
-                      onChange={(event) =>
-                        handlePermissionChange(
-                          employee.id,
-                          event.target.checked
-                        )
-                      }
-                      disabled={loading} // Deshabilitar el switch mientras se está realizando una solicitud
-                    />
-                  </Box>
-                </TableCell>
-                <TableCell
-                  sx={{
-                    textAlign: "center",
-                  }}
-                >
-                  {/* Botón de acciones */}
-                  <IconButton
-                    aria-controls={`menu-${employee.id}`}
-                    aria-haspopup="true"
-                    onClick={(event) => handleMenuOpen(event, employee)}
-                    disabled={loading}
-                  >
-                    <MoreVertIcon
-                      sx={{
-                        color: "black",
-                      }}
-                    />
-                  </IconButton>
-                  {/* Menú desplegable */}
-                  <Menu
-                    id={`menu-${employee.id}`}
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleMenuClose}
-                  >
-                    <MenuItem
-                      onClick={() => handleEditModalOpen(selectedEmployee)}
-                    >
-                      <EditIcon sx={{ marginRight: "8px", color: "blue" }} />{" "}
-                      Edit
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => handleDeleteModalOpen(selectedEmployee)}
-                    >
-                      <DeleteIcon sx={{ marginRight: "8px", color: "red" }} />{" "}
-                      Delete
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => handleClaimRB(selectedEmployee.id)}
-                    >
-                      <MoneyIcon sx={{ marginRight: "8px", color: "yellow" }} />{" "}
-                      Claim RB
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => {
-                        handleTransactionsModalOpen(selectedEmployee);
-                      }}
-                    >
-                      <SwapHoriz sx={{ marginRight: "8px", color: "black" }} />{" "}
-                      Transactions
-                    </MenuItem>
-                  </Menu>
+                  No employees found
                 </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              employees.map((employee) => (
+                <TableRow key={employee.id}>
+                  <TableCell>
+                    <Avatar alt="sds" />
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      textAlign: "center",
+                    }}
+                  >
+                    {employee.name}
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      textAlign: "center",
+                    }}
+                  >
+                    {employee.lastName}
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      textAlign: "center",
+                    }}
+                  >
+                    {employee.email}
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      textAlign: "center",
+                    }}
+                  >
+                    {employee.phone}
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      textAlign: "center",
+                    }}
+                  >
+                    {employee.address}
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      textAlign: "center",
+                      color: employee.balance > 0 ? "green" : "red",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {employee.balance}
+                  </TableCell>
+                  <TableCell>
+                    {/* Permiso de playlist */}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Switch
+                        checked={employee.enableCurrentPlaylist}
+                        onChange={(event) =>
+                          handlePermissionChange(
+                            employee.id,
+                            event.target.checked
+                          )
+                        }
+                        disabled={loading} // Deshabilitar el switch mientras se está realizando una solicitud
+                      />
+                    </Box>
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      textAlign: "center",
+                    }}
+                  >
+                    {/* Botón de acciones */}
+                    <IconButton
+                      aria-controls={`menu-${employee.id}`}
+                      aria-haspopup="true"
+                      onClick={(event) => handleMenuOpen(event, employee)}
+                      disabled={loading}
+                    >
+                      <MoreVertIcon
+                        sx={{
+                          color: "black",
+                        }}
+                      />
+                    </IconButton>
+                    {/* Menú desplegable */}
+                    <Menu
+                      id={`menu-${employee.id}`}
+                      anchorEl={anchorEl}
+                      open={Boolean(anchorEl)}
+                      onClose={handleMenuClose}
+                    >
+                      <MenuItem
+                        onClick={() => handleEditModalOpen(selectedEmployee)}
+                      >
+                        <EditIcon sx={{ marginRight: "8px", color: "blue" }} />{" "}
+                        Edit
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => handleDeleteModalOpen(selectedEmployee)}
+                      >
+                        <DeleteIcon sx={{ marginRight: "8px", color: "red" }} />{" "}
+                        Delete
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => handleClaimRB(selectedEmployee.id)}
+                      >
+                        <MoneyIcon
+                          sx={{ marginRight: "8px", color: "yellow" }}
+                        />{" "}
+                        Claim RB
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => {
+                          handleTransactionsModalOpen(selectedEmployee);
+                        }}
+                      >
+                        <SwapHoriz
+                          sx={{ marginRight: "8px", color: "black" }}
+                        />{" "}
+                        Transactions
+                      </MenuItem>
+                    </Menu>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </TableContainer>

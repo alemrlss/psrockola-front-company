@@ -17,6 +17,7 @@ function Login() {
     password: "",
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); // Nuevo estado de carga
 
   useEffect(() => {
     dispatch({ type: "auth/clearError" });
@@ -32,7 +33,7 @@ function Login() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     dispatch({ type: "auth/clearError" }); // Limpiar el error al cambiar el formulario
@@ -47,17 +48,19 @@ function Login() {
       return;
     }
 
-    dispatch(loginCompany(formData))
-      .then((result) => {
-        if (result.payload && result.payload.token) {
-          goTo("/dashboard");
-        }
-      })
-      .catch((error) => {
-        // Manejar errores de inicio de sesión
-        console.log(error);
-        console.log("test");
-      });
+    setLoading(true); // Establece el estado de carga en verdadero antes de la petición
+
+    try {
+      const result = await dispatch(loginCompany(formData));
+      if (result.payload && result.payload.token) {
+        goTo("/dashboard");
+      }
+    } catch (error) {
+      // Manejar errores de inicio de sesión
+      console.log(error);
+    } finally {
+      setLoading(false); // Establece el estado de carga en falso después de la petición
+    }
   };
 
   const validateEmail = (email) => {
@@ -123,9 +126,9 @@ function Login() {
                   backgroundColor: "#F79303",
                 },
               }}
-              disabled={!!error || !!auth.error} // Desactivar el botón si hay un error en alguno de los estados
+              disabled={loading} // Desactivar el botón mientras se realiza la petición
             >
-              Log in
+              {loading ? "Loading..." : "Log in"}
             </Button>
             {auth.status === "failed" && (
               <Typography

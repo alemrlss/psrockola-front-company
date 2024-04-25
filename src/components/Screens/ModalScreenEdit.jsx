@@ -1,6 +1,5 @@
 import { Modal, Box, TextField, Button, Tabs, Tab } from "@mui/material";
 import { useState } from "react";
-import api from "../../api/api";
 
 function ModalScreenEdit({
   editingScreen,
