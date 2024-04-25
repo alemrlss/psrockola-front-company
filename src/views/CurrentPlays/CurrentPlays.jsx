@@ -41,7 +41,7 @@ function CurrentPlays() {
 
       try {
         const response = await api.get(`/screen/company/${userId}`);
-        setScreens(response.data.data);
+        setScreens(response.data.data.screens);
       } catch (error) {
         console.error("Error fetching screens:", error);
       }
