@@ -18,6 +18,7 @@ function Login() {
   });
 
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); // Nuevo estado de carga
 
   const dispatch = useDispatch();
   const goTo = useNavigate();
@@ -33,7 +34,7 @@ function Login() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.email.trim() || !formData.password.trim()) {
       setError("Please complete all fields.");
@@ -44,18 +45,19 @@ function Login() {
       setError("Invalid email or password.");
       return;
     }
-    // Disparar la acción de inicio de sesión
-    dispatch(loginEmployee(formData))
-      .then((result) => {
-        // Resultado exitoso del inicio de sesión
-        if (result.payload && result.payload.token) {
-          goTo("/dashboard");
-        }
-      })
-      .catch((error) => {
-        // Manejar errores de inicio de sesión
-        // Puedes acceder a los errores a través de `auth.error` en el estado global
-      });
+
+    setLoading(true); // Establece el estado de carga en verdadero antes de la petición
+
+    try {
+      const result = await dispatch(loginEmployee(formData));
+      if (result.payload && result.payload.token) {
+        goTo("/dashboard");
+      }
+    } catch (error) {
+      // Manejar errores de inicio de sesión
+    } finally {
+      setLoading(false); // Establece el estado de carga en falso después de la petición
+    }
   };
 
   const validateEmail = (email) => {
@@ -80,7 +82,7 @@ function Login() {
             className="bg-white border rounded-xl p-4 py-8"
           >
             <Typography variant="h4" align="center" gutterBottom>
-              Log in{" "}
+              Log in
             </Typography>
             <Typography variant="body1" align="center" gutterBottom>
               Sign in as a employee{" "}
@@ -122,9 +124,9 @@ function Login() {
                   backgroundColor: "#555CB3",
                 },
               }}
-              disabled={!!error || !!auth.error} // Desactivar el botón si hay un error en alguno de los estados
+              disabled={loading} // Desactivar el botón mientras se realiza la petición
             >
-              Log in
+              {loading ? "Loading..." : "Log in"}
             </Button>
             {auth.status === "failed" && (
               <Typography
@@ -163,7 +165,7 @@ function Login() {
           component={Link}
           to="/login"
         >
-          <StorefrontIcon style={{ width: "800%", height: "80%" }} />
+          <StorefrontIcon style={{ width: "80%", height: "80%" }} />
         </Avatar>
       </Tooltip>
     </div>

@@ -43,13 +43,9 @@ function Screens() {
       try {
         const response = await api.get(`/screen/company/${user.id}`);
         setScreens(response.data.data.screens);
-        setScreenLimit(response.data.data.screenLimit);
-
-        const activeScreens = response.data.data.screens.filter(
-          (screen) => screen.active
+        setScreenLimit(
+          response.data.data.screenLimit ? response.data.data.screenLimit : 0
         );
-        console.log(activeScreens);
-        setScreensActive(activeScreens);
       } catch (error) {
         console.error("Error al obtener las membresías:", error);
       }
