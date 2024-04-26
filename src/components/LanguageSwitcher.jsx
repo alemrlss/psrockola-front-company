@@ -30,7 +30,6 @@ function LanguageSelector() {
   const { i18n, t } = useTranslation();
 
   const user = useSelector((state) => state.auth.user);
-  // Obtener el idioma actual válido
   const currentLanguage = getValidLanguage(i18n.language);
 
   // Estados para notificaciones
@@ -93,13 +92,25 @@ function LanguageSelector() {
 
   return (
     <>
-      <FormControl>
+      <FormControl
+        sx={{
+          color: "black",
+          "& .MuiSelect-select": {
+            backgroundColor: "transparent",
+          },
+          "& .MuiSelect-icon": {
+            color: "black",
+          },
+          "& .MuiSelect-focus": {
+            backgroundColor: "transparent",
+          },
+        }}
+      >
         <Select
           label="Language"
-          value={currentLanguage} // Utiliza el idioma actual válido
+          value={currentLanguage}
           onChange={handleChangeLanguage}
           variant="standard"
-          disableUnderline
           sx={{
             "& .MuiSelect-select": {
               backgroundColor: "transparent",

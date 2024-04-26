@@ -4,14 +4,15 @@ import { loadStripe } from "@stripe/stripe-js";
 import { jwtDecode } from "jwt-decode";
 import Card from "../../components/Memberships/Card";
 import CheckoutModal from "../../components/Memberships/CheckoutModal";
-import { useUser } from "../../contexts/UserContext";
 import api from "../../api/api";
+import { useTranslation } from "react-i18next";
 
 const stripePromise = loadStripe(
   "pk_test_51M4ShsFeiEj6y242YNiI1u9Kf1HZM4eHjMZYMeHYrTCHwRfSIA3JwC5znJfpmk0EZWlLbsvQ9wXQZbLAdJZsdhUD00dehK0IeW"
 );
 
 const Stripe = () => {
+  const { t } = useTranslation();
   const [selectedMembership, setSelectedMembership] = useState(null);
   const [membership, setMembership] = useState(null);
   const [sessionId, setSessionId] = useState(null);
@@ -19,7 +20,6 @@ const Stripe = () => {
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState(null);
 
-  const { updateUser } = useUser();
   const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
@@ -36,7 +36,6 @@ const Stripe = () => {
             const countryId = decodedToken.countryId;
 
             const response = await api.get(`/membership/${countryId}`);
-            console.log(response);
             setAvailableMemberships(response.data);
             setLoading(false);
           } else {
@@ -116,7 +115,7 @@ const Stripe = () => {
 
   return (
     <div className="container mx-auto mt-8 ">
-      <h1 className="text-3xl font-bold mb-4">Membresias:</h1>
+      <h1 className="text-3xl font-bold mb-4">{t("view_memberships")}</h1>
       <div className="flex flex-wrap">
         {console.log(availableMemberships)}
         {availableMemberships.map((membership, index) => (

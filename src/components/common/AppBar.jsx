@@ -109,6 +109,37 @@ function AppBarComponent({ drawerWidth, handleDrawerToggle }) {
             width: "100%",
           }}
         >
+          {user.balance !== undefined && (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                borderRadius: "20px",
+              }}
+            >
+              <Typography
+                variant="body1"
+                sx={{
+                  fontWeight: "bold",
+                  color: "black",
+                  fontSize: "1.6rem",
+                }}
+              >
+                {formatNumbers(user.balance)}
+              </Typography>
+              <Avatar
+                src="/public/rockobit.png"
+                sx={{
+                  width: 30,
+                  height: 30,
+                  marginLeft: 1,
+                  backgroundColor: "transparent",
+                  color: "black",
+                }}
+              />
+            </Box>
+          )}
+
           {user.membership && (
             <Box
               sx={{
@@ -149,32 +180,7 @@ function AppBarComponent({ drawerWidth, handleDrawerToggle }) {
             </Box>
           )}
 
-          {user.balance !== undefined && (
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                backgroundColor: "#555CB3",
-                color: "black",
-                padding: "6px",
-                paddingX: "10px",
-                boxShadow: "0px 6px 4px rgba(0, 0, 0, 0.1)",
-                borderRadius: "20px",
-              }}
-            >
-              <Typography
-                variant="body1"
-                sx={{
-                  fontWeight: "bold",
-                  color: "white",
-                }}
-              >
-                {t("psrockola_wallet")}: {formatNumbers(user.balance)}
-              </Typography>
-            </Box>
-          )}
-
-          <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <Box
               sx={{
                 marginX: { xs: "0px", sm: "10px" },
@@ -185,41 +191,50 @@ function AppBarComponent({ drawerWidth, handleDrawerToggle }) {
 
             <Box
               sx={{
-                mr: 1,
-                textAlign: "right",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
                 cursor: "pointer",
               }}
             >
-              <Typography
-                variant="caption"
-                component="div"
-                sx={{ color: "black" }}
-              >
-                {user.name}
-              </Typography>
-              <Typography
-                variant="body2"
-                component="div"
-                color="textSecondary"
+              <Box
                 sx={{
-                  fontStyle: "italic",
-                  fontSize: "10px",
+                  mr: 1,
+                  textAlign: "right",
+                  cursor: "pointer",
                 }}
               >
-                {user.type === 22
-                  ? t("psrockola_appbar_role_employee")
-                  : user.type === 23
-                  ? t("psrockola_appbar_role_company")
-                  : "No Role"}
-              </Typography>
-            </Box>
+                <Typography
+                  variant="caption"
+                  component="div"
+                  sx={{ color: "black" }}
+                >
+                  {user.name}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  component="div"
+                  color="textSecondary"
+                  sx={{
+                    fontStyle: "italic",
+                    fontSize: "10px",
+                  }}
+                >
+                  {user.type === 22
+                    ? t("psrockola_appbar_role_employee")
+                    : user.type === 23
+                    ? t("psrockola_appbar_role_company")
+                    : "No Role"}
+                </Typography>
+              </Box>
 
-            <Avatar
-              alt="Andy Avatar"
-              src={user.photo}
-              sx={{ width: 32, height: 32, cursor: "pointer" }}
-              onClick={handleOpenModal}
-            />
+              <Avatar
+                alt="Andy Avatar"
+                src={user.photo}
+                sx={{ width: 40, height: 40, cursor: "pointer" }}
+                onClick={handleOpenModal}
+              />
+            </Box>
           </Box>
         </Box>
       </Toolbar>
