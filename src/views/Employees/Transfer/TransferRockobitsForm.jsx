@@ -16,7 +16,7 @@ function TransferRockobitsForm() {
     try {
       const getEmployees = async () => {
         const response = await api.get(`employee/employees/${user.id}`);
-        setEmployees(response.data.data);
+        setEmployees(response.data.data.employees);
       };
 
       getEmployees();

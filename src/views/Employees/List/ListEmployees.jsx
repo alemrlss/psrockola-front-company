@@ -29,12 +29,14 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { SwapHoriz } from "@mui/icons-material";
 import ModalTransactionsEmployee from "../../../components/Employees/ModalTransactionsEmployees";
+import ModalEditEmployee from "../../../components/Employees/Edit/ModalEditEmployee";
 
 function ListEmployees() {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
 
   const [employees, setEmployees] = useState([]);
+  const [limitEmployees, setLimitEmployees] = useState(0);
 
   const [editedEmployee, setEditedEmployee] = useState({
     id: "",
@@ -65,7 +67,8 @@ function ListEmployees() {
       try {
         setLoading(true);
         const response = await api.get(`employee/employees/${user.id}`);
-        setEmployees(response.data.data);
+        setEmployees(response.data.data.employees);
+        setLimitEmployees(response.data.data.employeeLimit);
       } catch (error) {
         console.error("Error al obtener las membresías:", error);
       } finally {
@@ -116,46 +119,6 @@ function ListEmployees() {
 
   const handleEditModalClose = () => {
     setEditModalOpen(false);
-  };
-
-  const handleEdit = async () => {
-    try {
-      setLoading(true); // Establecer loading a true al comenzar la solicitud
-      // Realiza la solicitud PATCH al servidor para editar el empleado
-      const response = await api.patch(`/employee/${editedEmployee.id}`, {
-        name: editedEmployee.name,
-        lastName: editedEmployee.lastName,
-        phone: editedEmployee.phone,
-        address: editedEmployee.address,
-        email: editedEmployee.email,
-      });
-
-      // Actualiza el estado de los empleados con los datos editados
-      setEmployees((prevEmployees) => {
-        // Encuentra el índice del empleado editado en el array employees
-        const index = prevEmployees.findIndex(
-          (emp) => emp.id === editedEmployee.id
-        );
-
-        // Crea un nuevo objeto de empleado con los datos actualizados
-        const updatedEmployee = {
-          ...response.data.data,
-          balance: editedEmployee.balance, // Mantén el balance existente
-        };
-
-        // Crea una nueva matriz de empleados con el empleado actualizado
-        const updatedEmployees = [...prevEmployees];
-        updatedEmployees[index] = updatedEmployee;
-        return updatedEmployees;
-      });
-
-      console.log("Empleado editado:", response.data);
-      setEditModalOpen(false); // Cierra el modal de edición después de editar
-    } catch (error) {
-      console.error("Error al editar empleado:", error);
-    } finally {
-      setLoading(false); // Establecer loading a false después de completar la solicitud
-    }
   };
 
   const handleClaimRB = async (employeeId) => {
@@ -252,13 +215,23 @@ function ListEmployees() {
           my: 1,
         }}
       >
-        Employees
+        Employees: {employees.length}
+      </Typography>
+      <Typography
+        variant="h4"
+        sx={{
+          my: 1,
+        }}
+      >
+        Limite: {limitEmployees}
       </Typography>
       <TableContainer component={Paper}>
         <Table>
-          <TableHead sx={{
-            backgroundColor: "gray",
-          }}>
+          <TableHead
+            sx={{
+              backgroundColor: "gray",
+            }}
+          >
             <TableRow>
               <TableCell
                 sx={{
@@ -330,7 +303,11 @@ function ListEmployees() {
               <TableRow>
                 <TableCell
                   colSpan={9}
-                  sx={{ textAlign: "center", fontSize: "18px", fontWeight: "bold"}}
+                  sx={{
+                    textAlign: "center",
+                    fontSize: "18px",
+                    fontWeight: "bold",
+                  }}
                 >
                   No employees found
                 </TableCell>
@@ -339,7 +316,7 @@ function ListEmployees() {
               employees.map((employee) => (
                 <TableRow key={employee.id}>
                   <TableCell>
-                    <Avatar alt="sds" />
+                    <Avatar src={employee.picture} />{" "}
                   </TableCell>
                   <TableCell
                     sx={{
@@ -470,106 +447,13 @@ function ListEmployees() {
           </TableBody>
         </Table>
       </TableContainer>
-
-      <Modal
-        open={editModalOpen}
-        onClose={handleEditModalClose}
-        aria-labelledby="edit-employee-modal"
-        aria-describedby="edit-employee-modal-description"
-      >
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            p: 4,
-            maxWidth: 400,
-          }}
-        >
-          <Typography variant="h6" id="modal-modal-title" component="h2">
-            Edit employee
-          </Typography>
-          <Box
-            component="form"
-            sx={{ mt: 2 }}
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleEdit();
-            }}
-          >
-            <TextField
-              fullWidth
-              id="name"
-              label="Name"
-              variant="outlined"
-              value={editedEmployee.name}
-              onChange={(e) =>
-                setEditedEmployee({ ...editedEmployee, name: e.target.value })
-              }
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              fullWidth
-              id="lastname"
-              label="Lastname"
-              variant="outlined"
-              value={editedEmployee.lastName}
-              onChange={(e) =>
-                setEditedEmployee({
-                  ...editedEmployee,
-                  lastName: e.target.value,
-                })
-              }
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              fullWidth
-              id="phone"
-              label="Phone"
-              variant="outlined"
-              value={editedEmployee.phone}
-              onChange={(e) =>
-                setEditedEmployee({ ...editedEmployee, phone: e.target.value })
-              }
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              fullWidth
-              id="address"
-              label="Address"
-              variant="outlined"
-              value={editedEmployee.address}
-              onChange={(e) =>
-                setEditedEmployee({
-                  ...editedEmployee,
-                  address: e.target.value,
-                })
-              }
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              fullWidth
-              id="email"
-              label="Email"
-              variant="outlined"
-              value={editedEmployee.email}
-              onChange={(e) =>
-                setEditedEmployee({
-                  ...editedEmployee,
-                  email: e.target.value,
-                })
-              }
-              sx={{ mb: 2 }}
-            />
-            <Button fullWidth variant="contained" color="primary" type="submit">
-              Save
-            </Button>
-          </Box>
-        </Box>
-      </Modal>
+      <ModalEditEmployee
+        editModalOpen={editModalOpen}
+        handleEditModalClose={handleEditModalClose}
+        editedEmployee={editedEmployee}
+        setEditedEmployee={setEditedEmployee}
+        setEmployees={setEmployees}
+      />
 
       <Modal
         open={deleteModalOpen}
@@ -622,7 +506,6 @@ function ListEmployees() {
           )}
         </Box>
       </Modal>
-
       <ModalTransactionsEmployee
         isModalOpen={transactionsModalOpen}
         handleCloseModal={handleTransactionsModalClose}

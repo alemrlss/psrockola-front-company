@@ -13,6 +13,7 @@ function CreateEmployees() {
     password: "",
     address: "",
     phone: "",
+    photo: null, // Inicializa el campo de foto a null
   });
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -21,10 +22,16 @@ function CreateEmployees() {
 
   const handleChange = (e) => {
     setMessage(null);
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    if (e.target.name === "photo") {
+      // Si el campo es de tipo archivo, actualiza solo el campo de foto en formData
+      setFormData({ ...formData, photo: e.target.files[0] });
+    } else {
+      // Actualiza otros campos de texto
+      setFormData({
+        ...formData,
+        [e.target.name]: e.target.value,
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -33,9 +40,11 @@ function CreateEmployees() {
 
     if (!user.id) {
       console.error("No se ha podido obtener el id del usuario");
+      setLoading(false);
       return;
     }
 
+    // Verifica que los campos requeridos estén completos
     if (
       formData.name === "" ||
       formData.lastName === "" ||
@@ -52,13 +61,35 @@ function CreateEmployees() {
       return;
     }
 
+    // Crea una instancia de FormData
+    const formDataInstance = new FormData();
+
+    // Agrega los campos de datos al formDataInstance
+    formDataInstance.append("name", formData.name);
+    formDataInstance.append("lastName", formData.lastName);
+    formDataInstance.append("email", formData.email);
+    formDataInstance.append("password", formData.password);
+    formDataInstance.append("address", formData.address);
+    formDataInstance.append("phone", formData.phone);
+    formDataInstance.append("userId", user.id);
+
+    // Si hay una foto de perfil seleccionada, agrégala al FormData
+    if (formData.photo) {
+      formDataInstance.append("photo", formData.photo);
+    }
+
     try {
-      // Realiza la solicitud para crear el empleado
-      const response = await api.post("/employee/create", {
-        ...formData,
-        userId: user.id,
+      // Realiza la solicitud para crear el empleado con formData
+      const response = await api.post("/employee/create", formDataInstance, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
+
+      // Muestra un mensaje de éxito
       setMessage({ type: "success", content: "Empleado creado con éxito." });
+
+      // Restablece el formulario
       setFormData({
         name: "",
         lastName: "",
@@ -66,8 +97,10 @@ function CreateEmployees() {
         password: "",
         address: "",
         phone: "",
+        photo: null, // Si hay un campo de archivo, asegúrate de restablecerlo
       });
 
+      // Elimina el mensaje después de 3 segundos
       setTimeout(() => {
         setMessage(null);
       }, 3000);
@@ -136,6 +169,15 @@ function CreateEmployees() {
           onChange={handleChange}
           value={formData.phone}
         />
+        {/* Añade un input de tipo file para permitir seleccionar una foto de perfil */}
+        <TextField
+          label="Foto de Perfil"
+          name="photo"
+          type="file"
+          variant="outlined"
+          fullWidth
+          onChange={handleChange}
+        />
         <div className="col-span-2 flex justify-center">
           <Button
             variant="contained"
@@ -144,7 +186,7 @@ function CreateEmployees() {
             disabled={loading}
           >
             {loading ? (
-              <div className="flex">x
+              <div className="flex">
                 <CircularProgress size={24} color="inherit" />
                 <span className="ml-2">Creando Empleado...</span>
               </div>
