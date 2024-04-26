@@ -10,7 +10,7 @@ import api from "../api/api";
 import { useSelector } from "react-redux";
 
 const languages = [
-  { code: "us", name: "English" },
+  { code: "en", name: "English" },
   { code: "es", name: "Español" },
   { code: "pt", name: "Português" },
 ];

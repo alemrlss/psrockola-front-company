@@ -6,7 +6,7 @@ const storedLanguage = localStorage.getItem("language");
 
 i18n.use(initReactI18next).init({
   resources: {
-    us: {
+    en: {
       translation: {
         psrockola_owner: "Owner",
         psrockola_employee: "Employee",
@@ -91,8 +91,8 @@ i18n.use(initReactI18next).init({
       },
     },
   },
-  lng: storedLanguage || "us",
-  fallbackLng: ["us", "es", "pt"],
+  lng: storedLanguage || "en",
+  fallbackLng: ["en", "es", "pt"],
   interpolation: {
     escapeValue: false,
   },
