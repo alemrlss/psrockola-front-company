@@ -128,7 +128,7 @@ function AppBarComponent({ drawerWidth, handleDrawerToggle }) {
                 {formatNumbers(user.balance)}
               </Typography>
               <Avatar
-                src="/public/rockobit.png"
+                src="/rockobit.png"
                 sx={{
                   width: 30,
                   height: 30,
