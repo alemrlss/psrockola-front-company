@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import api from "../../../api/api";
 import { useSelector } from "react-redux";
 import {
@@ -7,7 +7,6 @@ import {
   Typography,
   Modal,
   Box,
-  TextField,
   Switch,
   Avatar,
 } from "@mui/material";
@@ -30,8 +29,11 @@ import Paper from "@mui/material/Paper";
 import { SwapHoriz } from "@mui/icons-material";
 import ModalTransactionsEmployee from "../../../components/Employees/ModalTransactionsEmployees";
 import ModalEditEmployee from "../../../components/Employees/Edit/ModalEditEmployee";
+import Sound from "../../../../public/audio/Coin.wav";
 
 function ListEmployees() {
+  const audioRef = useRef(null);
+
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
 
@@ -79,6 +81,11 @@ function ListEmployees() {
     getEmployees();
   }, [user.id]);
 
+  const playSound = () => {
+    if (audioRef.current) {
+      audioRef.current.play();
+    }
+  };
   // Funciones para abrir y cerrar el menú desplegable
   const handleMenuOpen = (event, employee) => {
     setSelectedEmployee(employee);
@@ -134,7 +141,6 @@ function ListEmployees() {
           },
         }
       );
-      console.log("RB claimed:", response.data);
 
       const updatedEmployees = employees.map((emp) => {
         if (emp.id === employeeId) {
@@ -147,13 +153,12 @@ function ListEmployees() {
       });
       setEmployees(updatedEmployees);
 
-      console.log(user.balance);
-      console.log(response.data.data.employee.amount);
       dispatch(
         updateUserBalance(
           user.balance + parseInt(response.data.data.employee.amount)
         )
       );
+      playSound();
     } catch (error) {
       console.error("Error al reclamar RB:", error);
     } finally {
@@ -171,6 +176,7 @@ function ListEmployees() {
     setEmployeeToDelete(null);
     setError(null);
   };
+
   const handleTransactionsModalOpen = (employee) => {
     setEmployeeToTransactions(employee);
     setTransactionsModalOpen(true);
@@ -511,6 +517,7 @@ function ListEmployees() {
         handleCloseModal={handleTransactionsModalClose}
         selectedEmployee={employeeToTransactions}
       />
+      <audio ref={audioRef} src={Sound} />
     </Container>
   );
 }

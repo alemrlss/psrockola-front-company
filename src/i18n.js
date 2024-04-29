@@ -43,6 +43,8 @@ i18n.use(initReactI18next).init({
         view_memberships_card_skins_plural: "skins available",
         view_memberships_card_screens_start: "1 Screen (Maximum",
         view_memberships_card_screens_end: "Screens)",
+        monthly_memberships: "Monthly",
+        yearly_memberships: "Yearly",
       },
     },
     es: {
@@ -82,6 +84,8 @@ i18n.use(initReactI18next).init({
         view_memberships_card_skins_plural: "skins disponibles",
         view_memberships_card_screens_start: "1 Pantalla (Máximo",
         view_memberships_card_screens_end: "Pantallas)",
+        monthly_memberships: "Mensual",
+        yearly_memberships: "Anual",
       },
     },
     pt: {
@@ -121,8 +125,9 @@ i18n.use(initReactI18next).init({
         view_memberships_card_skins_plural: "skins disponíveis",
         view_memberships_card_screens_start: "1 Tela (Máximo",
         view_memberships_card_screens_end: "Telas)",
+        monthly_memberships: "Mensal",
+        yearly_memberships: "Anual",
       },
-
     },
   },
   lng: storedLanguage || "en",

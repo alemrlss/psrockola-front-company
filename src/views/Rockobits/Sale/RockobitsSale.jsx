@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import api from "../../../api/api";
 import { updateUserBalance } from "../../../features/authSlice";
 import apiFormData from "../../../api/apiFormData";
 import ModalSale from "../../../components/Rockobits/Sale/ModalSale";
+import Sound from "../../../../public/audio/Coin.wav";
+
 import {
   TextField,
   Button,
@@ -17,6 +19,8 @@ import {
 } from "@mui/material";
 
 function RockobitsSale() {
+  const audioRef = useRef(null);
+
   const [email, setEmail] = useState("");
   const [quantity, setQuantity] = useState();
   const [paymentMethod, setPaymentMethod] = useState("");
@@ -29,6 +33,12 @@ function RockobitsSale() {
 
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
+
+  const playSound = () => {
+    if (audioRef.current) {
+      audioRef.current.play();
+    }
+  };
 
   const handleEmailChange = (event) => {
     setError("");
@@ -141,6 +151,7 @@ function RockobitsSale() {
 
         const newBalance = user.balance - parseInt(quantity);
         dispatch(updateUserBalance(newBalance));
+        playSound();
 
         setTimeout(() => {
           setSuccess("");
@@ -262,6 +273,7 @@ function RockobitsSale() {
         transferRockobits={transferRockobits}
         errorModal={errorModal}
       />
+      <audio ref={audioRef} src={Sound} />
     </Box>
   );
 }

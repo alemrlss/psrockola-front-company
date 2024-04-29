@@ -1,54 +1,75 @@
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { updateUserBalance } from "../../../features/authSlice";
-import { useSelector } from "react-redux";
 import api from "../../../api/api";
 import { Box, Typography } from "@mui/material";
+import Sound from "./../../../../public/audio/Coin.wav";
 
 function RockobitsSuccess() {
+  // Referencia al elemento de audio para controlar la reproducción del sonido
+  const audioRef = useRef(null);
+
+  // Obtener la sesión de la URL
   const location = useLocation();
   const sessionId = new URLSearchParams(location.search).get("session_id");
+
+  // Estado para almacenar el estado del pago
   const [status, setStatus] = useState(null);
+
+  // Obtener el usuario del estado global
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
-  const navigate = useNavigate();
 
+  // Función para reproducir el sonido
+  const playSound = () => {
+    if (audioRef.current) {
+      audioRef.current.play();
+    }
+  };
+
+  // Efecto para manejar la petición a la API
   useEffect(() => {
-    const handleSuccess = async () => {
-      try {
-        const response = await api.post(
-          `stripe/checkout-session-subscription`,
-          {
-            sessionId: sessionId,
-          }
-        );
-
-        const data = await response.data;
-        setStatus(data.payment_status);
-        if (data.payment_status === "paid") {
-          const walletResponse = await api.get(
-            `wallet/${user.wallet.id}/amount`
-          );
-          const walletData = await walletResponse.data;
-          dispatch(
-            updateUserBalance(parseInt(walletData.data.decryptedAmount))
-          );
-          setTimeout(() => {
-            navigate("/rockobits/buy");
-          }, 3000);
-        }
-      } catch (error) {
-        console.error("Error en la petición al backend:", error);
-        // Manejo de errores según sea necesario
-      }
-    };
-
+    // Función para manejar el éxito de la petición
+ 
     if (sessionId) {
+      const handleSuccess = async () => {
+        try {
+          const response = await api.post(
+            `stripe/checkout-session-subscription`,
+            {
+              sessionId: sessionId,
+            }
+          );
+
+          const data = response.data;
+          setStatus(data.payment_status);
+
+          if (data.payment_status === "paid") {
+            // Reproducir el sonido
+
+            // Actualizar el saldo del usuario
+            const walletResponse = await api.get(
+              `wallet/${user.wallet.id}/amount`
+            );
+            const walletData = walletResponse.data;
+            dispatch(
+              updateUserBalance(parseInt(walletData.data.decryptedAmount))
+            );
+            playSound();
+
+          }
+        } catch (error) {
+          console.error("Error en la petición a la API:", error);
+        }
+      };
+
       handleSuccess();
+
     }
   }, [sessionId, dispatch, user.wallet.id]);
 
+  // Renderizar la UI
   return (
     <Box
       minHeight="100vh"
@@ -57,6 +78,8 @@ function RockobitsSuccess() {
       justifyContent="center"
       bgcolor="transparent"
     >
+      {/* Elemento de audio con referencia */}
+      <audio ref={audioRef} src={Sound} />
       <Box
         bgcolor="#E6DCDC"
         p={4}

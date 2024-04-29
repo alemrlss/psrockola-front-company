@@ -25,6 +25,7 @@ function QrList({
   isModalOpen,
   handleCloseModal,
   handleShowQr,
+  playSound,
 }) {
   const handleToggleQr = async (newState) => {
     try {
@@ -43,6 +44,7 @@ function QrList({
 
         const newBalance = user.balance + parseInt(qrUpdated.data.data.amount);
         dispatch(updateUserBalance(newBalance));
+        playSound();
       }
     } catch (error) {
       console.error("Error deleting QR:", error);

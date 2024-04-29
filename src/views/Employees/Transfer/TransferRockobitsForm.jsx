@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import api from "../../../api/api";
 import { Button, MenuItem, Select, TextField } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { updateUserBalance } from "../../../features/authSlice";
+import Sound from "../../../../public/audio/Coin.wav";
 
 function TransferRockobitsForm() {
+  const audioRef = useRef(null);
+
   const [employeeId, setEmployeeId] = useState("Select Employee");
   const [amount, setAmount] = useState("");
   const [transferResult, setTransferResult] = useState("");
@@ -25,6 +28,12 @@ function TransferRockobitsForm() {
     }
   }, []);
 
+  const playSound = () => {
+    if (audioRef.current) {
+      audioRef.current.play();
+    }
+  };
+
   const handleTransfer = async () => {
     try {
       const body = {
@@ -43,8 +52,8 @@ function TransferRockobitsForm() {
         setAmount("");
         setEmployeeId("Select Employee");
         const newBalance = user.balance - parseInt(amount);
-
-        dispatch(updateUserBalance(newBalance)); // Actualizar el balance en el store de Redux
+        dispatch(updateUserBalance(newBalance));
+        playSound();
       } else {
         setTransferResult("Error transferring rockobits");
       }
@@ -95,6 +104,7 @@ function TransferRockobitsForm() {
           </p>
         )}
       </form>
+      <audio ref={audioRef} src={Sound} />
     </div>
   );
 }

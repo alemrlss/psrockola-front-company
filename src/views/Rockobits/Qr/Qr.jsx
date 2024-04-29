@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   TextField,
   Button,
@@ -17,8 +17,11 @@ import QrList from "../../../components/Rockobits/Qr/QrList";
 import api from "../../../api/api";
 import { updateUserBalance } from "../../../features/authSlice";
 import TablePagination from "@mui/material/TablePagination";
+import Sound from "../../../../public/audio/Coin.wav";
 
 function Qr() {
+  const audioRef = useRef(null);
+
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
   const [amount, setAmount] = useState("");
@@ -40,6 +43,12 @@ function Qr() {
   useEffect(() => {
     fetchQrList();
   }, [user.id, filterState, page, rowsPerPage]); // Se vuelve a cargar la lista cuando cambia el estado del filtro
+
+  const playSound = () => {
+    if (audioRef.current) {
+      audioRef.current.play();
+    }
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -126,6 +135,7 @@ function Qr() {
 
         const newBalance = user.balance - parseInt(amount);
         dispatch(updateUserBalance(newBalance));
+        playSound();
         fetchQrList();
 
         handleShowQr(response.data);
@@ -278,6 +288,7 @@ function Qr() {
         </FormControl>
       </div>
       <QrList
+        playSound={playSound}
         qrList={qrList}
         setQrList={setQrList}
         fetchQrList={fetchQrList}
@@ -299,6 +310,7 @@ function Qr() {
         rowsPerPageOptions={[20]}
         labelRowsPerPage={"Filas por página:"}
       />
+      <audio ref={audioRef} src={Sound} />
     </div>
   );
 }

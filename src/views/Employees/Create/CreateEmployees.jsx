@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -18,7 +18,22 @@ function CreateEmployees() {
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const [limitEmployees, setLimitEmployees] = useState(0);
+
   const user = useSelector((state) => state.auth.user);
+
+  useEffect(() => {
+    const getEmployees = async () => {
+      try {
+        const response = await api.get(`employee/employees/${user.id}`);
+        setLimitEmployees(response.data.data.employeeLimit);
+      } catch (error) {
+        console.error("Error al obtener las membresías:", error);
+      }
+    };
+
+    getEmployees();
+  }, [user.id]);
 
   const handleChange = (e) => {
     setMessage(null);
@@ -106,6 +121,15 @@ function CreateEmployees() {
       }, 3000);
     } catch (error) {
       console.error("Error al crear el empleado:", error);
+
+      console.log(error.response.data.message);
+      if (error.response.data.message === "EMPLOYEES_LIMIT_REACHED") {
+        setMessage({
+          type: "error",
+          content: "You have reached the employee limit.",
+        });
+        return;
+      }
       setMessage({
         type: "error",
         content: "Error al crear el empleado. Por favor, inténtalo de nuevo.",
@@ -117,6 +141,7 @@ function CreateEmployees() {
 
   return (
     <div className="max-w-lg mx-auto p-6 bg-gray-100 rounded-md shadow-lg">
+      <h2 className="font-bold">Employees Limit: {limitEmployees}</h2>
       <h2 className="text-2xl font-bold mb-6 text-center">Crear Empleado</h2>
       <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
         <TextField
