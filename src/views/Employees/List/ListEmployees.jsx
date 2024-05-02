@@ -30,8 +30,10 @@ import { SwapHoriz } from "@mui/icons-material";
 import ModalTransactionsEmployee from "../../../components/Employees/ModalTransactionsEmployees";
 import ModalEditEmployee from "../../../components/Employees/Edit/ModalEditEmployee";
 import Sound from "../../../../public/audio/Coin.wav";
+import { useTranslation } from "react-i18next";
 
 function ListEmployees() {
+  const { t } = useTranslation();
   const audioRef = useRef(null);
 
   const user = useSelector((state) => state.auth.user);
@@ -221,7 +223,7 @@ function ListEmployees() {
           my: 1,
         }}
       >
-        Employees: {employees.length}
+        {t("view_employees_list_employees")}: {employees.length}
       </Typography>
       <Typography
         variant="h4"
@@ -229,7 +231,7 @@ function ListEmployees() {
           my: 1,
         }}
       >
-        Limite: {limitEmployees}
+        {t("view_employees_list_limit")}: {limitEmployees}
       </Typography>
       <TableContainer component={Paper}>
         <Table>
@@ -251,56 +253,56 @@ function ListEmployees() {
                   textAlign: "center",
                 }}
               >
-                Name
+                {t("view_employees_list_name")}
               </TableCell>
               <TableCell
                 sx={{
                   textAlign: "center",
                 }}
               >
-                Lastname
+                {t("view_employees_list_lastname")}
               </TableCell>
               <TableCell
                 sx={{
                   textAlign: "center",
                 }}
               >
-                Email
+                {t("view_employees_list_email")}
               </TableCell>
               <TableCell
                 sx={{
                   textAlign: "center",
                 }}
               >
-                Phone
+                {t("view_employees_list_phone")}
               </TableCell>
               <TableCell
                 sx={{
                   textAlign: "center",
                 }}
               >
-                Address
+                {t("view_employees_list_address")}
               </TableCell>
               <TableCell
                 sx={{
                   textAlign: "center",
                 }}
               >
-                Wallet
+                {t("view_employees_list_wallet")}
               </TableCell>
               <TableCell
                 sx={{
                   textAlign: "center",
                 }}
               >
-                Playlist Permission
+                {t("view_employees_list_playlist")}
               </TableCell>
               <TableCell
                 sx={{
                   textAlign: "center",
                 }}
               >
-                Actions
+                {t("view_employees_list_actions")}
               </TableCell>
             </TableRow>
           </TableHead>
@@ -315,7 +317,7 @@ function ListEmployees() {
                     fontWeight: "bold",
                   }}
                 >
-                  No employees found
+                  {t("view_employees_list_not_found")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -419,13 +421,13 @@ function ListEmployees() {
                         onClick={() => handleEditModalOpen(selectedEmployee)}
                       >
                         <EditIcon sx={{ marginRight: "8px", color: "blue" }} />{" "}
-                        Edit
+                        {t("view_employees_list_edit")}
                       </MenuItem>
                       <MenuItem
                         onClick={() => handleDeleteModalOpen(selectedEmployee)}
                       >
                         <DeleteIcon sx={{ marginRight: "8px", color: "red" }} />{" "}
-                        Delete
+                        {t("view_employees_list_delete")}
                       </MenuItem>
                       <MenuItem
                         onClick={() => handleClaimRB(selectedEmployee.id)}
@@ -433,7 +435,7 @@ function ListEmployees() {
                         <MoneyIcon
                           sx={{ marginRight: "8px", color: "yellow" }}
                         />{" "}
-                        Claim RB
+                        {t("view_employees_list_claim")}
                       </MenuItem>
                       <MenuItem
                         onClick={() => {
@@ -443,7 +445,7 @@ function ListEmployees() {
                         <SwapHoriz
                           sx={{ marginRight: "8px", color: "black" }}
                         />{" "}
-                        Transactions
+                        {t("view_employees_list_transactions")}
                       </MenuItem>
                     </Menu>
                   </TableCell>
@@ -459,6 +461,7 @@ function ListEmployees() {
         editedEmployee={editedEmployee}
         setEditedEmployee={setEditedEmployee}
         setEmployees={setEmployees}
+        employees={employees}
       />
 
       <Modal
@@ -480,10 +483,10 @@ function ListEmployees() {
           }}
         >
           <Typography variant="h6" id="modal-modal-title" component="h2">
-            Confirmation delete
+            {t("view_employees_list_delete_title")}
           </Typography>
           <Typography variant="body1" sx={{ mt: 2 }}>
-            Are you sure you want to delete this employee?{" "}
+            {t("view_employees_list_delete_message")}
           </Typography>
           <Box sx={{ mt: 2 }}>
             <Button
@@ -492,7 +495,7 @@ function ListEmployees() {
               sx={{ mr: 2 }}
               disabled={loading} // Deshabilitar el botón mientras se está realizando una solicitud
             >
-              Cancel
+              {t("view_employees_list_delete_button_delete")}
             </Button>
             <Button
               variant="contained"
@@ -502,7 +505,7 @@ function ListEmployees() {
               }}
               disabled={loading} // Deshabilitar el botón mientras se está realizando una solicitud
             >
-              Delete
+              {t("view_employees_list_delete_button_cancel")}
             </Button>
           </Box>
           {error && (

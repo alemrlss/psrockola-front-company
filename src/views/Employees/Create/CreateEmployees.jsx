@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import api from "../../../api/api";
 import { useSelector } from "react-redux";
+import { CloudUpload } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 
 function CreateEmployees() {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: "",
     lastName: "",
@@ -13,7 +16,7 @@ function CreateEmployees() {
     password: "",
     address: "",
     phone: "",
-    photo: null, // Inicializa el campo de foto a null
+    photo: null,
   });
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -112,7 +115,7 @@ function CreateEmployees() {
         password: "",
         address: "",
         phone: "",
-        photo: null, // Si hay un campo de archivo, asegúrate de restablecerlo
+        photo: null,
       });
 
       // Elimina el mensaje después de 3 segundos
@@ -141,11 +144,15 @@ function CreateEmployees() {
 
   return (
     <div className="max-w-lg mx-auto p-6 bg-gray-100 rounded-md shadow-lg">
-      <h2 className="font-bold">Employees Limit: {limitEmployees}</h2>
-      <h2 className="text-2xl font-bold mb-6 text-center">Crear Empleado</h2>
+      <h2 className="font-bold">
+        {t("view_employees_create_limit")}: {limitEmployees}
+      </h2>
+      <h2 className="text-2xl font-bold mb-6 text-center">
+        {t("view_employees_create_title")}
+      </h2>
       <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
         <TextField
-          label="Nombre"
+          label={t("view_employees_create_name")}
           name="name"
           variant="outlined"
           fullWidth
@@ -153,7 +160,7 @@ function CreateEmployees() {
           value={formData.name}
         />
         <TextField
-          label="Apellido"
+          label={t("view_employees_create_lastname")}
           name="lastName"
           variant="outlined"
           fullWidth
@@ -161,7 +168,7 @@ function CreateEmployees() {
           value={formData.lastName}
         />
         <TextField
-          label="Correo Electrónico"
+          label={t("view_employees_create_email")}
           name="email"
           type="email"
           variant="outlined"
@@ -170,7 +177,7 @@ function CreateEmployees() {
           value={formData.email}
         />
         <TextField
-          label="Contraseña"
+          label={t("view_employees_create_password")}
           name="password"
           type="password"
           variant="outlined"
@@ -179,7 +186,7 @@ function CreateEmployees() {
           value={formData.password}
         />
         <TextField
-          label="Dirección"
+          label={t("view_employees_create_address")}
           name="address"
           variant="outlined"
           fullWidth
@@ -187,22 +194,39 @@ function CreateEmployees() {
           value={formData.address}
         />
         <TextField
-          label="Teléfono"
+          label={t("view_employees_create_phone")}
           name="phone"
           variant="outlined"
           fullWidth
           onChange={handleChange}
           value={formData.phone}
         />
-        {/* Añade un input de tipo file para permitir seleccionar una foto de perfil */}
-        <TextField
-          label="Foto de Perfil"
-          name="photo"
-          type="file"
+        <Button
           variant="outlined"
-          fullWidth
-          onChange={handleChange}
-        />
+          component="label"
+          color="primary"
+          startIcon={<CloudUpload />}
+          sx={{
+            borderRadius: 1,
+            padding: "8px 6px",
+            width: "100%",
+            marginTop: 2,
+            "&:hover": {
+              backgroundColor: "rgba(33, 150, 243, 0.08)",
+            },
+            gridColumn: "span 2",
+          }}
+        >
+          {t("view_employees_create_photo")}
+          <input
+            type="file"
+            accept="image/*"
+            name="photo"
+            hidden
+            onChange={handleChange}
+          />
+        </Button>
+
         <div className="col-span-2 flex justify-center">
           <Button
             variant="contained"
@@ -213,10 +237,12 @@ function CreateEmployees() {
             {loading ? (
               <div className="flex">
                 <CircularProgress size={24} color="inherit" />
-                <span className="ml-2">Creando Empleado...</span>
+                <span className="ml-2">
+                  {t("view_employees_create_loading")}
+                </span>
               </div>
             ) : (
-              "Crear Empleado"
+              t("view_employees_create_button")
             )}
           </Button>
         </div>

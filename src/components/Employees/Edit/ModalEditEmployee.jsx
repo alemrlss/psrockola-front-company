@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -8,9 +8,13 @@ import {
   Tabs,
   Tab,
   IconButton,
+  Avatar,
 } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { Visibility, VisibilityOff, CloudUpload } from "@mui/icons-material";
+import axios from "../../../api/api";
 import api from "../../../api/api";
+import apiFormData from "../../../api/apiFormData";
+import { useTranslation } from "react-i18next";
 
 function ModalEditEmployee({
   editModalOpen,
@@ -18,13 +22,17 @@ function ModalEditEmployee({
   editedEmployee,
   setEditedEmployee,
   setEmployees,
+  employees,
 }) {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(0);
-
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const [previewImage, setPreviewImage] = useState(null);
+  const [photoFile, setPhotoFile] = useState(null); // Almacena el archivo de foto seleccionado
 
   const [error, setError] = useState("");
 
@@ -33,6 +41,8 @@ function ModalEditEmployee({
     setPassword("");
     setConfirmPassword("");
     setActiveTab(newValue);
+    setPreviewImage(null);
+    setPhotoFile(null);
   };
 
   const handleToggleShowPassword = () => {
@@ -57,7 +67,7 @@ function ModalEditEmployee({
     }
 
     try {
-      await api.patch(`/employee/change-password/${editedEmployee.id}`, {
+      await axios.patch(`/employee/change-password/${editedEmployee.id}`, {
         newPassword: password,
       });
       handleEditModalClose();
@@ -71,46 +81,110 @@ function ModalEditEmployee({
     }
   };
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const previewURL = URL.createObjectURL(file);
+
+      setPreviewImage(previewURL);
+      setPhotoFile(file);
+    }
+  };
+
   const handleEdit = async () => {
     try {
-      // Realiza la solicitud PATCH al servidor para editar el empleado
-      const response = await api.patch(`/employee/${editedEmployee.id}`, {
-        name: editedEmployee.name,
-        lastName: editedEmployee.lastName,
-        phone: editedEmployee.phone,
-        address: editedEmployee.address,
-        email: editedEmployee.email,
-      });
+      const response = await apiFormData.patch(
+        `/employee/${editedEmployee.id}`,
+        {
+          name: editedEmployee.name,
+          lastName: editedEmployee.lastName,
+          phone: editedEmployee.phone,
+          address: editedEmployee.address,
+          email: editedEmployee.email,
+        }
+      );
 
-      // Actualiza el estado de los empleados con los datos editados
       setEmployees((prevEmployees) => {
-        // Encuentra el índice del empleado editado en el array employees
         const index = prevEmployees.findIndex(
           (emp) => emp.id === editedEmployee.id
         );
 
-        // Crea un nuevo objeto de empleado con los datos actualizados
         const updatedEmployee = {
           ...response.data.data,
-          balance: editedEmployee.balance, // Mantén el balance existente
+          balance: editedEmployee.balance,
         };
 
-        // Crea una nueva matriz de empleados con el empleado actualizado
         const updatedEmployees = [...prevEmployees];
         updatedEmployees[index] = updatedEmployee;
         return updatedEmployees;
       });
 
-      handleEditModalClose(); // Cierra el modal de edición
+      handleEditModalClose();
     } catch (error) {
       console.error("Error al editar empleado:", error);
+    }
+  };
+
+  const handleSavePhoto = async () => {
+    if (!photoFile) {
+      setError("Debes seleccionar una foto.");
+      return;
+    }
+
+    console.log(photoFile);
+
+    const formData = new FormData();
+    formData.append("photo", photoFile);
+
+    try {
+      const response = await api.patch(
+        `/employee/update-photo/${editedEmployee.id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log(response.data);
+      console.log(employees);
+
+      setEmployees((prevEmployees) => {
+        const index = prevEmployees.findIndex(
+          (emp) => emp.id === editedEmployee.id
+        );
+
+        const updatedEmployee = {
+          ...editedEmployee,
+          picture: response.data.picture,
+        };
+
+        const updatedEmployees = [...prevEmployees];
+        updatedEmployees[index] = updatedEmployee;
+        return updatedEmployees;
+      });
+      console.log(employees);
+      setError("");
+      setPreviewImage(null);
+      handleEditModalClose();
+    } catch (error) {
+      console.error("Error al guardar la foto de perfil:", error);
+      setError("Ocurrió un error al guardar la foto.");
     }
   };
 
   return (
     <Modal
       open={editModalOpen}
-      onClose={handleEditModalClose}
+      onClose={() => {
+        handleEditModalClose();
+        setError("");
+        setPassword("");
+        setConfirmPassword("");
+        setPreviewImage(null);
+        setPhotoFile(null);
+      }}
       aria-labelledby="edit-employee-modal"
       aria-describedby="edit-employee-modal-description"
       width="400"
@@ -133,8 +207,9 @@ function ModalEditEmployee({
         }}
       >
         <Tabs value={activeTab} onChange={handleTabChange}>
-          <Tab label="Edit User" />
-          <Tab label="Change Password" />
+          <Tab label={t("view_employees_list_edit_tab_edit")} />
+          <Tab label={t("view_employees_list_edit_tab_password")} />
+          <Tab label={t("view_employees_list_edit_tab_photo")} />
         </Tabs>
 
         {activeTab === 0 && (
@@ -146,11 +221,10 @@ function ModalEditEmployee({
               handleEdit();
             }}
           >
-            {/* Formulario de edición de usuario */}
             <TextField
               fullWidth
               id="name"
-              label="Name"
+              label={t("view_employees_list_edit_tab_edit_name")}
               variant="outlined"
               value={editedEmployee.name}
               onChange={(e) =>
@@ -161,7 +235,7 @@ function ModalEditEmployee({
             <TextField
               fullWidth
               id="lastname"
-              label="Lastname"
+              label={t("view_employees_list_edit_tab_edit_lastname")}
               variant="outlined"
               value={editedEmployee.lastName}
               onChange={(e) =>
@@ -175,7 +249,7 @@ function ModalEditEmployee({
             <TextField
               fullWidth
               id="phone"
-              label="Phone"
+              label={t("view_employees_list_edit_tab_edit_phone")}
               variant="outlined"
               value={editedEmployee.phone}
               onChange={(e) =>
@@ -189,7 +263,7 @@ function ModalEditEmployee({
             <TextField
               fullWidth
               id="address"
-              label="Address"
+              label={t("view_employees_list_edit_tab_edit_address")}
               variant="outlined"
               value={editedEmployee.address}
               onChange={(e) =>
@@ -203,7 +277,7 @@ function ModalEditEmployee({
             <TextField
               fullWidth
               id="email"
-              label="Email"
+              label={t("view_employees_list_edit_tab_edit_email")}
               variant="outlined"
               value={editedEmployee.email}
               onChange={(e) =>
@@ -215,7 +289,7 @@ function ModalEditEmployee({
               sx={{ mb: 2 }}
             />
             <Button fullWidth variant="contained" color="primary" type="submit">
-              Save
+              {t("view_employees_list_edit_tab_edit_button")}
             </Button>
           </Box>
         )}
@@ -224,13 +298,12 @@ function ModalEditEmployee({
           <Box sx={{ mt: 2 }}>
             <Box>
               <TextField
-                label="Password"
+                label={t("view_employees_list_edit_tab_password_password")}
                 variant="outlined"
                 fullWidth
                 type={showPassword ? "text" : "password"}
                 onChange={(e) => {
                   setError("");
-
                   setPassword(e.target.value);
                 }}
                 margin="normal"
@@ -243,13 +316,12 @@ function ModalEditEmployee({
                 }}
               />
               <TextField
-                label="Confirm Password"
+                label={t("view_employees_list_edit_tab_password_confirm_password")}
                 variant="outlined"
                 fullWidth
                 type={showConfirmPassword ? "text" : "password"}
                 onChange={(e) => {
                   setError("");
-
                   setConfirmPassword(e.target.value);
                 }}
                 margin="normal"
@@ -267,7 +339,7 @@ function ModalEditEmployee({
                 sx={{ mt: 2 }}
                 onClick={handleChangePassword}
               >
-                Save changes
+                {t("view_employees_list_edit_tab_password_button")}
               </Button>
               {error && (
                 <Typography variant="body2" color="error">
@@ -275,6 +347,60 @@ function ModalEditEmployee({
                 </Typography>
               )}
             </Box>{" "}
+          </Box>
+        )}
+
+        {activeTab === 2 && (
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              {t("view_employees_list_edit_tab_photo_title")}
+            </Typography>
+
+            <Avatar
+              src={previewImage || editedEmployee.picture}
+              alt="Foto de perfil"
+              sx={{ width: 100, height: 100, mb: 2, margin: "auto" }}
+            />
+
+            <Button
+              variant="outlined"
+              component="label"
+              color="primary"
+              startIcon={<CloudUpload />}
+              sx={{
+                width: "100%",
+                borderRadius: 10,
+                padding: "8px 16px",
+                marginTop: 2,
+                marginBottom: 2,
+                "&:hover": {
+                  backgroundColor: "rgba(33, 150, 243, 0.08)",
+                },
+              }}
+            >
+              {t("view_employees_list_edit_tab_photo_upload")}
+              <input
+                type="file"
+                accept="image/*"
+                hidden
+                onChange={handleFileChange}
+              />
+            </Button>
+
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ mt: 2, width: "100%" }}
+              onClick={handleSavePhoto}
+            >
+              {t("view_employees_list_edit_tab_photo_button")}
+            </Button>
+
+            {error && (
+              <Typography variant="body2" color="error">
+                {error}
+              </Typography>
+            )}
           </Box>
         )}
       </Box>
