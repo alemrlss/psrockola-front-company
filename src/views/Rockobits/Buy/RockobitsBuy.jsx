@@ -3,8 +3,10 @@ import api from "../../../api/api";
 import { useSelector } from "react-redux";
 import { Typography, Button, Card, CardContent, Grid } from "@mui/material";
 import { formatNumbers } from "../../../utils/formatNumbers";
+import { useTranslation } from "react-i18next";
 
 function RockobitsBuy() {
+  const { t } = useTranslation();
   const [packages, setPackages] = useState([]);
   const user = useSelector((state) => state.auth.user);
 
@@ -64,11 +66,12 @@ function RockobitsBuy() {
   return (
     <div className="container mx-auto">
       <p className="text-gray-400 ml-10 absolute text-2xl">
-        Wallet: {formatNumbers(parseInt(walletBalance))} <b>Rockobits</b>
+        {t("view_rockobits_wallet")}: {formatNumbers(parseInt(walletBalance))}{" "}
+        <b>Rockobits</b>
       </p>
       <div className="flex justify-center items-center">
         <Typography variant="h4" align="center" gutterBottom>
-          <b>Rockobits packages</b>
+          <b>{t("view_rockobits_title")}</b>
         </Typography>
       </div>
 
@@ -81,7 +84,7 @@ function RockobitsBuy() {
                   {formatNumbers(pkg.rockobitsAmount)} Rockobits
                 </Typography>
                 <Typography variant="body1" gutterBottom>
-                  Price: ${(pkg.price / 100).toFixed(2)} USD
+                  {t("view_rockobits_card_price")}: ${(pkg.price / 100).toFixed(2)} USD
                 </Typography>
                 <Typography variant="body2" color="textSecondary" gutterBottom>
                   {pkg.name}
@@ -98,7 +101,7 @@ function RockobitsBuy() {
                     },
                   }}
                 >
-                  Buy
+                  {t("view_rockobtis_card_buy")}
                 </Button>
               </CardContent>
             </Card>

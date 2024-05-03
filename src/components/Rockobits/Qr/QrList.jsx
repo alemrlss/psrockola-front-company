@@ -14,6 +14,7 @@ import api from "../../../api/api";
 import { updateUserBalance } from "../../../features/authSlice";
 import ModalQr from "./ModalQr";
 import { formatNumbers } from "../../../utils/formatNumbers";
+import { useTranslation } from "react-i18next";
 
 function QrList({
   qrList,
@@ -27,6 +28,8 @@ function QrList({
   handleShowQr,
   playSound,
 }) {
+  const { t } = useTranslation();
+
   const handleToggleQr = async (newState) => {
     try {
       const qrUpdated = await api.patch(
@@ -108,28 +111,28 @@ function QrList({
                   textAlign: "center",
                 }}
               >
-                Created Date
+                {t("view_rockobits_qr_codes_table_created")}
               </TableCell>
               <TableCell
                 sx={{
                   textAlign: "center",
                 }}
               >
-                Rockobits amount
+                {t("view_rockobits_qr_codes_table_amount")}
               </TableCell>
               <TableCell
                 sx={{
                   textAlign: "center",
                 }}
               >
-                Expiration Date
+                {t("view_rockobits_qr_codes_table_expire")}
               </TableCell>
               <TableCell
                 sx={{
                   textAlign: "center",
                 }}
               >
-                State
+                {t("view_rockobits_qr_codes_table_state")}
               </TableCell>
               <TableCell
                 sx={{
@@ -191,14 +194,14 @@ function QrList({
                     }}
                   >
                     {qr.state === 0
-                      ? "Inactive"
+                      ? t("view_rockobits_qr_code_state_inactive")
                       : qr.state === 1
-                      ? "Active"
+                      ?  t("view_rockobits_qr_code_state_active")
                       : qr.state === 2
-                      ? "Consumed"
+                      ? t("view_rockobits_qr_code_state_consumed")
                       : qr.state === 3
-                      ? "Expired"
-                      : "Unknown"}
+                      ? t("view_rockobits_qr_code_state_expired")
+                      : t("view_rockobits_qr_code_state_unknown")}
                   </TableCell>
                   <TableCell
                     sx={{
@@ -211,7 +214,7 @@ function QrList({
                         variant="contained"
                         color="primary"
                       >
-                        Show QR
+                        {t("view_rockobits_qr_codes_table_showqr")}
                       </Button>
                     )}
                   </TableCell>
@@ -225,7 +228,7 @@ function QrList({
                     textAlign: "center",
                   }}
                 >
-                  No QR codes found
+                  {t("view_rockobits_qr_codes_table_notfound")}
                 </TableCell>
               </TableRow>
             )}

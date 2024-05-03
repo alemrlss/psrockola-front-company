@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 
 function ModalEditScreen({
   isEditModalOpen,
@@ -24,6 +25,7 @@ function ModalEditScreen({
   setPassword,
   setConfirmPassword,
 }) {
+  const { t } = useTranslation();
   // Estado para controlar la pestaña activa
   const [activeTab, setActiveTab] = useState(0);
 
@@ -66,14 +68,14 @@ function ModalEditScreen({
           centered
           sx={{ mb: 2 }}
         >
-          <Tab label="Edit Name" />
-          <Tab label="Change Password" />
+          <Tab label={t("view_screens_edit_name")} />
+          <Tab label={t("view_screens_edit_change_password")} />
         </Tabs>
 
         {activeTab === 0 && (
           <Box>
             <TextField
-              label="Screen Name"
+              label={t("view_screens_edit_name_name")}
               variant="outlined"
               fullWidth
               value={screen.name}
@@ -92,7 +94,7 @@ function ModalEditScreen({
               {isEditingScreen ? (
                 <CircularProgress size={24} color="inherit" />
               ) : (
-                "Save changes"
+                t("view_screens_edit_button_save")
               )}
             </Button>
           </Box>
@@ -101,7 +103,7 @@ function ModalEditScreen({
         {activeTab === 1 && (
           <Box>
             <TextField
-              label="Password"
+              label={t("view_screens_edit_password")}
               variant="outlined"
               fullWidth
               type={showPassword ? "text" : "password"}
@@ -118,7 +120,7 @@ function ModalEditScreen({
               }}
             />
             <TextField
-              label="Confirm Password"
+              label={t("view_screens_edit_password_confirm")}
               variant="outlined"
               fullWidth
               type={showConfirmPassword ? "text" : "password"}

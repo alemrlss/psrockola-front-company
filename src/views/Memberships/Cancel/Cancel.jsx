@@ -7,8 +7,10 @@ import getBenefits from "../../../utils/getBenefits";
 import api from "../../../api/api";
 import { useSelector, useDispatch } from "react-redux";
 import { updateUserMembership } from "../../../features/authSlice";
+import { useTranslation } from "react-i18next";
 
 function Cancel() {
+  const { t } = useTranslation();
   const [membership, setMembership] = useState(null);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 

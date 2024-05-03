@@ -7,6 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import { CircularProgress } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 function ModalCreateScreen({
   isCreateModalOpen,
@@ -17,6 +18,7 @@ function ModalCreateScreen({
   isCreatingScreen,
   error,
 }) {
+  const { t } = useTranslation();
   return (
     <Modal open={isCreateModalOpen} onClose={handleCreateModalClose}>
       <Box
@@ -34,10 +36,10 @@ function ModalCreateScreen({
         <Box mt={4} sx={{ textAlign: "center" }}>
           <Paper elevation={3} sx={{ padding: 3, display: "inline-block" }}>
             <Typography variant="h4" gutterBottom>
-              Create Screen
+              {t("view_screens_create")}
             </Typography>
             <TextField
-              label="Name Screen"
+              label={t("view_screens_create_name")}
               variant="outlined"
               fullWidth
               value={screen.name}
@@ -45,7 +47,7 @@ function ModalCreateScreen({
               margin="normal"
             />
             <TextField
-              label="Password Screen"
+              label={t("view_screens_create_password")}
               variant="outlined"
               fullWidth
               value={screen.password}
@@ -64,7 +66,7 @@ function ModalCreateScreen({
               {isCreatingScreen ? (
                 <CircularProgress size={24} color="inherit" />
               ) : (
-                "Create"
+                t("view_screens_create_save")
               )}
             </Button>
 

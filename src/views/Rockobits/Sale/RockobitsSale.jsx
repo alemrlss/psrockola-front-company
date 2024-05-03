@@ -17,8 +17,10 @@ import {
   FormLabel,
   Box,
 } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 function RockobitsSale() {
+  const { t } = useTranslation();
   const audioRef = useRef(null);
 
   const [email, setEmail] = useState("");
@@ -167,12 +169,12 @@ function RockobitsSale() {
   return (
     <Box maxWidth="md" mx="auto" mt={2} p={6} borderRadius={4} boxShadow={3}>
       <Typography variant="h4" align="center" gutterBottom>
-        Sale Rockobits
+        {t("view_rockobits_sale_title")}
       </Typography>
       <form onSubmit={handleSubmit}>
         <TextField
           id="email"
-          label="Email Client"
+          label={t("view_rockobits_sale_email")}
           type="email"
           value={email}
           onChange={handleEmailChange}
@@ -183,7 +185,7 @@ function RockobitsSale() {
         />
         <TextField
           id="quantity"
-          label="Quantity Rockobits"
+          label={t("view_rockobits_sale_quantity")}
           type="number"
           value={quantity}
           onChange={handleQuantityChange}
@@ -193,25 +195,31 @@ function RockobitsSale() {
           margin="normal"
         />
         <FormControl component="fieldset" margin="normal" required>
-          <FormLabel component="legend">Payment Method:</FormLabel>
+          <FormLabel component="legend">
+            {t("view_rockobits_sale_payment")}:
+          </FormLabel>
           <RadioGroup
             aria-label="paymentMethod"
             name="paymentMethod"
             value={paymentMethod}
             onChange={handlePaymentMethodChange}
           >
-            <FormControlLabel value="cash" control={<Radio />} label="Cash" />
+            <FormControlLabel
+              value="cash"
+              control={<Radio />}
+              label={t("view_rockobits_sale_payment")}
+            />
             <FormControlLabel
               value="transfer"
               control={<Radio />}
-              label="Wire transfer"
+              label={t("view_rockobits_sale_transfer")}
             />
           </RadioGroup>
         </FormControl>
         {paymentMethod === "transfer" && (
           <TextField
             id="transferFile"
-            label="Upload voucher of bank transfer"
+            label={t("view_rockobits_sale_upload")}
             type="file"
             onChange={handletransferFileChange}
             fullWidth
@@ -236,7 +244,7 @@ function RockobitsSale() {
             },
           }}
         >
-          Next
+          {t("view_rockobits_sale_next")}
         </Button>
       </form>
       {error && (

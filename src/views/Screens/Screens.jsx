@@ -6,12 +6,14 @@ import AddIcon from "@mui/icons-material/Add";
 import { loadStripe } from "@stripe/stripe-js";
 import ModalCreateScreen from "../../components/Screens/Create/ModalCreateScreen";
 import ModalEditScreen from "../../components/Screens/Edit/ModalEditScreen";
+import { useTranslation } from "react-i18next";
 
 const stripePromise = loadStripe(
   "pk_test_51M4ShsFeiEj6y242YNiI1u9Kf1HZM4eHjMZYMeHYrTCHwRfSIA3JwC5znJfpmk0EZWlLbsvQ9wXQZbLAdJZsdhUD00dehK0IeW"
 );
 
 function Screens() {
+  const {t} = useTranslation();
   const user = useSelector((state) => state.auth.user);
   const [screens, setScreens] = useState([]);
   const [screenLimit, setScreenLimit] = useState(0);
@@ -246,7 +248,7 @@ function Screens() {
           my: 2,
         }}
       >
-        <h2 className="text-3xl font-bold my-4">Screens: {screens.length}</h2>
+        <h2 className="text-3xl font-bold my-4">{t("view_screens_count")}: {screens.length}</h2>
         <Button
           variant="contained"
           disabled={screens.length >= screenLimit}
@@ -259,7 +261,7 @@ function Screens() {
             },
           }}
         >
-          Add Screen
+          {t("view_screens_add_button")}
         </Button>
       </Box>
       <Box
@@ -270,13 +272,13 @@ function Screens() {
         }}
       >
         <h2 className="text-xl font-bold">
-          Active:{" "}
+          {t("view_screens_active")}:{" "}
           {
             screens.filter((screen) => {
               return screen.active;
             }).length
           }
-          /{screenLimit} Limit
+          /{screenLimit} {t("view_screens_limit")}
         </h2>
       </Box>
       <ul className="grid grid-cols-2 gap-4">
@@ -309,7 +311,7 @@ function Screens() {
                   handleEditModalOpen(screen);
                 }}
               >
-                Edit
+                {t("view_screens_edit")}
               </Button>
             </div>
           </li>

@@ -18,8 +18,11 @@ import api from "../../../api/api";
 import { updateUserBalance } from "../../../features/authSlice";
 import TablePagination from "@mui/material/TablePagination";
 import Sound from "../../../../public/audio/Coin.wav";
+import { useTranslation } from "react-i18next";
 
 function Qr() {
+  const { t } = useTranslation();
+
   const audioRef = useRef(null);
 
   const user = useSelector((state) => state.auth.user);
@@ -187,13 +190,13 @@ function Qr() {
         boxShadow={3}
       >
         <Typography variant="h4" align="center" gutterBottom>
-          Generate Qr Rockobits
+          {t("view_rockobits_qr_title")}
         </Typography>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label="Amount Rockobits"
+              label={t("view_rockobits_qr_amount")}
               variant="outlined"
               value={amount}
               onChange={(e) => {
@@ -205,7 +208,7 @@ function Qr() {
           </Grid>
           <Grid item xs={12}>
             <FormControl component="fieldset">
-              <FormLabel component="legend">Expired date</FormLabel>
+              <FormLabel component="legend">{t("view_rockobits_qr_expire")}</FormLabel>
               <RadioGroup
                 row
                 aria-label="expiration-time"
@@ -220,22 +223,22 @@ function Qr() {
                 <FormControlLabel
                   value="1m"
                   control={<Radio />}
-                  label="1 Minute"
+                  label={t("view_rockobits_qr_1_minute")}
                 />
                 <FormControlLabel
                   value="1h"
                   control={<Radio />}
-                  label="1 Hour"
+                  label={t("view_rockobits_qr_1_hour")}
                 />
                 <FormControlLabel
                   value="3h"
                   control={<Radio />}
-                  label="3 Hours"
+                  label={t("view_rockobits_qr_3_hour")}
                 />
                 <FormControlLabel
                   value="1d"
                   control={<Radio />}
-                  label="1 Day"
+                  label={t("view_rockobits_qr_1_day")}
                 />
               </RadioGroup>
             </FormControl>
@@ -253,7 +256,7 @@ function Qr() {
                 },
               }}
             >
-              Generate QR
+                {t("view_rockobits_qr_button")}
             </Button>
           </Grid>
         </Grid>
@@ -266,7 +269,7 @@ function Qr() {
       </div>
       <div>
         <Divider />
-        <h2 className="text-3xl text-center mt-2">Qr Codes</h2>
+        <h2 className="text-3xl text-center mt-2">{t("view_rockobits_qr_codes")}</h2>
         <FormControl component="fieldset">
           <RadioGroup
             row
@@ -279,11 +282,11 @@ function Qr() {
               );
             }}
           >
-            <FormControlLabel value="1" control={<Radio />} label="Active" />
-            <FormControlLabel value="0" control={<Radio />} label="Inactive" />
-            <FormControlLabel value="2" control={<Radio />} label="Consumed" />
-            <FormControlLabel value="3" control={<Radio />} label="Expired" />
-            <FormControlLabel value="null" control={<Radio />} label="All" />
+            <FormControlLabel value="1" control={<Radio />} label={t("view_rockobits_qr_codes_active")} />
+            <FormControlLabel value="0" control={<Radio />} label={t("view_rockobits_qr_codes_inactive")} />
+            <FormControlLabel value="2" control={<Radio />} label={t("view_rockobits_qr_codes_consumed")} />
+            <FormControlLabel value="3" control={<Radio />} label={t("view_rockobits_qr_codes_expired")} />
+            <FormControlLabel value="null" control={<Radio />} label={t("view_rockobits_qr_codes_all")} />
           </RadioGroup>
         </FormControl>
       </div>

@@ -6,9 +6,9 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  Box,
   Typography,
 } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 function ModalSale({
   isModalOpen,
@@ -18,18 +18,19 @@ function ModalSale({
   transferRockobits,
   errorModal,
 }) {
+  const { t } = useTranslation();
   return (
     <Dialog open={isModalOpen} onClose={handleCloseModal}>
-      <DialogTitle>Client Information</DialogTitle>
+      <DialogTitle>{t("view_rockobits_modal_title")}</DialogTitle>
       <DialogContent dividers>
         <Typography variant="body1" gutterBottom>
-          <strong>Name:</strong> {userData && userData.name}
+          <strong>{t("view_rockobits_modal_name")}:</strong> {userData && userData.name}
         </Typography>
         <Typography variant="body1" gutterBottom>
-          <strong>Email:</strong> {userData && userData.email}
+          <strong>{t("view_rockobits_modal_email")}:</strong> {userData && userData.email}
         </Typography>
         <Typography variant="body1" gutterBottom>
-          <strong>Transaction amount:</strong> {quantity}
+          <strong>{t("view_rockobits_modal_amount")}:</strong> {quantity}
         </Typography>
       </DialogContent>
       <DialogActions
@@ -52,7 +53,7 @@ function ModalSale({
             },
           }}
         >
-          Sale
+          {t("view_rockobits_modal_button_sale")}
         </Button>
         <Button
           onClick={handleCloseModal}
@@ -66,7 +67,7 @@ function ModalSale({
             },
           }}
         >
-          Cancel
+          {t("view_rockobits_modal_button_cancel")}
         </Button>
       </DialogActions>
 
