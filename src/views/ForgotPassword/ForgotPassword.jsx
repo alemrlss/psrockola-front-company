@@ -17,7 +17,7 @@ function ForgotPassword() {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await api.post("/auth/forgot-password", { email });
+      await api.post("/auth/forgot-password", { email });
       setMessage("Verification code sent to your email.");
       setStage("verify");
     } catch (error) {
@@ -31,7 +31,7 @@ function ForgotPassword() {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await api.post("/auth/verify-code", { email, code });
+      await api.post("/auth/verify-code", { email, code });
       setMessage("Code verified successfully.");
       setStage("reset");
     } catch (error) {
@@ -45,7 +45,7 @@ function ForgotPassword() {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await api.post("/auth/reset-password", {
+      await api.post("/auth/reset-password", {
         email,
         code,
         newPassword,
@@ -69,7 +69,9 @@ function ForgotPassword() {
       <div className="bg-white p-8 rounded-lg shadow-md">
         {stage === "forgot" && (
           <form onSubmit={handleForgotSubmit} className="space-y-4">
-            <Typography variant="h6">Forgot Your Password?</Typography>
+            <Typography variant="h6">
+              Forgot Your Password? only companys
+            </Typography>
             <TextField
               type="email"
               value={email}

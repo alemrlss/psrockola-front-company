@@ -54,7 +54,7 @@ function Login() {
     try {
       const result = await dispatch(loginCompany(formData));
       if (result.payload && result.payload.token) {
-        goTo("/dashboard");
+        goTo("/companies/dashboard");
       }
     } catch (error) {
       // Manejar errores de inicio de sesión

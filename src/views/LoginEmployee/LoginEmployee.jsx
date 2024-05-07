@@ -52,7 +52,7 @@ function Login() {
     try {
       const result = await dispatch(loginEmployee(formData));
       if (result.payload && result.payload.token) {
-        goTo("/dashboard");
+        goTo("/employees/dashboard");
       }
     } catch (error) {
       // Manejar errores de inicio de sesión

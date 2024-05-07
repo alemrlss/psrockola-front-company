@@ -10,6 +10,7 @@ i18n.use(initReactI18next).init({
       translation: {
         psrockola_owner: "Owner",
         psrockola_employee: "Employee",
+        psrockola_distributor: "Distributor",
         psrockola_wallet: "Wallet",
         psrockola_appbar_expire: "Expire",
         psrockola_appbar_role_company: "Company",
@@ -157,6 +158,7 @@ i18n.use(initReactI18next).init({
       translation: {
         psrockola_owner: "Dueño",
         psrockola_employee: "Empleado",
+        psrockola_distributor: "Distribuidor",
         psrockola_wallet: "Billetera",
         psrockola_appbar_expire: "Expira",
         psrockola_appbar_role_company: "Empresa",
@@ -304,6 +306,7 @@ i18n.use(initReactI18next).init({
       translation: {
         psrockola_owner: "Proprietário",
         psrockola_employee: "Funcionário",
+        psrockola_distributor: "Distribuidor",
         psrockola_wallet: "Carteira",
         psrockola_appbar_expire: "Expirar",
         psrockola_appbar_role_company: "Empresa",

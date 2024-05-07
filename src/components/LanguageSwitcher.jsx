@@ -41,6 +41,8 @@ function LanguageSelector() {
     const selectedLanguage = event.target.value;
 
     const isEmployee = user.type === 22;
+    const isDistributor = user.type === 25;
+    const isCompany = user.type === 23;
 
     if (isEmployee) {
       try {
@@ -62,7 +64,30 @@ function LanguageSelector() {
         setSnackbarSeverity("error");
         setSnackbarOpen(true);
       }
-    } else {
+    } else if (isDistributor) {
+      try {
+        const response = await api.post(
+          `distributor/change-language/${user.id}`,
+          {
+            language: selectedLanguage,
+          }
+        );
+
+        if (response.status === 201) {
+          // Mostrar notificación de éxito
+          i18n.changeLanguage(selectedLanguage);
+          localStorage.setItem("language", selectedLanguage);
+          setSnackbarMessage(t("language_snackbar_message"));
+          setSnackbarSeverity("success");
+          setSnackbarOpen(true);
+        }
+      } catch (error) {
+        // Mostrar notificación de error
+        setSnackbarMessage(t("language_snackbar_error"));
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
+      }
+    } else if (isCompany) {
       try {
         const response = await api.post(`user/change-language/${user.id}`, {
           language: selectedLanguage,

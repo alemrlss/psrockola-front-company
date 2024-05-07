@@ -7,10 +7,14 @@ import Toolbar from "@mui/material/Toolbar";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../common/Sidebar";
 import AppBarComponent from "../common/AppBar";
+import SidebarCompany from "../common/Sidebars/SidebarCompany/SidebarCompany";
+import { useSelector } from "react-redux";
+import SidebarEmployee from "../common/Sidebars/SidebarEmployee/SidebarEmployee";
+import SidebarDistributor from "../common/Sidebars/SidebarDistributor/SidebarDistributor";
 
 const drawerWidth = 240;
-
 function Layout(props) {
+  const user = useSelector((state) => state.auth.user);
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -20,6 +24,16 @@ function Layout(props) {
 
   const container =
     window !== undefined ? () => window().document.body : undefined;
+
+  let SidebarComponent;
+
+  if (user.type === 23) {
+    SidebarComponent = SidebarCompany;
+  } else if (user.type === 22) {
+    SidebarComponent = SidebarEmployee;
+  } else if (user.type === 25) {
+    SidebarComponent = SidebarDistributor;
+  }
 
   return (
     <Box sx={{ display: "flex", overflow: "auto" }}>
@@ -51,7 +65,7 @@ function Layout(props) {
             },
           }}
         >
-          {<Sidebar handleDrawerToggle={handleDrawerToggle} />}
+          <SidebarComponent handleDrawerToggle={handleDrawerToggle} />
         </Drawer>
         <Drawer
           disableScrollLock={true}
@@ -65,7 +79,7 @@ function Layout(props) {
           }}
           open
         >
-          {<Sidebar handleDrawerToggle={handleDrawerToggle} />}
+          <SidebarComponent handleDrawerToggle={handleDrawerToggle} />
         </Drawer>
       </Box>
       <Box
