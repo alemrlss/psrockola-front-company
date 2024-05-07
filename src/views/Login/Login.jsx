@@ -10,6 +10,7 @@ import Avatar from "@mui/material/Avatar";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Tooltip from "@mui/material/Tooltip";
 import BusinessIcon from "@mui/icons-material/Business";
+import { HouseOutlined } from "@mui/icons-material";
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -80,6 +81,37 @@ function Login() {
         style={{ height: "100%" }}
       >
         <Grid item xs={12} sm={8} md={6} lg={4}>
+          <div className="flex  justify-between">
+            <Tooltip title="Go to employee panel" arrow>
+              <Avatar
+                sx={{
+                  backgroundColor: "#555CB3",
+                  color: "white",
+                  width: 58,
+                  height: 58,
+                }}
+                component={Link}
+                to="/login-employee"
+              >
+                <AccountCircleIcon style={{ width: "100%", height: "100%" }} />
+              </Avatar>
+            </Tooltip>
+            <Tooltip title="Go to distributor panel" arrow>
+            <Avatar
+                sx={{
+                  color: "white",
+                  backgroundColor: "#F79303",
+                  width: 58,
+                  height: 58,
+                }}
+                component={Link}
+                to="/login-distributor"
+              >
+                <HouseOutlined style={{ width: "80%", height: "80%" }} />
+              </Avatar>
+            </Tooltip>
+          </div>
+
           <form
             onSubmit={handleSubmit}
             className="bg-white border rounded-xl p-4 py-8"
@@ -152,23 +184,6 @@ function Login() {
           <Link to={"/forgot-password"}> Forgot Password? </Link>
         </Grid>
       </Grid>
-      <Tooltip title="Go to employee panel" arrow>
-        <Avatar
-          sx={{
-            position: "absolute",
-            top: "16px",
-            right: "16px",
-            backgroundColor: "#555CB3",
-            color: "white",
-            width: 58,
-            height: 58,
-          }}
-          component={Link}
-          to="/login-employee"
-        >
-          <AccountCircleIcon style={{ width: "100%", height: "100%" }} />
-        </Avatar>
-      </Tooltip>
     </div>
   );
 }

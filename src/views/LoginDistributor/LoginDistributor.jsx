@@ -3,14 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { Link, useNavigate } from "react-router-dom";
-import { loginEmployee } from "../../features/authSlice";
+import { loginDistributor } from "../../features/authSlice";
 import Tooltip from "@mui/material/Tooltip";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
-import { HouseOutlined } from "@mui/icons-material";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -50,7 +50,7 @@ function Login() {
     setLoading(true); // Establece el estado de carga en verdadero antes de la petición
 
     try {
-      const result = await dispatch(loginEmployee(formData));
+      const result = await dispatch(loginDistributor(formData));
       if (result.payload && result.payload.token) {
         goTo("/dashboard");
       }
@@ -69,7 +69,7 @@ function Login() {
   return (
     <div
       style={{ position: "relative", height: "100vh" }}
-      className="bg-[#979DDA]"
+      className="bg-cyan-200"
     >
       <Grid
         container
@@ -79,22 +79,22 @@ function Login() {
       >
         <Grid item xs={12} sm={8} md={6} lg={4}>
         <div className="flex  justify-between">
-            <Tooltip title="Go to company panel" arrow>
+            <Tooltip title="Go to employee panel" arrow>
               <Avatar
                 sx={{
+                  backgroundColor: "#555CB3",
                   color: "white",
-                  backgroundColor: "#F79303",
                   width: 58,
                   height: 58,
                 }}
                 component={Link}
-                to="/login"
+                to="/login-employee"
               >
-                <StorefrontIcon style={{ width: "80%", height: "80%" }} />
+                <AccountCircleIcon style={{ width: "100%", height: "100%" }} />
               </Avatar>
             </Tooltip>
-            <Tooltip title="Go to distributor panel" arrow>
-              <Avatar
+            <Tooltip title="Go to company panel" arrow>
+            <Avatar
                 sx={{
                   color: "white",
                   backgroundColor: "#F79303",
@@ -102,9 +102,9 @@ function Login() {
                   height: 58,
                 }}
                 component={Link}
-                to="/login-distributor"
+                to="/login-company"
               >
-                <HouseOutlined style={{ width: "80%", height: "80%" }} />
+          <StorefrontIcon style={{ width: "80%", height: "80%" }} />
               </Avatar>
             </Tooltip>
           </div>
@@ -116,7 +116,7 @@ function Login() {
               Log in
             </Typography>
             <Typography variant="body1" align="center" gutterBottom>
-              Sign in as a employee{" "}
+              Sign in as a Distributor{" "}
             </Typography>
             <SupervisorAccountIcon
               style={{ fontSize: 50, margin: "auto", display: "block" }}
@@ -182,6 +182,7 @@ function Login() {
           </form>
         </Grid>
       </Grid>
+  
     </div>
   );
 }

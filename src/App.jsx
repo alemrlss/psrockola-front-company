@@ -27,6 +27,7 @@ import MembershipsSuccess from "./views/Memberships/Success/MembershipSuccess";
 import Qr from "./views/Rockobits/Qr/Qr";
 import CurrentPlays from "./views/CurrentPlays/CurrentPlays";
 import ForgotPasswordPage from "./views/ForgotPassword/ForgotPassword";
+import LoginDistributor from "./views/LoginDistributor/LoginDistributor";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
               <Route index element={<Navigate to="/login" />} />
               <Route path="/login" element={<Login />} />
               <Route path="/login-employee" element={<LoginEmployee />} />
+              <Route path="/login-distributor" element={<LoginDistributor />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             </Route>
             {/* Rutas protegidas */}

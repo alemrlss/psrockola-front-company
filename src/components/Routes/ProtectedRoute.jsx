@@ -5,12 +5,18 @@ export default function ProtectedRoute({ allowEmployee }) {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const user = useSelector((state) => state.auth.user);
 
+  console.log(isAuthenticated)
+  
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
   }
 
   if (user.type === 23) {
     // Si el usuario es una empresa, permite el acceso a la ruta protegida
+    return <Outlet />;
+  }
+  if (user.type === 25) {
+    // Si el usuario es una distribuidor, permite el acceso a la ruta protegida
     return <Outlet />;
   }
 

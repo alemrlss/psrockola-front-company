@@ -178,7 +178,13 @@ function Sidebar({ handleDrawerToggle }) {
           style={{ textShadow: "2px 2px 1px #B45946", color: "white" }}
           className="font-semibold text-white text-xl tracking-widest text-shadow-lg"
         >
-          {user.type === 23 ? t("psrockola_owner") : t("psrockola_employee")}
+          {user.type === 22
+            ? t("psrockola_employee")
+            : user.type === 23
+            ? t("psrockola_owner")
+            : user.type === 25
+            ? t("psrockola_appbar_role_distributor")
+            : "No Role"}{" "}
         </h2>
       </div>
       <Divider />
