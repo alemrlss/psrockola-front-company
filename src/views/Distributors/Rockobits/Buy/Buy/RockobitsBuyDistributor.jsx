@@ -1,27 +1,21 @@
 import { useState, useEffect } from "react";
-import api from "../../../../api/api";
+import api from "../../../../../api/api";
 import { useSelector } from "react-redux";
 import { Typography, Button, Card, CardContent, Grid } from "@mui/material";
-import { formatNumbers } from "../../../../utils/formatNumbers";
+import { formatNumbers } from "../../../../../utils/formatNumbers";
 import { useTranslation } from "react-i18next";
 
-function RockobitsBuy() {
+function RockobitsBuyDistributor() {
   const { t } = useTranslation();
   const [packages, setPackages] = useState([]);
   const user = useSelector((state) => state.auth.user);
 
   //test
-  const [walletBalance, setWalletBalance] = useState(null);
 
   useEffect(() => {
     const fetchPackages = async () => {
       try {
-        //test
-        const walletResponse = await api.get(`/wallet/${user.id}`);
-        setWalletBalance(walletResponse.data.data.amount);
-        //
-
-        const response = await api.get("package-rockobits/companies");
+        const response = await api.get("package-rockobits/distributors");
         setPackages(response.data.data);
       } catch (error) {
         console.error("Error fetching packages:", error);
@@ -34,7 +28,7 @@ function RockobitsBuy() {
   const handleBuyClick = async (packageId) => {
     try {
       const response = await api.post(
-        "/stripe/create-checkout-session-package",
+        "/stripe/create-checkout-session-package-distributor",
         {
           packageId,
           userId: user.id,
@@ -65,10 +59,6 @@ function RockobitsBuy() {
   };
   return (
     <div className="container mx-auto">
-      <p className="text-gray-400 ml-10 absolute text-2xl">
-        {t("view_rockobits_wallet")}: {formatNumbers(parseInt(walletBalance))}{" "}
-        <b>Rockobits</b>
-      </p>
       <div className="flex justify-center items-center">
         <Typography variant="h4" align="center" gutterBottom>
           <b>{t("view_rockobits_title")}</b>
@@ -113,4 +103,4 @@ function RockobitsBuy() {
   );
 }
 
-export default RockobitsBuy;
+export default RockobitsBuyDistributor;

@@ -35,6 +35,7 @@ import RockobitsSaleCompany from "./views/Companies/Rockobits/Sale/RockobitsSale
 import QrEmployee from "./views/Employees/Rockobits/Qr/QrEmployee";
 import RockobitsSaleEmployee from "./views/Employees/Rockobits/Sale/RockobitsSaleEmployee";
 import GetMembershipDistributors from "./views/Distributors/Memberships/GetMembershipsDistributor";
+import RockobitsBuyDistributor from "./views/Distributors/Rockobits/Buy/Buy/RockobitsBuyDistributor";
 
 function App() {
   return (
@@ -152,6 +153,8 @@ function App() {
                   path="subscriptions/get"
                   element={<GetMembershipDistributors />}
                 ></Route>
+                <Route path="rockobits/buy" element={<RockobitsBuyDistributor />}></Route>
+
                 <Route path="subscriptions/cancel" element={<Cancel />}></Route>
               </Route>
             </Route>

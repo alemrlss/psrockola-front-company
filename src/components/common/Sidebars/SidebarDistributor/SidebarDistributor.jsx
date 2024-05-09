@@ -11,7 +11,9 @@ import SidebarDistributorItem from "./SidebarDistributorItem";
 import SidebarDistributorCollapse from "./SidebarDistributorCollapse";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import GetAppIcon from "@mui/icons-material/GetApp";
-import CancelIcon from "@mui/icons-material/Cancel";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+
 
 function SidebarDistributor({ handleDrawerToggle }) {
   const { t } = useTranslation();
@@ -49,6 +51,20 @@ function SidebarDistributor({ handleDrawerToggle }) {
           name: "Get",
           icon: <GetAppIcon />,
         },
+      ],
+    },
+    {
+      id: "/companies/rockobits",
+      translationKey: "menu_rockobits",
+      name: "Rockobits",
+      icon: <AttachMoneyIcon />,
+      subItems: [
+        {
+          id: "/distributors/rockobits/buy",
+          translationKey: "menu_buy",
+          name: "Buy",
+          icon: <ShoppingCartIcon />,
+        }
       ],
     },
   ];
