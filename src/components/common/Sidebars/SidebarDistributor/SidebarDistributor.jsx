@@ -9,6 +9,9 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import SidebarDistributorLogout from "./SidebarDistributorLogout";
 import SidebarDistributorItem from "./SidebarDistributorItem";
 import SidebarDistributorCollapse from "./SidebarDistributorCollapse";
+import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+import GetAppIcon from "@mui/icons-material/GetApp";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 function SidebarDistributor({ handleDrawerToggle }) {
   const { t } = useTranslation();
@@ -33,6 +36,20 @@ function SidebarDistributor({ handleDrawerToggle }) {
       name: "Dashboard",
       icon: <DashboardIcon />,
       subItems: null,
+    },
+    {
+      id: "/distributors/subscriptions",
+      translationKey: "menu_membership",
+      name: "Subscriptions",
+      icon: <MonetizationOnIcon />,
+      subItems: [
+        {
+          id: "/distributors/subscriptions/get",
+          translationKey: "menu_memberships_get",
+          name: "Get",
+          icon: <GetAppIcon />,
+        },
+      ],
     },
   ];
 

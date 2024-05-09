@@ -34,6 +34,7 @@ import QrCompany from "./views/Companies/Rockobits/Qr/QrCompany";
 import RockobitsSaleCompany from "./views/Companies/Rockobits/Sale/RockobitsSaleCompany";
 import QrEmployee from "./views/Employees/Rockobits/Qr/QrEmployee";
 import RockobitsSaleEmployee from "./views/Employees/Rockobits/Sale/RockobitsSaleEmployee";
+import GetMembershipDistributors from "./views/Distributors/Memberships/GetMembershipsDistributor";
 
 function App() {
   return (
@@ -142,10 +143,16 @@ function App() {
             >
               <Route element={<Layout />}>
                 <Route path="dashboard" element={<DashboardDistributor />} />
+
                 <Route
                   path="*"
                   element={<Navigate to="/distributors/dashboard" />}
                 />
+                <Route
+                  path="subscriptions/get"
+                  element={<GetMembershipDistributors />}
+                ></Route>
+                <Route path="subscriptions/cancel" element={<Cancel />}></Route>
               </Route>
             </Route>
             <Route path="unauthorized" element={<Unauthorized />} />
