@@ -22,7 +22,7 @@ function CancelDistributor() {
     const fetchMembership = async () => {
       try {
         const userFound = await api.get(`/distributor/${user.id}`);
-        setMembership(userFound.data.data.activeMembership);
+        setMembership(userFound.data.activeMembership);
       } catch (error) {
         console.log(error);
       }
@@ -35,7 +35,7 @@ function CancelDistributor() {
     const cancelMembership = async () => {
       try {
         const response = await api.post(
-          `/membership/cancel-subscription/${user.id}`
+          `/distributor-membership/cancel-subscription/${user.id}`
         );
         console.log(response);
         setMembership(null);
@@ -62,21 +62,10 @@ function CancelDistributor() {
           <div>
             <p className="text-2xl font-semibold mb-4">Membresia activa: </p>
             <p className="text-gray-600">{membership.name}</p>
-            <p className="text-gray-600">
-              Tipo de membresia: {getBenefits(membership).type}
-            </p>
-            <p className="text-gray-600"> Beneficios: </p>
-            <p className="text-gray-600">
-              Dispositivos de ventas: {getBenefits(membership).sales}
-            </p>
-            <p className="text-gray-600">
-              {" "}
-              Skins: {getBenefits(membership).skins}
-            </p>
-            <p className="text-gray-600">
-              Personalizar ModePlays:{" "}
-              {getBenefits(membership).customModePlay ? "Si" : "No"}
-            </p>
+            
+            <p>Max Accounts: {membership.maxAccounts}</p>
+            <p>Type: {membership.type}</p>
+           
           </div>
         )}
       </div>
