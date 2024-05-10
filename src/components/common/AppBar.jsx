@@ -140,7 +140,7 @@ function AppBarComponent({ drawerWidth, handleDrawerToggle }) {
             </Box>
           )}
 
-          {user.membership && (
+          {user.membership && user.type === 23 && (
             <Box
               sx={{
                 display: "flex",
@@ -175,6 +175,36 @@ function AppBarComponent({ drawerWidth, handleDrawerToggle }) {
                   ? `${t("psrockola_appbar_expire")} ${formatExpirationDate(
                       user.membership.expiration
                     )}`
+                  : "No membership"}
+              </Typography>
+            </Box>
+          )}
+          {user.membership && user.type === 25 && (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                borderRadius: "50px",
+                color: "black",
+              }}
+            >
+              <Typography
+                variant="body2"
+                sx={{
+                  bgcolor: "#555CB3",
+                  padding: "6px",
+                  paddingX: "10px",
+                  ml: "2px",
+                  color: "white",
+                  fontWeight: "bold",
+                  fontStyle: "italic",
+                  borderRadius: "50px",
+                }}
+              >
+                {user.membership.expiration
+                  ? `${t("psrockola_appbar_expire")} ${formatExpirationDate(
+                      user.membership.expiration
+                    )} - Type: ${user.membership.type}`
                   : "No membership"}
               </Typography>
             </Box>

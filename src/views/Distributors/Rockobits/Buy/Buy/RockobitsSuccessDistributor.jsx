@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUserBalance } from "../../../../features/authSlice";
-import api from "../../../../api/api";
+import { updateUserBalance } from "../../../../../features/authSlice";
+import api from "../../../../../api/api";
 import { Box, Typography } from "@mui/material";
 
-function RockobitsSuccess() {
+function RockobitsSuccessDistributor() {
   // Referencia al elemento de audio para controlar la reproducción del sonido
   const audioRef = useRef(null);
 
@@ -100,4 +100,4 @@ function RockobitsSuccess() {
   );
 }
 
-export default RockobitsSuccess;
+export default RockobitsSuccessDistributor;

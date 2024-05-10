@@ -112,7 +112,7 @@ const authService = {
             type: response.data.user.type,
             balance: response.data.user.balance,
             wallet: response.data.user.wallet,
-            membership: null,
+            membership: response.data.user.membership,
             enableCurrentPlaylist: response.data.user.enableCurrentPlaylist,
             companyId: response.data.user.companyId,
             address: response.data.user.address,

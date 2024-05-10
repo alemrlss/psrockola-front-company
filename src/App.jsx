@@ -36,6 +36,9 @@ import QrEmployee from "./views/Employees/Rockobits/Qr/QrEmployee";
 import RockobitsSaleEmployee from "./views/Employees/Rockobits/Sale/RockobitsSaleEmployee";
 import GetMembershipDistributors from "./views/Distributors/Memberships/GetMembershipsDistributor";
 import RockobitsBuyDistributor from "./views/Distributors/Rockobits/Buy/Buy/RockobitsBuyDistributor";
+import RockobitsSuccessDistributor from "./views/Distributors/Rockobits/Buy/Buy/RockobitsSuccessDistributor";
+import MembershipsSuccessDistributor from "./views/Distributors/Memberships/Success/MembershipSuccessDistributor";
+import CancelDistributor from "./views/Distributors/Memberships/Cancel/CancelDistributor";
 
 function App() {
   return (
@@ -153,9 +156,23 @@ function App() {
                   path="subscriptions/get"
                   element={<GetMembershipDistributors />}
                 ></Route>
-                <Route path="rockobits/buy" element={<RockobitsBuyDistributor />}></Route>
-
-                <Route path="subscriptions/cancel" element={<Cancel />}></Route>
+                 <Route
+                  path="subscriptions/cancel"
+                  element={<CancelDistributor />}
+                ></Route>
+                <Route
+                  path="subscriptions/success"
+                  element={<MembershipsSuccessDistributor />}
+                ></Route>
+                <Route
+                  path="rockobits/buy"
+                  element={<RockobitsBuyDistributor />}
+                ></Route>
+                <Route
+                  path="rockobits/success"
+                  element={<RockobitsSuccessDistributor />}
+                ></Route>
+               
               </Route>
             </Route>
             <Route path="unauthorized" element={<Unauthorized />} />

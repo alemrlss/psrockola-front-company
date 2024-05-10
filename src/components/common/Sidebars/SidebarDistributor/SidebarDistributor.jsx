@@ -51,6 +51,12 @@ function SidebarDistributor({ handleDrawerToggle }) {
           name: "Get",
           icon: <GetAppIcon />,
         },
+        {
+          id: "/distributors/subscriptions/cancel",
+          translationKey: "menu_memberships_cancel",
+          name: "Cancel",
+          icon: <GetAppIcon />,
+        },
       ],
     },
     {
