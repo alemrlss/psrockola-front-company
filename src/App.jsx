@@ -39,6 +39,9 @@ import RockobitsBuyDistributor from "./views/Distributors/Rockobits/Buy/Buy/Rock
 import RockobitsSuccessDistributor from "./views/Distributors/Rockobits/Buy/Buy/RockobitsSuccessDistributor";
 import MembershipsSuccessDistributor from "./views/Distributors/Memberships/Success/MembershipSuccessDistributor";
 import CancelDistributor from "./views/Distributors/Memberships/Cancel/CancelDistributor";
+import CreateSubcompanies from "./views/Distributors/Subcompanies/Create/CreateSubcompanies";
+import ListSubcompanies from "./views/Distributors/Subcompanies/List/ListSubcompanies";
+import LoginSubcompany from "./views/LoginSubcompany/LoginSubcompany";
 
 function App() {
   return (
@@ -52,6 +55,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/login-employee" element={<LoginEmployee />} />
               <Route path="/login-distributor" element={<LoginDistributor />} />
+              <Route path="/login-subcompany" element={<LoginSubcompany />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             </Route>
 
@@ -156,7 +160,7 @@ function App() {
                   path="subscriptions/get"
                   element={<GetMembershipDistributors />}
                 ></Route>
-                 <Route
+                <Route
                   path="subscriptions/cancel"
                   element={<CancelDistributor />}
                 ></Route>
@@ -172,9 +176,31 @@ function App() {
                   path="rockobits/success"
                   element={<RockobitsSuccessDistributor />}
                 ></Route>
-               
+                <Route
+                  path="subcompanies/create-subcompany"
+                  element={<CreateSubcompanies />}
+                ></Route>
+
+                <Route
+                  path="subcompanies/list-subcompanies"
+                  element={<ListSubcompanies />}
+                ></Route>
               </Route>
             </Route>
+
+            <Route
+              path="/subcompanies"
+              element={<ProtectedRoute allowedRoles={[24]} />}
+            >
+              <Route element={<Layout />}>
+                <Route path="dashboard" element={<DashboardCompany />} />
+                <Route
+                  path="*"
+                  element={<Navigate to="/companies/dashboard" />}
+                />{" "}
+              </Route>
+            </Route>
+
             <Route path="unauthorized" element={<Unauthorized />} />
             <Route
               path="*"

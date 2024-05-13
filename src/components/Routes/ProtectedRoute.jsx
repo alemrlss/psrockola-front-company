@@ -5,6 +5,8 @@ export default function ProtectedRoute({ allowedRoles }) {
     const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
     const user = useSelector((state) => state.auth.user);
 
+    console.log(user)
+
     // Si el usuario no está autenticado, redirige a la página de inicio de sesión
     if (!isAuthenticated) {
         return <Navigate to="/login" />;

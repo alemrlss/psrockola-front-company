@@ -254,6 +254,8 @@ function AppBarComponent({ drawerWidth, handleDrawerToggle }) {
                     ? t("psrockola_appbar_role_employee")
                     : user.type === 23
                     ? t("psrockola_appbar_role_company")
+                    : user.type === 24
+                    ? t("psrockola_appbar_role_subcompany")
                     : user.type === 25
                     ? t("psrockola_appbar_role_distributor")
                     : "No Role"}

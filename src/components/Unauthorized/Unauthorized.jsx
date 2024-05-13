@@ -8,13 +8,19 @@ function Unauthorized() {
     if (type === 23) {
       return "companies/dashboard";
     }
+
     if (type === 22) {
       return "employees/dashboard";
+    }
+
+    if (type === 24) {
+      return "subcompanies/dashboard";
     }
 
     if (type === 25) {
       return "distributors/dashboard";
     }
+    
     return "login";
   };
   return (

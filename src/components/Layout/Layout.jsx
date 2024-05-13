@@ -5,12 +5,12 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Drawer from "@mui/material/Drawer";
 import Toolbar from "@mui/material/Toolbar";
 import { Outlet } from "react-router-dom";
-import Sidebar from "../common/Sidebar";
 import AppBarComponent from "../common/AppBar";
 import SidebarCompany from "../common/Sidebars/SidebarCompany/SidebarCompany";
 import { useSelector } from "react-redux";
 import SidebarEmployee from "../common/Sidebars/SidebarEmployee/SidebarEmployee";
 import SidebarDistributor from "../common/Sidebars/SidebarDistributor/SidebarDistributor";
+import SidebarSubcompany from "../common/Sidebars/SidebarSubcompany/SidebarSubcompany";
 
 const drawerWidth = 240;
 function Layout(props) {
@@ -31,6 +31,8 @@ function Layout(props) {
     SidebarComponent = SidebarCompany;
   } else if (user.type === 22) {
     SidebarComponent = SidebarEmployee;
+  } else if (user.type === 24) {
+    SidebarComponent = SidebarSubcompany;
   } else if (user.type === 25) {
     SidebarComponent = SidebarDistributor;
   }

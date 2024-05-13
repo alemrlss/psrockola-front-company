@@ -14,7 +14,6 @@ import GetAppIcon from "@mui/icons-material/GetApp";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
-
 function SidebarDistributor({ handleDrawerToggle }) {
   const { t } = useTranslation();
 
@@ -59,8 +58,9 @@ function SidebarDistributor({ handleDrawerToggle }) {
         },
       ],
     },
+
     {
-      id: "/companies/rockobits",
+      id: "/distributors/rockobits",
       translationKey: "menu_rockobits",
       name: "Rockobits",
       icon: <AttachMoneyIcon />,
@@ -70,7 +70,27 @@ function SidebarDistributor({ handleDrawerToggle }) {
           translationKey: "menu_buy",
           name: "Buy",
           icon: <ShoppingCartIcon />,
-        }
+        },
+      ],
+    },
+    {
+      id: "/distributors/subcompanies",
+      translationKey: "menu_subcompanies",
+      name: "Subcompanies",
+      icon: <AttachMoneyIcon />,
+      subItems: [
+        {
+          id: "/distributors/subcompanies/create-subcompany",
+          translationKey: "menu_create",
+          name: "Create",
+          icon: <ShoppingCartIcon />,
+        },
+        {
+          id: "/distributors/subcompanies/list-subcompanies",
+          translationKey: "menu_list",
+          name: "List",
+          icon: <ShoppingCartIcon />,
+        },
       ],
     },
   ];

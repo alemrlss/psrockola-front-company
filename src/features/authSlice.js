@@ -61,6 +61,22 @@ export const loginDistributor = createAsyncThunk(
     }
   }
 );
+export const loginSubcompany = createAsyncThunk(
+  "auth/loginSubcompany",
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const response = await authService.loginSubcompany(credentials);
+      localStorage.setItem("token", response.token);
+      localStorage.setItem("tokenExpiration", response.tokenExpiration);
+      localStorage.setItem("user", JSON.stringify(response.user));
+      localStorage.setItem("language", response.user.language);
+
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message || "Error during login");
+    }
+  }
+);
 
 const authSlice = createSlice({
   name: "auth",
@@ -166,6 +182,22 @@ const authSlice = createSlice({
         state.isAuthenticated = true; // Autenticado después del inicio de sesión exitoso
       })
       .addCase(loginDistributor.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload || "Error during login";
+        state.isAuthenticated = false; // Restablecer la autenticación en caso de error
+      })
+      .addCase(loginSubcompany.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(loginSubcompany.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.user = action.payload.user;
+        state.token = action.payload.token;
+        state.tokenExpiration = action.payload.tokenExpiration;
+        state.isAuthenticated = true; // Autenticado después del inicio de sesión exitoso
+      })
+      .addCase(loginSubcompany.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload || "Error during login";
         state.isAuthenticated = false; // Restablecer la autenticación en caso de error
