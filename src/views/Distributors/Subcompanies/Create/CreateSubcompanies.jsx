@@ -16,7 +16,7 @@ function CreateSubcompanies() {
     address: "",
     phone: "",
     postalCode: "",
-    distributorId: 6, // Asignando distributorId fijo por ahora
+    distributorId: user.id, // Asignando distributorId fijo por ahora
   });
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
