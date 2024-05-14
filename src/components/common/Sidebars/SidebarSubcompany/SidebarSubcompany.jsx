@@ -9,6 +9,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import SidebarSubcompanyCollapse from "./SidebarSubcompanyCollapse";
 import SidebarCompanyItem from "./SidebarSubcompanyItem";
 import SidebarSubcompanyLogout from "./SidebarSubcompanyLogout";
+import ScreenShareIcon from "@mui/icons-material/ScreenShare";
 
 function SidebarSubcompany({ handleDrawerToggle }) {
   const { t } = useTranslation();
@@ -32,6 +33,13 @@ function SidebarSubcompany({ handleDrawerToggle }) {
       translationKey: "menu_dashboard",
       name: "Dashboard",
       icon: <DashboardIcon />,
+      subItems: null,
+    },
+    {
+      id: "/subcompanies/screens",
+      translationKey: "menu_screens",
+      name: "Screens",
+      icon: <ScreenShareIcon />,
       subItems: null,
     },
   ];

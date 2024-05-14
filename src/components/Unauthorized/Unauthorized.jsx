@@ -20,7 +20,7 @@ function Unauthorized() {
     if (type === 25) {
       return "distributors/dashboard";
     }
-    
+
     return "login";
   };
   return (

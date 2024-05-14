@@ -19,6 +19,7 @@ import ForgotPasswordPage from "./views/ForgotPassword/ForgotPassword";
 import LoginDistributor from "./views/LoginDistributor/LoginDistributor";
 import DashboardDistributor from "./views/Distributors/Dashboard/Dashboard";
 import DashboardCompany from "./views/Companies/Dashboard/Dashboard";
+import DashboardSubcompanies from "./views/Subcompanies/Dashboard/Dashboard";
 import CreateEmployees from "./views/Companies/Employees/Create/CreateEmployees";
 import ListEmployees from "./views/Companies/Employees/List/ListEmployees";
 import TransferRockobitsForm from "./views/Companies/Employees/Transfer/TransferRockobitsForm";
@@ -42,6 +43,7 @@ import CancelDistributor from "./views/Distributors/Memberships/Cancel/CancelDis
 import CreateSubcompanies from "./views/Distributors/Subcompanies/Create/CreateSubcompanies";
 import ListSubcompanies from "./views/Distributors/Subcompanies/List/ListSubcompanies";
 import LoginSubcompany from "./views/LoginSubcompany/LoginSubcompany";
+import ScreenSubcompany from "./views/Subcompanies/Screen/ScreenSubcompany";
 
 function App() {
   return (
@@ -193,10 +195,11 @@ function App() {
               element={<ProtectedRoute allowedRoles={[24]} />}
             >
               <Route element={<Layout />}>
-                <Route path="dashboard" element={<DashboardCompany />} />
+                <Route path="dashboard" element={<DashboardSubcompanies />} />
+                <Route path="screens" element={<ScreenSubcompany />} />
                 <Route
                   path="*"
-                  element={<Navigate to="/companies/dashboard" />}
+                  element={<Navigate to="/subcompanies/dashboard" />}
                 />{" "}
               </Route>
             </Route>
