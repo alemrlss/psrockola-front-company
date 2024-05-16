@@ -44,6 +44,8 @@ import CreateSubcompanies from "./views/Distributors/Subcompanies/Create/CreateS
 import ListSubcompanies from "./views/Distributors/Subcompanies/List/ListSubcompanies";
 import LoginSubcompany from "./views/LoginSubcompany/LoginSubcompany";
 import ScreenSubcompany from "./views/Subcompanies/Screen/ScreenSubcompany";
+import TransferToSubCompany from "./views/Distributors/Rockobits/TransferToSubcompany/TransferToSubCompany";
+import RockobitsSubcompanySale from "./views/Subcompanies/Rockobits/Sale/RockobitsSubcompanySale";
 
 function App() {
   return (
@@ -175,6 +177,10 @@ function App() {
                   element={<RockobitsBuyDistributor />}
                 ></Route>
                 <Route
+                  path="rockobits/transfer"
+                  element={<TransferToSubCompany />}
+                ></Route>
+                <Route
                   path="rockobits/success"
                   element={<RockobitsSuccessDistributor />}
                 ></Route>
@@ -197,6 +203,10 @@ function App() {
               <Route element={<Layout />}>
                 <Route path="dashboard" element={<DashboardSubcompanies />} />
                 <Route path="screens" element={<ScreenSubcompany />} />
+                <Route
+                  path="rockobits/sale"
+                  element={<RockobitsSubcompanySale />}
+                />
                 <Route
                   path="*"
                   element={<Navigate to="/subcompanies/dashboard" />}

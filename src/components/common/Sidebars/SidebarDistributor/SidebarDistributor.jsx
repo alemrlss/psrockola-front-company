@@ -58,7 +58,6 @@ function SidebarDistributor({ handleDrawerToggle }) {
         },
       ],
     },
-
     {
       id: "/distributors/rockobits",
       translationKey: "menu_rockobits",
@@ -69,6 +68,12 @@ function SidebarDistributor({ handleDrawerToggle }) {
           id: "/distributors/rockobits/buy",
           translationKey: "menu_buy",
           name: "Buy",
+          icon: <ShoppingCartIcon />,
+        },
+        {
+          id: "/distributors/rockobits/transfer",
+          translationKey: "menu_transfer",
+          name: "Transfer",
           icon: <ShoppingCartIcon />,
         },
       ],

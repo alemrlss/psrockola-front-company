@@ -10,6 +10,8 @@ import SidebarSubcompanyCollapse from "./SidebarSubcompanyCollapse";
 import SidebarCompanyItem from "./SidebarSubcompanyItem";
 import SidebarSubcompanyLogout from "./SidebarSubcompanyLogout";
 import ScreenShareIcon from "@mui/icons-material/ScreenShare";
+import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 
 function SidebarSubcompany({ handleDrawerToggle }) {
   const { t } = useTranslation();
@@ -41,6 +43,26 @@ function SidebarSubcompany({ handleDrawerToggle }) {
       name: "Screens",
       icon: <ScreenShareIcon />,
       subItems: null,
+    },
+    {
+      id: "/subcompanies/rockobits",
+      translationKey: "menu_rockobits",
+      name: "Rockobits",
+      icon: <AttachMoneyIcon />,
+      subItems: [
+        {
+          id: "/subcompanies/rockobits/sale",
+          translationKey: "menu_sale",
+          name: "Sale",
+          icon: <MonetizationOnIcon />,
+        },
+        // {
+        //  id: "/companies/rockobits/qr",
+        // translationKey: "menu_qr",
+        // name: "QR Code",
+        // icon: <QrCode2Icon />,
+        //},
+      ],
     },
   ];
 

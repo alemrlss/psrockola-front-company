@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
 import api from "../../../api/api";
+import { useSelector } from "react-redux";
 
 function ScreenSubcompany() {
+  const user = useSelector((state) => state.auth.user);
   const [screens, setScreens] = useState([]);
+
 
   useEffect(() => {
     const fetchScreens = async () => {
       try {
-        const response = await api.get("/screen/subcompany/17");
+        const response = await api.get("/screen/subcompany/" + user.id);
         setScreens(response.data.data.screens);
       } catch (error) {
         console.error("Error fetching screens:", error);
