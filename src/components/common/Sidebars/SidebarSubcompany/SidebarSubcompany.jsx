@@ -12,6 +12,7 @@ import SidebarSubcompanyLogout from "./SidebarSubcompanyLogout";
 import ScreenShareIcon from "@mui/icons-material/ScreenShare";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import QrCode2Icon from "@mui/icons-material/QrCode2";
 
 function SidebarSubcompany({ handleDrawerToggle }) {
   const { t } = useTranslation();
@@ -56,13 +57,20 @@ function SidebarSubcompany({ handleDrawerToggle }) {
           name: "Sale",
           icon: <MonetizationOnIcon />,
         },
-        // {
-        //  id: "/companies/rockobits/qr",
-        // translationKey: "menu_qr",
-        // name: "QR Code",
-        // icon: <QrCode2Icon />,
-        //},
+        {
+          id: "/subcompanies/rockobits/qr",
+          translationKey: "menu_qr",
+          name: "QR Code",
+          icon: <QrCode2Icon />,
+        },
       ],
+    },
+    {
+      id: "/subcompanies/transactions",
+      translationKey: "menu_transactions",
+      name: "Transactions",
+      icon: <DashboardIcon />,
+      subItems: null,
     },
   ];
 

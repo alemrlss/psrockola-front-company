@@ -98,6 +98,13 @@ function SidebarDistributor({ handleDrawerToggle }) {
         },
       ],
     },
+    {
+      id: "/distributors/transactions",
+      translationKey: "menu_transactions",
+      name: "Transactions",
+      icon: <DashboardIcon />,
+      subItems: null,
+    },
   ];
 
   return (

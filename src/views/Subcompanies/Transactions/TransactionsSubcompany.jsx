@@ -1,0 +1,36 @@
+import { useState } from "react";
+import { Tabs, Tab, Paper } from "@mui/material";
+import RockobitsTransactionsSubcompany from "./Rockobits/RockobitsTransactionsSubcompanies";
+function TransactionsSubcompany() {
+  // Estado para controlar la pestaña seleccionada
+  const [selectedTab, setSelectedTab] = useState(0);
+
+  // Manejador de cambio de pestaña
+  const handleChange = (event, newValue) => {
+    setSelectedTab(newValue);
+  };
+
+  return (
+    <div>
+      {/* Barra de pestañas */}
+      <Paper elevation={0}>
+        <Tabs
+          value={selectedTab}
+          onChange={handleChange}
+          centered
+          indicatorColor="primary"
+          textColor="primary"
+        >
+          <Tab label="Rockobits" />
+          <Tab label="Qr" />
+        </Tabs>
+      </Paper>
+
+      {/* Contenido según la pestaña seleccionada */}
+      {selectedTab === 0 && <RockobitsTransactionsSubcompany/>}
+      {selectedTab === 1 && <h2>qr transactions</h2>}
+    </div>
+  );
+}
+
+export default TransactionsSubcompany;

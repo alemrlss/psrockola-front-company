@@ -84,22 +84,7 @@ function ModalSale({
           >
             {errorModal}
           </Typography>
-          <Button
-            onClick={() => {
-              handleCloseModal();
-              window.location.href = "/rockobits/buy";
-            }}
-            variant="contained"
-            sx={{
-              bgcolor: "#06DA30",
-              color: "white",
-              "&:hover": {
-                bgcolor: "#06DA30",
-              },
-            }}
-          >
-            Buy Rockobits
-          </Button>
+          
         </DialogContent>
       )}
     </Dialog>

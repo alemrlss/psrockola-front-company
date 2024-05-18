@@ -1,4 +1,9 @@
 const getBenefitsDistributorMembership = (type) => {
+  if (type === 5) {
+    return {
+      accounts: "25",
+    };
+  }
   if (type === 10) {
     return {
       accounts: "50",
@@ -22,8 +27,13 @@ const getBenefitsDistributorMembership = (type) => {
       accounts: "200",
     };
   }
+  if (type === 50) {
+    return {
+      accounts: "500",
+    };
+  }
   return {
-    accounts: "0",
+    accounts: "500",
   };
 };
 

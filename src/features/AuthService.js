@@ -130,8 +130,8 @@ const authService = {
       if (error.response && error.response.data) {
         if (error.response.data.message === "PASSWORD_INCORRECT") {
           throw new Error("Password incorrect");
-        } else if (error.response.data.message === "EMPLOYEE_NOT_FOUND") {
-          throw new Error("Employee not found");
+        } else if (error.response.data.message === "USER_IS_NOT_ACTIVE") {
+          throw new Error("Distributor not active");
         } else {
           throw new Error("Connection error, try again later");
         }
