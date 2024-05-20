@@ -13,6 +13,9 @@ import {
   IconButton,
   Modal,
   TextField,
+  Select,
+  MenuItem,
+  CircularProgress,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -21,7 +24,7 @@ function ListSubcompanies() {
   const user = useSelector((state) => state.auth.user);
   const [subcompanies, setSubcompanies] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [editModalOpen, setEditModalOpen] = useState(false); // Estado para controlar la apertura del modal de edición
+  const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedSubcompany, setSelectedSubcompany] = useState(null);
   const [editedSubcompany, setEditedSubcompany] = useState({
     name: "",
@@ -29,6 +32,7 @@ function ListSubcompanies() {
     phone: "",
     address: "",
   });
+  const [loadingState, setLoadingState] = useState(false); // Nuevo estado de loading
 
   useEffect(() => {
     const fetchSubcompanies = async () => {
@@ -43,7 +47,7 @@ function ListSubcompanies() {
     };
 
     fetchSubcompanies();
-  }, []);
+  }, [user.id]);
 
   const handleEdit = (subcompany) => {
     setSelectedSubcompany(subcompany);
@@ -53,7 +57,7 @@ function ListSubcompanies() {
       phone: subcompany.phone,
       address: subcompany.address,
     });
-    setEditModalOpen(true); // Abrir el modal de edición
+    setEditModalOpen(true);
   };
 
   const handleCloseEditModal = () => {
@@ -70,18 +74,41 @@ function ListSubcompanies() {
   };
 
   const handleSaveChanges = async () => {
+    setLoadingState(true); // Mostrar loading
     try {
-      await api.patch(
-        `/subcompany/${selectedSubcompany.id}`,
-        editedSubcompany
-      );
-      // Actualizar la lista de subempresas después de la edición
+      await api.patch(`/subcompany/${selectedSubcompany.id}`, editedSubcompany);
       const response = await api.get("/subcompany/distributor/" + user.id);
       setSubcompanies(response.data);
-      // Cerrar el modal después de editar
       setEditModalOpen(false);
     } catch (error) {
       console.error("Error updating subcompany:", error);
+    } finally {
+      setLoadingState(false); // Ocultar loading
+    }
+  };
+
+  const handleStateChange = async (subcompany, newState) => {
+    setLoadingState(true); // Mostrar loading
+    try {
+      await api.patch(`/subcompany/change-state/${subcompany.id}`, {
+        state: newState,
+      });
+
+      const updatedSubcompanies = subcompanies.map((s) => {
+        if (s.id === subcompany.id) {
+          return {
+            ...s,
+            state_User: newState,
+          };
+        }
+        return s;
+      });
+
+      setSubcompanies(updatedSubcompanies);
+    } catch (error) {
+      console.error("Error updating subcompany state:", error);
+    } finally {
+      setLoadingState(false); // Ocultar loading
     }
   };
 
@@ -96,17 +123,14 @@ function ListSubcompanies() {
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
-              <TableRow
-                sx={{
-                  backgroundColor: "#f5f5f5",
-                }}
-              >
+              <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
                 <TableCell>Photo</TableCell>
                 <TableCell>Name</TableCell>
                 <TableCell>Email</TableCell>
                 <TableCell>Address</TableCell>
                 <TableCell>Phone</TableCell>
-                <TableCell>Actions</TableCell>{" "}
+                <TableCell>State</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -120,16 +144,33 @@ function ListSubcompanies() {
                   <TableCell>{subcompany.address}</TableCell>
                   <TableCell>{subcompany.phone}</TableCell>
                   <TableCell>
+                    <Select
+                      value={subcompany.state_User}
+                      onChange={(e) =>
+                        handleStateChange(subcompany, e.target.value)
+                      }
+                      displayEmpty
+                      inputProps={{ "aria-label": "Without label" }}
+                      disabled={loadingState} // Deshabilitar el select si está cargando
+                    >
+                      <MenuItem value={0}>Desactivado</MenuItem>
+                      <MenuItem value={1}>Activo</MenuItem>
+                      <MenuItem value={2}>Baneado</MenuItem>
+                    </Select>
+                  </TableCell>
+                  <TableCell>
                     <IconButton
                       aria-label="edit"
                       onClick={() => handleEdit(subcompany)}
                       sx={{ color: "#1976d2" }}
+                      disabled={loadingState} // Deshabilitar el botón si está cargando
                     >
                       <EditIcon />
                     </IconButton>
                     <IconButton
                       aria-label="delete"
-                      onClick={() => handleDelete(subcompany.id)}
+                      // onClick={() => handleDelete(subcompany.id)}
+                      disabled={loadingState} // Deshabilitar el botón si está cargando
                     >
                       <DeleteIcon />
                     </IconButton>
@@ -146,17 +187,14 @@ function ListSubcompanies() {
       {/* Modal de edición */}
       <Modal
         open={editModalOpen}
-        onClose={() => handleCloseEditModal()} // Cerrar el modal al hacer clic fuera de él
+        onClose={handleCloseEditModal}
         aria-labelledby="edit-modal-title"
         aria-describedby="edit-modal-description"
       >
-        {/* Contenido del modal */}
         <div className="w-96 bg-white p-4 mx-auto mt-24">
           <h2 id="edit-modal-title" className="text-2xl font-bold mb-4">
             Edit Subcompany
           </h2>
-
-          {/* Campos de entrada para la edición */}
           <TextField
             label="Name"
             name="name"
@@ -189,18 +227,18 @@ function ListSubcompanies() {
             fullWidth
             sx={{ marginBottom: 2 }}
           />
-
           <div className="flex justify-end mt-4">
-            {/* Botones para guardar cambios y cerrar el modal */}
             <button
               onClick={handleSaveChanges}
               className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mr-2"
+              disabled={loadingState} // Deshabilitar el botón si está cargando
             >
-              Save Changes
+              {loadingState ? "Saving..." : "Save Changes"}
             </button>
             <button
-              onClick={() => handleCloseEditModal()}
+              onClick={handleCloseEditModal}
               className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+              disabled={loadingState} // Deshabilitar el botón si está cargando
             >
               Close
             </button>

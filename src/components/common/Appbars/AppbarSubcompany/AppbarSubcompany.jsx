@@ -15,12 +15,12 @@ import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-import LanguageSwitcher from "./../LanguageSwitcher";
-import ModalEditUser from "./ModalEditUser";
-import { formatExpirationDate } from "../../utils/formatDate";
-import { formatNumbers } from "../../utils/formatNumbers";
+import LanguageSwitcher from "./../../../LanguageSwitcher";
+import ModalEditSubcompany from "./ModalEditSubcompany";
+import { formatExpirationDate } from "../../../../utils/formatDate";
+import { formatNumbers } from "../../../../utils/formatNumbers";
 
-function AppBarComponent({ drawerWidth, handleDrawerToggle }) {
+function AppBarSubcompany({ drawerWidth, handleDrawerToggle }) {
   const { t } = useTranslation();
   const user = useSelector((state) => state.auth.user);
   const [openModal, setOpenModal] = useState(false);
@@ -274,7 +274,7 @@ function AppBarComponent({ drawerWidth, handleDrawerToggle }) {
       </Toolbar>
 
       {/* Modal para las configuraciones del usuario */}
-      <ModalEditUser
+      <ModalEditSubcompany
         openModal={openModal}
         handleCloseModal={handleCloseModal}
         user={user}
@@ -283,4 +283,4 @@ function AppBarComponent({ drawerWidth, handleDrawerToggle }) {
   );
 }
 
-export default AppBarComponent;
+export default AppBarSubcompany;

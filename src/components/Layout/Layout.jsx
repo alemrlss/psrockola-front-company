@@ -5,12 +5,13 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Drawer from "@mui/material/Drawer";
 import Toolbar from "@mui/material/Toolbar";
 import { Outlet } from "react-router-dom";
-import AppBarComponent from "../common/AppBar";
 import SidebarCompany from "../common/Sidebars/SidebarCompany/SidebarCompany";
 import { useSelector } from "react-redux";
 import SidebarEmployee from "../common/Sidebars/SidebarEmployee/SidebarEmployee";
 import SidebarDistributor from "../common/Sidebars/SidebarDistributor/SidebarDistributor";
 import SidebarSubcompany from "../common/Sidebars/SidebarSubcompany/SidebarSubcompany";
+import AppBarComponent from "../common/AppBar";
+import AppBarSubcompany from "../common/Appbars/AppbarSubcompany/AppbarSubcompany";
 
 const drawerWidth = 240;
 function Layout(props) {
@@ -26,6 +27,7 @@ function Layout(props) {
     window !== undefined ? () => window().document.body : undefined;
 
   let SidebarComponent;
+  let AppbarComponent;
 
   if (user.type === 23) {
     SidebarComponent = SidebarCompany;
@@ -37,10 +39,16 @@ function Layout(props) {
     SidebarComponent = SidebarDistributor;
   }
 
+  if(user.type === 24) {
+    AppbarComponent = AppBarSubcompany;
+  } else { 
+    AppbarComponent = AppBarComponent;
+  }
+
   return (
     <Box sx={{ display: "flex", overflow: "auto" }}>
       <CssBaseline />
-      <AppBarComponent
+      <AppbarComponent
         drawerWidth={drawerWidth}
         handleDrawerToggle={handleDrawerToggle}
       />

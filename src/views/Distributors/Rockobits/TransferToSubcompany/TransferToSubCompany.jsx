@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import {
-  Select,
-  MenuItem,
+  Autocomplete,
   FormControl,
-  InputLabel,
   Button,
   TextField,
 } from "@mui/material";
@@ -16,7 +14,7 @@ function TransferToSubCompany() {
   const dispatch = useDispatch();
 
   const [subCompanies, setSubCompanies] = useState([]);
-  const [selectedSubCompany, setSelectedSubCompany] = useState("");
+  const [selectedSubCompany, setSelectedSubCompany] = useState(null);
   const [amount, setAmount] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -32,18 +30,14 @@ function TransferToSubCompany() {
     };
 
     fetchSubCompanies();
-  }, []);
-
-  const handleChange = (event) => {
-    setSelectedSubCompany(event.target.value);
-  };
+  }, [user.id]);
 
   const handleTransfer = async () => {
     try {
       // Preparar los datos para enviar al servidor
       const transferData = {
         distributor_id: user.id,
-        subcompany_id: selectedSubCompany,
+        subcompany_id: selectedSubCompany.id,
         amount: parseInt(amount),
       };
 
@@ -56,7 +50,7 @@ function TransferToSubCompany() {
       // Verificar si la transferencia fue exitosa
       if (response.status === 201) {
         console.log(
-          `Transferencia exitosa de ${amount} desde el distribuidor ${user.id} a la subcompany ${selectedSubCompany}`
+          `Transferencia exitosa de ${amount} desde el distribuidor ${user.id} a la subcompany ${selectedSubCompany.id}`
         );
 
         const newBalance = user.balance - parseInt(amount);
@@ -65,7 +59,7 @@ function TransferToSubCompany() {
         setSuccessMessage("¡Transferencia exitosa!");
         setErrorMessage("");
         setAmount("");
-        setSelectedSubCompany("");
+        setSelectedSubCompany(null);
       } else {
         console.error("Hubo un error durante la transferencia");
         setErrorMessage("Hubo un error durante la transferencia");
@@ -85,24 +79,16 @@ function TransferToSubCompany() {
   return (
     <div className="p-4">
       <FormControl fullWidth>
-        <InputLabel id="subcompany-select-label">
-          Seleccionar Subcompany
-        </InputLabel>
-        <Select
-          labelId="subcompany-select-label"
+        <Autocomplete
+          options={subCompanies}
+          getOptionLabel={(option) => option.name}
           value={selectedSubCompany}
-          label="Seleccionar Subcompany"
-          onChange={handleChange}
-        >
-          {subCompanies.map((subCompany) => (
-            <MenuItem key={subCompany.id} value={subCompany.id}>
-              {subCompany.name}
-            </MenuItem>
-          ))}
-        </Select>
+          onChange={(event, newValue) => setSelectedSubCompany(newValue)}
+          renderInput={(params) => <TextField {...params} label="Seleccionar Subcompany" />}
+        />
       </FormControl>
 
-      <FormControl fullWidth>
+      <FormControl fullWidth style={{ marginTop: 16 }}>
         <TextField
           label="Monto"
           type="number"
@@ -111,7 +97,12 @@ function TransferToSubCompany() {
         />
       </FormControl>
 
-      <Button variant="contained" color="primary" onClick={handleTransfer}>
+      <Button 
+        variant="contained" 
+        color="primary" 
+        onClick={handleTransfer} 
+        style={{ marginTop: 16 }}
+      >
         Transferir
       </Button>
 
