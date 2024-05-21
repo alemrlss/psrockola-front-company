@@ -33,7 +33,7 @@ const getBenefitsDistributorMembership = (type) => {
     };
   }
   return {
-    accounts: "500",
+    accounts: "0",
   };
 };
 

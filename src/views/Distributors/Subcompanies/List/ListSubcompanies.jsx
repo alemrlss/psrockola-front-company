@@ -11,14 +11,12 @@ import {
   Paper,
   Avatar,
   IconButton,
-  Modal,
-  TextField,
   Select,
   MenuItem,
-  CircularProgress,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ModalEditWithTabs from "../../../../components/Distributors/Subcompanies/List/ModalEdit";
 
 function ListSubcompanies() {
   const user = useSelector((state) => state.auth.user);
@@ -112,6 +110,20 @@ function ListSubcompanies() {
     }
   };
 
+  const handleChangePassword = async (newPassword) => {
+    setLoadingState(true); // Mostrar loading
+    try {
+      await api.patch(`/subcompany/change-password/${selectedSubcompany.id}`, {
+        password: newPassword,
+      });
+      setEditModalOpen(false);
+    } catch (error) {
+      console.error("Error changing password:", error);
+    } finally {
+      setLoadingState(false); // Ocultar loading
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -184,67 +196,15 @@ function ListSubcompanies() {
         <div>No subcompanies found.</div>
       )}
 
-      {/* Modal de edición */}
-      <Modal
-        open={editModalOpen}
-        onClose={handleCloseEditModal}
-        aria-labelledby="edit-modal-title"
-        aria-describedby="edit-modal-description"
-      >
-        <div className="w-96 bg-white p-4 mx-auto mt-24">
-          <h2 id="edit-modal-title" className="text-2xl font-bold mb-4">
-            Edit Subcompany
-          </h2>
-          <TextField
-            label="Name"
-            name="name"
-            value={editedSubcompany.name}
-            onChange={handleInputChange}
-            fullWidth
-            sx={{ marginBottom: 2 }}
-          />
-          <TextField
-            label="Email"
-            name="email"
-            value={editedSubcompany.email}
-            onChange={handleInputChange}
-            fullWidth
-            sx={{ marginBottom: 2 }}
-          />
-          <TextField
-            label="Phone"
-            name="phone"
-            value={editedSubcompany.phone}
-            onChange={handleInputChange}
-            fullWidth
-            sx={{ marginBottom: 2 }}
-          />
-          <TextField
-            label="Address"
-            name="address"
-            value={editedSubcompany.address}
-            onChange={handleInputChange}
-            fullWidth
-            sx={{ marginBottom: 2 }}
-          />
-          <div className="flex justify-end mt-4">
-            <button
-              onClick={handleSaveChanges}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mr-2"
-              disabled={loadingState} // Deshabilitar el botón si está cargando
-            >
-              {loadingState ? "Saving..." : "Save Changes"}
-            </button>
-            <button
-              onClick={handleCloseEditModal}
-              className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
-              disabled={loadingState} // Deshabilitar el botón si está cargando
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      </Modal>
+      <ModalEditWithTabs
+        editModalOpen={editModalOpen}
+        handleCloseEditModal={handleCloseEditModal}
+        editedSubcompany={editedSubcompany}
+        handleInputChange={handleInputChange}
+        handleSaveChanges={handleSaveChanges}
+        loadingState={loadingState}
+        handleChangePassword={handleChangePassword}
+      />
     </div>
   );
 }

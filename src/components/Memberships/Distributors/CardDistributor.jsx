@@ -7,9 +7,6 @@ import { useTranslation } from "react-i18next";
 function CardDistributor({ membership, onClick, setMembership }) {
   const { t } = useTranslation();
 
-  {
-    console.log(membership);
-  }
   return (
     <Card
       sx={{

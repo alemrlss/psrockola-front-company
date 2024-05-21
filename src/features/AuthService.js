@@ -175,8 +175,18 @@ const authService = {
       if (error.response && error.response.data) {
         if (error.response.data.message === "PASSWORD_INCORRECT") {
           throw new Error("Password incorrect");
-        } else if (error.response.data.message === "EMPLOYEE_NOT_FOUND") {
-          throw new Error("Employee not found");
+        } else if (error.response.data.message === "USER_IS_BANNED") {
+          throw new Error(" Subcompany banned");
+        } else if (error.response.data.message === "USER_IS_NOT_ACTIVE") {
+          throw new Error(" Subcompany not active");
+        } else if (
+          error.response.data.message === "DISTRIBUTOR_WITHOUT_MEMBERSHIP"
+        ) {
+          throw new Error("Distributor without membership");
+        } else if (
+          error.response.data.message === "DISTRIBUTOR_MEMBERSHIP_EXPIRED"
+        ) {
+          throw new Error("Distributor membership expired");
         } else {
           throw new Error("Connection error, try again later");
         }

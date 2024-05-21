@@ -2,9 +2,8 @@ import { useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import api from "../../../../api/api";
 import { updateUserBalance } from "../../../../features/authSlice";
-import apiFormData from "../../../../api/apiFormData";
-import ModalSale from "../../../../components/Rockobits/Sale/ModalSale";
 import Sound from "../../../../../public/audio/Coin.wav";
+import ModalSaleSubcompany from "../../../../components/Subcompany/Rockobits/Sale/ModalSaleSubcompany";
 
 import { TextField, Button, Typography, Box } from "@mui/material";
 import { useTranslation } from "react-i18next";
@@ -121,6 +120,14 @@ function RockobitsSubcompanySale() {
       if (error.response.data.message === "INSUFFICIENT_FUNDS") {
         setErrorModal("Insufficient funds");
       }
+      if (error.response.data.message === "DISTRIBUTOR_NO_MEMBERSHIP") {
+        setErrorModal("Distributor has no membership");
+      }
+      if (error.response.data.message === "DISTRIBUTOR_MEMBERSHIP_EXPIRED") {
+        setErrorModal("Distributor membership expired");
+      }
+
+      
     }
   };
 
@@ -195,7 +202,7 @@ function RockobitsSubcompanySale() {
           {success}
         </Typography>
       )}
-      <ModalSale
+      <ModalSaleSubcompany
         isModalOpen={isModalOpen}
         handleCloseModal={handleCloseModal}
         userData={userData}

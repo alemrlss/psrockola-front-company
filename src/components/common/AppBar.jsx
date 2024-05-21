@@ -19,6 +19,7 @@ import LanguageSwitcher from "./../LanguageSwitcher";
 import ModalEditUser from "./ModalEditUser";
 import { formatExpirationDate } from "../../utils/formatDate";
 import { formatNumbers } from "../../utils/formatNumbers";
+import getBenefitsDistributorMembership from "../../utils/getBenefitsDistributorMembership";
 
 function AppBarComponent({ drawerWidth, handleDrawerToggle }) {
   const { t } = useTranslation();
@@ -204,7 +205,10 @@ function AppBarComponent({ drawerWidth, handleDrawerToggle }) {
                 {user.membership.expiration
                   ? `${t("psrockola_appbar_expire")} ${formatExpirationDate(
                       user.membership.expiration
-                    )} - Type: ${user.membership.type}`
+                    )} - Accounts: ${
+                      getBenefitsDistributorMembership(user.membership.type)
+                        .accounts
+                    }`
                   : "No membership"}
               </Typography>
             </Box>
