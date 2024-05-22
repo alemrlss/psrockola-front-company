@@ -78,6 +78,7 @@ function ListSubcompanies() {
       const response = await api.get("/subcompany/distributor/" + user.id);
       setSubcompanies(response.data);
       setEditModalOpen(false);
+      
     } catch (error) {
       console.error("Error updating subcompany:", error);
     } finally {

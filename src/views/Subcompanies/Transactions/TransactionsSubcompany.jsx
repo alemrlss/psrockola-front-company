@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Tabs, Tab, Paper } from "@mui/material";
 import RockobitsTransactionsSubcompany from "./Rockobits/RockobitsTransactionsSubcompanies";
+import QrTransactionSubcompany from "./Qr/QrTransactionSubcompany";
 function TransactionsSubcompany() {
   // Estado para controlar la pestaña seleccionada
   const [selectedTab, setSelectedTab] = useState(0);
@@ -28,7 +29,7 @@ function TransactionsSubcompany() {
 
       {/* Contenido según la pestaña seleccionada */}
       {selectedTab === 0 && <RockobitsTransactionsSubcompany/>}
-      {selectedTab === 1 && <h2>qr transactions</h2>}
+      {selectedTab === 1 && <QrTransactionSubcompany/>}
     </div>
   );
 }

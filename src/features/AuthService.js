@@ -11,7 +11,8 @@ const authService = {
       });
 
       if (response.status === 201) {
-        console.log(response.data.user.photo);
+        localStorage.setItem("language", response.data.user.language);
+
         return {
           user: {
             id: response.data.user.id,
@@ -59,6 +60,8 @@ const authService = {
       });
 
       if (response.status === 201) {
+        localStorage.setItem("language", response.data.user.language);
+
         return {
           user: {
             id: response.data.user.id,
@@ -104,6 +107,9 @@ const authService = {
       });
 
       if (response.status === 201) {
+
+        localStorage.setItem("language", response.data.user.language);
+
         return {
           user: {
             id: response.data.user.id,
@@ -149,6 +155,8 @@ const authService = {
       });
 
       if (response.status === 201) {
+        localStorage.setItem("language", response.data.user.language);
+
         return {
           user: {
             id: response.data.user.id,

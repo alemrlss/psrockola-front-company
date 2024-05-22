@@ -12,11 +12,11 @@ import {
   CircularProgress,
   Typography,
 } from "@mui/material";
-import { formatDate } from "../../../../utils/formatDate";
 import api from "../../../../api/api";
+import { formatDate } from "../../../../utils/formatDate";
 import { useSelector } from "react-redux";
 
-function RockobitsTransactionsSubcompany() {
+function QrTransactionSubcompany() {
   const user = useSelector((state) => state.auth.user);
   const [transactions, setTransactions] = useState([]);
   const [page, setPage] = useState(0);
@@ -31,15 +31,13 @@ function RockobitsTransactionsSubcompany() {
   const fetchTransactions = async () => {
     setIsLoading(true);
     try {
-      const response = await api.get(
-        `/transactions/rockobits/subcompany/${user.id}`,
-        {
-          params: {
-            skip: page * take,
-            take,
-          },
-        }
-      );
+      const response = await api.get(`/transactions/qr/subcompany/${user.id}`, {
+        params: {
+          skip: page * take,
+          take,
+          isEmployee: user.type === 22,
+        },
+      });
       setTransactions(response.data.data.transactions);
       setTotalCount(response.data.data.total);
     } catch (error) {
@@ -58,8 +56,8 @@ function RockobitsTransactionsSubcompany() {
     setPage(0);
   };
 
-  const renderTransactionRockobits = (transaction) => {
-    if (transaction.type === "transfer_rockobits_distributor_to_subcompany") {
+  const renderTransactionPay = (transaction) => {
+    if (transaction.type === "generation") {
       return (
         <TableRow key={transaction.id}>
           <TableCell
@@ -72,33 +70,21 @@ function RockobitsTransactionsSubcompany() {
           <TableCell
             sx={{
               textAlign: "center",
-              display: "flex",
-              justifyContent: "center",
             }}
           >
-            Transferencia de Distributor
-          </TableCell>
-          <TableCell
-            sx={{
-              textAlign: "center",
-              color: "green",
-              fontWeight: "bold",
-              fontSize: "20px",
-            }}
-          >
-            + {transaction.amount}
+            Generate QR
           </TableCell>
           <TableCell
             sx={{
               textAlign: "center",
             }}
           >
-            {transaction.emitterDistributor.name}
+            {transaction.amount}
           </TableCell>
         </TableRow>
       );
     }
-    if (transaction.type === "transfer_rockobits_subcompany_to_client") {
+    if (transaction.type === "cancellation") {
       return (
         <TableRow key={transaction.id}>
           <TableCell
@@ -111,33 +97,20 @@ function RockobitsTransactionsSubcompany() {
           <TableCell
             sx={{
               textAlign: "center",
-              display: "flex",
-              justifyContent: "center",
             }}
           >
-            Transferencia a Cliente
-          </TableCell>
-          <TableCell
-            sx={{
-              textAlign: "center",
-              color: "red",
-              fontWeight: "bold",
-              fontSize: "20px",
-            }}
-          >
-            - {transaction.amount}
+            Cancel QR
           </TableCell>
           <TableCell
             sx={{
               textAlign: "center",
             }}
           >
-            {transaction.receiver.name}
+            {transaction.amount}
           </TableCell>
         </TableRow>
       );
     }
-
     if (transaction.type === "claim_qr_rockobits") {
       return (
         <TableRow key={transaction.id}>
@@ -153,24 +126,14 @@ function RockobitsTransactionsSubcompany() {
               textAlign: "center",
             }}
           >
-            Reclamo de QR
-          </TableCell>
-          <TableCell
-            sx={{
-              textAlign: "center",
-              color: "red",
-              fontWeight: "bold",
-              fontSize: "20px",
-            }}
-          >
-            - {transaction.amount}
+            Claim QR{" "}
           </TableCell>
           <TableCell
             sx={{
               textAlign: "center",
             }}
           >
-            {transaction.receiver.name}
+            {transaction.amount}
           </TableCell>
         </TableRow>
       );
@@ -191,13 +154,13 @@ function RockobitsTransactionsSubcompany() {
         >
           <CircularProgress size={120} />
           <Typography variant="h6" sx={{ marginTop: "16px", fontSize: "32px" }}>
-            Loading....{" "}
+            Loading...
           </Typography>
         </Box>
       ) : (
         <TableContainer component={Paper}>
           <Table
-            aria-label="Rockobits Transactions Table"
+            aria-label="Pay Transactions Table"
             sx={{
               border: "2px solid #e0e0e0",
             }}
@@ -229,13 +192,6 @@ function RockobitsTransactionsSubcompany() {
                 >
                   Amount
                 </TableCell>
-                <TableCell
-                  sx={{
-                    textAlign: "center",
-                  }}
-                >
-                  User
-                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -243,13 +199,13 @@ function RockobitsTransactionsSubcompany() {
                 <TableRow>
                   <TableCell colSpan={4} sx={{ textAlign: "center" }}>
                     <Typography variant="body1">
-                      No transactions to display{" "}
+                      No transactions found
                     </Typography>
                   </TableCell>
                 </TableRow>
               ) : (
                 transactions.map((transaction) =>
-                  renderTransactionRockobits(transaction)
+                  renderTransactionPay(transaction)
                 )
               )}
             </TableBody>
@@ -269,4 +225,4 @@ function RockobitsTransactionsSubcompany() {
   );
 }
 
-export default RockobitsTransactionsSubcompany;
+export default QrTransactionSubcompany;
