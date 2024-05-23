@@ -9,17 +9,16 @@ import {
 } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 import { useState } from "react";
-import api from "../../../api/api";
+import api from "../../../../api/api";
 import { useDispatch } from "react-redux";
-import { updateUser } from "../../../features/authSlice";
+import { updateUser } from "../../../../features/authSlice";
 
-function UpdateUser({ user }) {
+function UpdateUserEmployee({ user }) {
   const [formData, setFormData] = useState({
     name: user.name,
     email: user.email,
     phone: user.phone || "",
     address: user.address || "",
-    postalCode: user.postalCode || "",
   });
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -37,14 +36,13 @@ function UpdateUser({ user }) {
     setLoading(true); // Iniciar la carga
 
     try {
-      const response = await api.patch(`/user/${user.id}`, formData);
+      const response = await api.patch(`/employee/${user.id}`, formData);
       const updatedUser = {
         ...user,
         email: response.data.data.email,
         name: response.data.data.name,
         phone: response.data.data.phone,
         address: response.data.data.address,
-        postalCode: response.data.data.postalCode,
       }; // Suponiendo que la respuesta devuelve el usuario actualizado
 
       // Actualizar el estado en Redux
@@ -58,10 +56,6 @@ function UpdateUser({ user }) {
     } finally {
       setLoading(false); // Finalizar la carga
     }
-  };
-
-  const handleSubmitEmployee = async () => {
-    console.log("Para empleados");
   };
 
   return (
@@ -84,7 +78,6 @@ function UpdateUser({ user }) {
             onChange={handleInputChange}
             size="small"
             fullWidth
-            disabled={user.type === 22}
           />
         </Grid>
         <Grid item xs={6}>
@@ -95,7 +88,6 @@ function UpdateUser({ user }) {
             onChange={handleInputChange}
             fullWidth
             size="small"
-            disabled={user.type === 22}
           />
         </Grid>
         <Grid item xs={6}>
@@ -106,7 +98,6 @@ function UpdateUser({ user }) {
             onChange={handleInputChange}
             fullWidth
             size="small"
-            disabled={user.type === 22}
           />
         </Grid>
         <Grid item xs={6}>
@@ -117,21 +108,9 @@ function UpdateUser({ user }) {
             onChange={handleInputChange}
             size="small"
             fullWidth
-            disabled={user.type === 22}
           />
         </Grid>
-        <Grid item xs={6}>
-          {user.type === 23 ? (
-            <TextField
-              label="Postal Code"
-              name="postalCode"
-              value={formData.postalCode}
-              onChange={handleInputChange}
-              fullWidth
-              size="small"
-            />
-          ) : null}
-        </Grid>
+
         <Grid item sx={6}>
           {successMessage && (
             <Alert severity="success" sx={{ marginLeft: 1 }}>
@@ -150,21 +129,17 @@ function UpdateUser({ user }) {
           marginTop: 2,
         }}
       >
-        {user.type === 22 ? null : (
-          <Button
-            onClick={
-              user.type === 23 ? handleSubmitCompany : handleSubmitEmployee
-            }
-            variant="contained"
-            startIcon={<SaveIcon />}
-            disabled={loading}
-          >
-            {loading ? <CircularProgress size={24} /> : "Save"}
-          </Button>
-        )}
+        <Button
+          onClick={handleSubmitCompany}
+          variant="contained"
+          startIcon={<SaveIcon />}
+          disabled={loading}
+        >
+          {loading ? <CircularProgress size={24} /> : "Save"}
+        </Button>
       </Grid>
     </Box>
   );
 }
 
-export default UpdateUser;
+export default UpdateUserEmployee;

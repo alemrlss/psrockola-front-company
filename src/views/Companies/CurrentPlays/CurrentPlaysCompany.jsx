@@ -295,82 +295,90 @@ function CurrentPlaysCompany() {
                 </Typography>
               </div>
               <Grid container spacing={2}>
-                {currentVideos[currentScreen.id].map((video) => (
-                  <Grid item xs={12} key={video.id}>
-                    <Box
-                      className="p-4 border border-gray-300 rounded"
-                      display="flex"
-                      alignItems="center"
-                      flexDirection={{ xs: "column", sm: "row" }}
-                    >
-                      <Checkbox
-                        checked={selectedVideos.includes(video)}
-                        onChange={(e) => handleCheckboxChange(e, video)}
-                      />
-
-                      <img
-                        src={video.thumbnail}
-                        alt="Thumbnail"
-                        className="mb-1"
-                        style={{
-                          width: "100px",
-                          height: "100px",
-                          objectFit: "cover",
-                        }}
-                      />
+                {currentVideos[currentScreen.id].length > 0 ? (
+                  currentVideos[currentScreen.id].map((video) => (
+                    <Grid item xs={12} key={video.id}>
                       <Box
-                        sx={{
-                          display: "flex",
-                          flexDirection: "column",
-                          flex: 1,
-                          marginLeft: { xs: 0, sm: 2 }, // Agregamos margen a la izquierda solo en dispositivos de escritorio
-                          marginTop: { xs: 2, sm: 0 }, // Agregamos margen superior solo en dispositivos móviles
-                        }}
+                        className="p-4 border border-gray-300 rounded"
+                        display="flex"
+                        alignItems="center"
+                        flexDirection={{ xs: "column", sm: "row" }}
                       >
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                          <Avatar
-                            src={
-                              video.typeModeplay === 1
-                                ? "/modeplays/vip.png"
-                                : video.typeModeplay === 2
-                                ? "/modeplays/normal.png"
-                                : "/modeplays/platinum.png"
-                            }
-                            alt="Emblem"
-                            variant="rounded"
-                            className="mb-1 mr-5"
-                          />
-                          <Typography
-                            variant="h6"
-                            sx={{
-                              fontWeight: "bold",
-                              alignSelf: "center",
-                            }}
+                        <Checkbox
+                          checked={selectedVideos.includes(video)}
+                          onChange={(e) => handleCheckboxChange(e, video)}
+                        />
+
+                        <img
+                          src={video.thumbnail}
+                          alt="Thumbnail"
+                          className="mb-1"
+                          style={{
+                            width: "100px",
+                            height: "100px",
+                            objectFit: "cover",
+                          }}
+                        />
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            flex: 1,
+                            marginLeft: { xs: 0, sm: 2 }, // Agregamos margen a la izquierda solo en dispositivos de escritorio
+                            marginTop: { xs: 2, sm: 0 }, // Agregamos margen superior solo en dispositivos móviles
+                          }}
+                        >
+                          <div
+                            style={{ display: "flex", alignItems: "center" }}
                           >
-                            {video.title}
+                            <Avatar
+                              src={
+                                video.typeModeplay === 1
+                                  ? "/modeplays/vip.png"
+                                  : video.typeModeplay === 2
+                                  ? "/modeplays/normal.png"
+                                  : "/modeplays/platinum.png"
+                              }
+                              alt="Emblem"
+                              variant="rounded"
+                              className="mb-1 mr-5"
+                            />
+                            <Typography
+                              variant="h6"
+                              sx={{
+                                fontWeight: "bold",
+                                alignSelf: "center",
+                              }}
+                            >
+                              {video.title}
+                            </Typography>
+                          </div>
+                          <Typography variant="body2">
+                            {formatDateTime(video.createdAt)}
                           </Typography>
-                        </div>
-                        <Typography variant="body2">
-                          {formatDateTime(video.createdAt)}
-                        </Typography>
-                        <Typography variant="body2">
-                          {msToTime(video.duration)}
-                        </Typography>
-                        <Typography variant="body2">
-                          {video.channelTitle}
-                        </Typography>
+                          <Typography variant="body2">
+                            {msToTime(video.duration)}
+                          </Typography>
+                          <Typography variant="body2">
+                            {video.channelTitle}
+                          </Typography>
+                        </Box>
+                        <Button
+                          variant="contained"
+                          color="error"
+                          onClick={() => handleBanClick(video)}
+                          sx={{ mt: { xs: 2, sm: 0 } }}
+                        >
+                          Ban
+                        </Button>
                       </Box>
-                      <Button
-                        variant="contained"
-                        color="error"
-                        onClick={() => handleBanClick(video)}
-                        sx={{ mt: { xs: 2, sm: 0 } }}
-                      >
-                        Ban
-                      </Button>
-                    </Box>
-                  </Grid>
-                ))}
+                    </Grid>
+                  ))
+                ) : (
+                  <Typography variant="h6" sx={{ fontWeight: "bold", m: 2, fontSize: 40 }}>
+                    No videos to show
+                  </Typography>
+                )}
               </Grid>
             </div>
           )}

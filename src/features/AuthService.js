@@ -76,6 +76,8 @@ const authService = {
             address: response.data.user.address,
             phone: response.data.user.phone,
             language: response.data.user.language,
+            photo: response.data.user.photo,
+
           },
           token: response.data.token,
           tokenExpiration: response.data.tokenExpiration,

@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Box, Avatar, Button, Input, Typography } from "@mui/material";
-import apiFormData from "../../../api/apiFormData";
+import apiFormData from "../../../../api/apiFormData";
 import { useDispatch } from "react-redux";
-import { updatePhoto } from "../../../features/authSlice";
+import { updatePhoto } from "../../../../features/authSlice";
 
-function UpdatePhoto({ user }) {
+function UpdatePhotoEmployee({ user }) {
   const [newPhoto, setNewPhoto] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
   const dispatch = useDispatch();
@@ -22,7 +22,7 @@ function UpdatePhoto({ user }) {
       formData.append("photo", newPhoto);
 
       const response = await apiFormData.patch(
-        `user/update-photo/${user.id}`,
+        `employee/update-photo/${user.id}`,
         formData,
         {
           headers: {
@@ -31,8 +31,9 @@ function UpdatePhoto({ user }) {
         }
       );
 
+      
       // Suponiendo que el backend devuelve el usuario actualizado con la nueva URL de la foto
-      const photo = response.data.data.logo;
+      const photo = response.data.picture;
 
       dispatch(updatePhoto(photo));
       setSuccessMessage("Photo changed successfully");
@@ -86,4 +87,4 @@ function UpdatePhoto({ user }) {
   );
 }
 
-export default UpdatePhoto;
+export default UpdatePhotoEmployee;

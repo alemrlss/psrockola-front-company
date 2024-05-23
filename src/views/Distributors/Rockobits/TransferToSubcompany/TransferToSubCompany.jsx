@@ -1,10 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Autocomplete,
-  FormControl,
-  Button,
-  TextField,
-} from "@mui/material";
+import { Autocomplete, FormControl, Button, TextField } from "@mui/material";
 import api from "../../../../api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUserBalance } from "../../../../features/authSlice";
@@ -55,7 +50,7 @@ function TransferToSubCompany() {
 
         const newBalance = user.balance - parseInt(amount);
         dispatch(updateUserBalance(newBalance));
-        
+
         setSuccessMessage("¡Transferencia exitosa!");
         setErrorMessage("");
         setAmount("");
@@ -66,6 +61,12 @@ function TransferToSubCompany() {
         setSuccessMessage("");
       }
     } catch (error) {
+      if (error.response.data.message === "INSUFFICIENT_FUNDS") {
+        setErrorMessage("Fondos insuficientes");
+        setSuccessMessage("");
+        return;
+      }
+
       console.error("Hubo un error durante la transferencia", error);
       setErrorMessage("Hubo un error durante la transferencia");
       setSuccessMessage("");
@@ -83,8 +84,13 @@ function TransferToSubCompany() {
           options={subCompanies}
           getOptionLabel={(option) => option.name}
           value={selectedSubCompany}
-          onChange={(event, newValue) => setSelectedSubCompany(newValue)}
-          renderInput={(params) => <TextField {...params} label="Seleccionar Subcompany" />}
+          onChange={(event, newValue) => {
+            setSelectedSubCompany(newValue);
+            setErrorMessage("");
+            setSuccessMessage("");}}
+          renderInput={(params) => (
+            <TextField {...params} label="Seleccionar Subcompany" />
+          )}
         />
       </FormControl>
 
@@ -97,10 +103,10 @@ function TransferToSubCompany() {
         />
       </FormControl>
 
-      <Button 
-        variant="contained" 
-        color="primary" 
-        onClick={handleTransfer} 
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleTransfer}
         style={{ marginTop: 16 }}
       >
         Transferir

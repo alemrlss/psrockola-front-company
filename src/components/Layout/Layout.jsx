@@ -5,13 +5,15 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Drawer from "@mui/material/Drawer";
 import Toolbar from "@mui/material/Toolbar";
 import { Outlet } from "react-router-dom";
-import SidebarCompany from "../common/Sidebars/SidebarCompany/SidebarCompany";
 import { useSelector } from "react-redux";
+import SidebarCompany from "../common/Sidebars/SidebarCompany/SidebarCompany";
 import SidebarEmployee from "../common/Sidebars/SidebarEmployee/SidebarEmployee";
 import SidebarDistributor from "../common/Sidebars/SidebarDistributor/SidebarDistributor";
 import SidebarSubcompany from "../common/Sidebars/SidebarSubcompany/SidebarSubcompany";
-import AppBarComponent from "../common/AppBar";
 import AppBarSubcompany from "../common/Appbars/AppbarSubcompany/AppbarSubcompany";
+import AppBarDistributor from "../common/Appbars/AppbarDistributor/AppbarDistributor";
+import AppBarCompany from "../common/Appbars/AppbarCompany/AppbarCompany";
+import AppBarEmployee from "../common/Appbars/AppbarEmployee/AppbarEmployee";
 
 const drawerWidth = 240;
 function Layout(props) {
@@ -29,6 +31,7 @@ function Layout(props) {
   let SidebarComponent;
   let AppbarComponent;
 
+  //Renderizando sidebar y appbar segun el tipo de usuario(role)
   if (user.type === 23) {
     SidebarComponent = SidebarCompany;
   } else if (user.type === 22) {
@@ -39,10 +42,14 @@ function Layout(props) {
     SidebarComponent = SidebarDistributor;
   }
 
-  if(user.type === 24) {
+  if (user.type === 22) {
+    AppbarComponent = AppBarEmployee;
+  } else if (user.type === 23) {
+    AppbarComponent = AppBarCompany;
+  } else if (user.type === 24) {
     AppbarComponent = AppBarSubcompany;
-  } else { 
-    AppbarComponent = AppBarComponent;
+  } else if (user.type === 25) {
+    AppbarComponent = AppBarDistributor;
   }
 
   return (

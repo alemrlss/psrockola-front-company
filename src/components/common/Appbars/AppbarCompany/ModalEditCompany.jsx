@@ -1,24 +1,17 @@
-import {
-  Box,
-  Modal,
-  Tab,
-  Tabs,
-  IconButton,
-} from "@mui/material";
+import { Box, Modal, Tab, Tabs, IconButton } from "@mui/material";
 import { useState } from "react";
-import UpdateUser from "./Settings/UpdateUser";
-import ChangePassword from "./Settings/ChangePassword";
 import CloseIcon from "@mui/icons-material/Close";
-import UpdatePhoto from "./Settings/UpdatePhoto";
+import UpdateUserCompany from "../../Settings/Company/UpdateUserCompany";
+import ChangePasswordCompany from "../../Settings/Company/ChangePasswordCompany";
+import UpdatePhotoCompany from "../../Settings/Company/UpdatePhotoCompany";
 
-function ModalEditUser({ openModal, handleCloseModal, user }) {
+
+function ModalCompanyEdit({ openModal, handleCloseModal, user }) {
   const [tabValue, setTabValue] = useState(0);
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
-
-
 
   return (
     <Modal
@@ -76,11 +69,11 @@ function ModalEditUser({ openModal, handleCloseModal, user }) {
               <Tab label="Update profile photo" variant="contained" />
             </Tabs>
 
-            {tabValue === 0 && <UpdateUser user={user} />}
+            {tabValue === 0 && <UpdateUserCompany user={user} />}
 
-            {tabValue === 1 && <ChangePassword user={user} />}
+            {tabValue === 1 && <ChangePasswordCompany user={user} />}
 
-            {tabValue === 2 && <UpdatePhoto user={user} />}
+            {tabValue === 2 && <UpdatePhotoCompany user={user} />}
           </Box>
         </Box>
       </Box>
@@ -88,4 +81,4 @@ function ModalEditUser({ openModal, handleCloseModal, user }) {
   );
 }
 
-export default ModalEditUser;
+export default ModalCompanyEdit;

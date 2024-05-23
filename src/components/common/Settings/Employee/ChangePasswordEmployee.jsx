@@ -1,11 +1,10 @@
-/* eslint-disable react/prop-types */
 import { Box, Button, TextField, Divider, Grid, Alert } from "@mui/material";
 import { useState } from "react";
 import SaveIcon from "@mui/icons-material/Save";
 import CircularProgress from "@mui/material/CircularProgress";
-import api from "../../../api/api";
+import api from "../../../../api/api";
 
-function ChangePassword({ user }) {
+function ChangePasswordEmployee({ user }) {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -17,16 +16,19 @@ function ChangePassword({ user }) {
     if (newPassword === confirmPassword) {
       try {
         setLoading(true);
-        setError(null); // Limpiar errores previos
+        setError(null);
 
-        const response = await api.patch(`/auth/change-password/${user.id}`, {
-          password: currentPassword,
-          newPassword: newPassword,
-        });
+        const response = await api.patch(
+          `/auth/change-password-employee/${user.id}`,
+          {
+            password: currentPassword,
+            newPassword: newPassword,
+          }
+        );
 
         console.log(response.data);
 
-        setSuccessMessage(`Password changed successfully`); // Mostrar mensaje de éxito
+        setSuccessMessage(`Password changed successfully`);
         setConfirmPassword("");
         setCurrentPassword("");
         setNewPassword("");
@@ -100,7 +102,6 @@ function ChangePassword({ user }) {
         onChange={handleCurrentPasswordChange}
         sx={{ mb: 2 }}
         size="small"
-        disabled={user.type === 22}
       />
 
       <Divider sx={{ mb: 2, borderColor: "grey.500" }} />
@@ -113,7 +114,6 @@ function ChangePassword({ user }) {
         onChange={handleNewPasswordChange}
         sx={{ mb: 2 }}
         size="small"
-        disabled={user.type === 22}
       />
       <TextField
         size="small"
@@ -123,7 +123,6 @@ function ChangePassword({ user }) {
         value={confirmPassword}
         onChange={handleConfirmPasswordChange}
         sx={{ mb: 2 }}
-        disabled={user.type === 22}
       />
 
       <Grid container alignItems="center" justifyContent="space-between">
@@ -132,8 +131,7 @@ function ChangePassword({ user }) {
             onClick={handleChangePassword}
             variant="contained"
             startIcon={<SaveIcon />}
-            disabled={loading || user.type === 22}
-            
+            disabled={loading}
           >
             {loading ? <CircularProgress size={20} /> : "Change"}
           </Button>
@@ -155,4 +153,4 @@ function ChangePassword({ user }) {
   );
 }
 
-export default ChangePassword;
+export default ChangePasswordEmployee;
