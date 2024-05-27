@@ -46,7 +46,7 @@ function CreateSubcompanies() {
         address: "",
         phone: "",
         postalCode: "",
-        distributorId: 6,
+        distributorId: user.id,
       });
     } catch (error) {
       console.log(error.response.data.message);
