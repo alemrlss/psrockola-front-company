@@ -1,49 +1,48 @@
 import React from "react";
-import { Card, CardContent, Typography } from "@mui/material";
+import { Card, CardContent, Typography, Avatar } from "@mui/material";
 
-function ReproductionsSubcompany({ data }) {
+function TransactionsSubcompany({ data }) {
   // Limitar el número de tarjetas a mostrar
   const maxCardsToShow = 10;
   const cardsToShow = data.slice(0, maxCardsToShow);
 
   return (
-    <div className="container mx-auto px-4">
-      <h2 className="text-2xl font-bold mb-4">Top Subcompanies</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        {cardsToShow.map((subcompany, index) => (
-          <Card
-            key={subcompany.subcompany_id}
-            className="bg-gray-100 shadow-lg hover:shadow-xl"
-          >
-            <CardContent>
-              <Typography variant="h6" className="font-bold mb-2">
-                {index + 1}. {subcompany.subcompany_name}
-              </Typography>
-              <Typography variant="body1" className="text-gray-700">
-                Reproductions: {subcompany.totalreproducciones}
-              </Typography>
-            </CardContent>
-          </Card>
+    <div className="container mx-auto px-4 mb-6">
+      <h2 className="text-2xl font-bold mb-4">Top 10 Transfers by Subcompany</h2>
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        {cardsToShow.map((transaction, index) => (
+          <div key={transaction.Subcompany_id} className="w-full">
+            <Card className="bg-gradient-to-br from-blue-400 to-purple-600 shadow-lg hover:shadow-xl h-40">
+              <CardContent className="flex flex-col justify-center items-center h-full">
+                <Avatar alt={transaction.Subcompany_name} className="w-12 h-12 mb-4" />
+                <Typography variant="h6" className="font-bold text-center text-white mb-2">
+                  {index + 1}. {transaction.Subcompany_name}
+                </Typography>
+                <Typography className="text-center text-white" sx={{ fontSize: 14 }}>
+                  Total Amount: <b>{transaction.totalamount}</b> rockobits
+                </Typography>
+              </CardContent>
+            </Card>
+          </div>
         ))}
         {/* Rellenar con tarjetas vacías si es necesario */}
         {[...Array(maxCardsToShow - cardsToShow.length)].map((_, index) => (
-          <Card
-            key={index + cardsToShow.length}
-            className="bg-gray-100 shadow-lg"
-          >
-            <CardContent>
-              <Typography variant="h6" className="font-bold mb-2 text-gray-500">
-                {index + cardsToShow.length + 1}. No disponible
-              </Typography>
-              <Typography variant="body1" className="text-gray-700">
-                Reproductions: 0
-              </Typography>
-            </CardContent>
-          </Card>
+          <div key={index + cardsToShow.length} className="w-full">
+            <Card className="bg-gray-200 shadow-lg h-40">
+              <CardContent className="flex flex-col justify-center items-center h-full">
+                <Typography variant="h6" className="font-bold text-center text-gray-500 mb-2">
+                  {index + cardsToShow.length + 1}. No disponible
+                </Typography>
+                <Typography className="text-center text-gray-700">
+                  Total Amount: <b>0</b>
+                </Typography>
+              </CardContent>
+            </Card>
+          </div>
         ))}
       </div>
     </div>
   );
 }
 
-export default ReproductionsSubcompany;
+export default TransactionsSubcompany;
