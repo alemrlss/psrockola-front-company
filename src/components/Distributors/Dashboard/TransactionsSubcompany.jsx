@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, CardContent, Typography, Avatar } from "@mui/material";
 
-function TransactionsBySubcompany({ data }) {
+function TransactionsSubcompany({ data }) {
   // Limitar el número de tarjetas a mostrar
   const maxCardsToShow = 10;
   const cardsToShow = data.slice(0, maxCardsToShow);
@@ -62,4 +62,4 @@ function TransactionsBySubcompany({ data }) {
   );
 }
 
-export default TransactionsBySubcompany;
+export default TransactionsSubcompany;

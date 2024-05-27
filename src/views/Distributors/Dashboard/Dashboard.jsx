@@ -3,7 +3,7 @@ import api from "../../../api/api";
 import { useSelector } from "react-redux";
 import LastPayTransactions from "../../../components/Distributors/Dashboard/LastPayTransactions";
 import ReproductionsSubcompany from "../../../components/Distributors/Dashboard/ReproductionsSubcompany";
-import TransactionsBySubcompany from "../../../components/Distributors/Dashboard/transactionsBySubcompany";
+import TransactionsSubcompany from "../../../components/Distributors/Dashboard/TransactionsSubcompany";
 
 const DashboardDistributor = () => {
   const auth = useSelector((state) => state.auth);
@@ -54,7 +54,7 @@ const DashboardDistributor = () => {
               Welcome, {user.name}!
             </h2>
           </div>
-          <TransactionsBySubcompany data={transactionsBySubcompany} />
+          <TransactionsSubcompany data={transactionsBySubcompany} />
           <ReproductionsSubcompany data={subcompanyReproductions} />
           <LastPayTransactions data={recentTransactions} />
         </>
