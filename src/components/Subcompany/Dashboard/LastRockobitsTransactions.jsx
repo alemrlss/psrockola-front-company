@@ -7,70 +7,83 @@ import TableRow from "@mui/material/TableRow";
 import Box from "@mui/material/Box";
 import { useTranslation } from "react-i18next";
 import { formatDate } from "../../../utils/formatDate";
-
-function LastPayTransactions({ data }) {
+function LastRockobitsTransactions({ data }) {
   const { t } = useTranslation();
-
-  const getTypeDistributorString = (type) => {
-    if (type === 5) {
-      return "BEGINNER";
-    }
-    if (type === 10) {
-      return "STARTER";
-    }
-    if (type === 20) {
-      return "STANDARD";
-    }
-    if (type === 30) {
-      return "ADVANCED";
-    }
-    if (type === 40) {
-      return "ULTIMATE";
-    }
-    if (type === 50) {
-      return "ELITE";
-    }
-
-    return "Unknown";
-  };
   const renderTypeTransaction = (transaction) => {
-    if (transaction.type === "distributor_membership") {
+    if (transaction.type === "transfer_rockobits_subcompany_to_client") {
       return (
         <TableRow key={transaction.id}>
           <TableCell sx={{ textAlign: "center" }}>
             {formatDate(transaction.createdAt)}
           </TableCell>
           <TableCell sx={{ textAlign: "center" }}>
-            {t("view_dashboard_type_distributor_buy_membership")} {" "}
-            {getTypeDistributorString(
-              transaction.membershipDistributor.type
-            )}{" "}
+            Transferencia a Cliente
+          </TableCell>
+          <TableCell
+            sx={{
+              textAlign: "center",
+              color: "red",
+              fontWeight: "bold",
+              fontSize: "1.2rem",
+            }}
+          >
+            - {transaction.amount}
           </TableCell>
           <TableCell sx={{ textAlign: "center" }}>
-            {transaction.amount / 100}$
-          </TableCell>
-          <TableCell sx={{ textAlign: "center" }}>
-            {transaction.distributor.name}
+            {" "}
+            {transaction.receiverEmployee?.name}{" "}
           </TableCell>
         </TableRow>
       );
     }
-
-    if (transaction.type === "distributor_rockobits") {
+    if (transaction.type === "transfer_rockobits_distributor_to_subcompany") {
       return (
         <TableRow key={transaction.id}>
           <TableCell sx={{ textAlign: "center" }}>
             {formatDate(transaction.createdAt)}
           </TableCell>
           <TableCell sx={{ textAlign: "center" }}>
-            {t("view_dashboard_type_distributor_buy")} {" "}
-            {transaction.rockobits} Rockobits
+            Transferencia Recibida de Distribuidor
+          </TableCell>
+          <TableCell
+            sx={{
+              textAlign: "center",
+              color: "green",
+              fontWeight: "bold",
+              fontSize: "1.2rem",
+            }}
+          >
+            + {transaction.amount}
           </TableCell>
           <TableCell sx={{ textAlign: "center" }}>
-            {transaction.amount / 100}$
+            {" "}
+            {transaction.receiverEmployee?.name}{" "}
+          </TableCell>
+        </TableRow>
+      );
+    }
+    if (transaction.type === "claim_qr_rockobits") {
+      return (
+        <TableRow key={transaction.id}>
+          <TableCell sx={{ textAlign: "center" }}>
+            {formatDate(transaction.createdAt)}
           </TableCell>
           <TableCell sx={{ textAlign: "center" }}>
-            {transaction.distributor?.name}
+            Reclamo de codigo QR
+          </TableCell>
+          <TableCell
+            sx={{
+              textAlign: "center",
+              color: "red",
+              fontWeight: "bold",
+              fontSize: "1.2rem",
+            }}
+          >
+            - {transaction.amount}
+          </TableCell>
+          <TableCell sx={{ textAlign: "center" }}>
+            {" "}
+            {transaction.receiverEmployee?.name}{" "}
           </TableCell>
         </TableRow>
       );
@@ -79,7 +92,7 @@ function LastPayTransactions({ data }) {
   return (
     <>
       <h2 className="text-xl font-bold mt-3 mb-2">
-        {t("view_dashboard_last_pay_transactions")}
+        Last Rockobits Transactions
       </h2>
       <Box
         className="flex items-center"
@@ -103,21 +116,21 @@ function LastPayTransactions({ data }) {
                 </TableCell>
                 <TableCell sx={{ textAlign: "center" }}>
                   {" "}
-                  {t("view_dashboard_table_distributor")}
+                  {t("view_dashboard_table_user")}{" "}
                 </TableCell>
               </TableRow>
             </TableHead>
+            {data.length === 0 && (
+              <TableRow>
+                <TableCell
+                  colSpan={4}
+                  sx={{ textAlign: "center", fontSize: 18 }}
+                >
+                  No Rockobits Transactions
+                </TableCell>
+              </TableRow>
+            )}
             <TableBody>
-              {data.length === 0 && (
-                <TableRow>
-                  <TableCell
-                    colSpan={4}
-                    sx={{ textAlign: "center", fontSize: 18 }}
-                  >
-                    {t("view_dashboard_no_transactions")}
-                  </TableCell>
-                </TableRow>
-              )}
               {data.map((row) => renderTypeTransaction(row))}
             </TableBody>
           </Table>
@@ -127,4 +140,4 @@ function LastPayTransactions({ data }) {
   );
 }
 
-export default LastPayTransactions;
+export default LastRockobitsTransactions;

@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import api from "../../../api/api";
 import { useSelector } from "react-redux";
-import LastPayTransactions from "../../../components/Company/Dashboard/LastPayTransactions";
 import ReproductionsForScreen from "../../../components/Company/Dashboard/ReproductionsForScreen";
 import Sales from "../../../components/Company/Dashboard/Sales";
+import LastRockobitsTransactions from "../../../components/Company/Dashboard/LastRockobitsTransactions";
+import { useTranslation } from "react-i18next";
 
 const DashboardCompany = () => {
+  const { t } = useTranslation();
   const auth = useSelector((state) => state.auth);
   const user = useSelector((state) => state.auth.user);
 
@@ -25,7 +27,7 @@ const DashboardCompany = () => {
 
         console.log(info);
 
-        setRecentTransactions(info.recentPayTransactions);
+        setRecentTransactions(info.recentRockobitsTransactions);
         setReproductionsForScreen(info.reproductionsForScreen);
         setOwnSales(info.ownSales);
         setSalesForEmployee(info.salesForEmployee);
@@ -55,13 +57,13 @@ const DashboardCompany = () => {
         <>
           <div className="flex justify-between">
             <h2 className="font-bold text-[#555CB3] text-2xl mb-4">
-              Welcome, {user.name}!
+              {t("view_dashboard_welcome")} {user.name}!
             </h2>
 
             <div className="bg-[#555CB3] text-white p-2 rounded-md">
-              <p className="text-center text-lg font-bold">Own Sales</p>
+              <p className="text-center text-lg font-bold">{t("view_dashboard_sales_own")}</p>
               <p className="text-xs">
-                Sales: <b>{ownSales.countSales}</b>
+                {t("view_dashboard_sales")}: <b>{ownSales.countSales}</b>
               </p>
               <p className="text-xs">
                 <b>{ownSales.totalSales}</b> rockobits
@@ -70,7 +72,7 @@ const DashboardCompany = () => {
           </div>
           <ReproductionsForScreen data={reproductionsForScreen} />
           <Sales salesForEmployee={salesForEmployee} ownSales={ownSales} />
-          <LastPayTransactions data={recentTransactions} />
+          <LastRockobitsTransactions data={recentTransactions} />
         </>
       )}
     </section>

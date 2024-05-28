@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import api from "../../../api/api";
 import { useSelector } from "react-redux";
 import LastPayTransactions from "../../../components/Distributors/Dashboard/LastPayTransactions";
-import ReproductionsSubcompany from "../../../components/Distributors/Dashboard/ReproductionsSubcompany";
 import TransactionsSubcompany from "../../../components/Distributors/Dashboard/TransactionsSubcompany";
+import Prueba from "../../../components/Distributors/Dashboard/Prueba";
+import { useTranslation } from "react-i18next";
 
 const DashboardDistributor = () => {
   const auth = useSelector((state) => state.auth);
   const user = useSelector((state) => state.auth.user);
+  const { t } = useTranslation();
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -51,11 +53,11 @@ const DashboardDistributor = () => {
         <>
           <div className="flex justify-between">
             <h2 className="font-bold text-[#555CB3] text-2xl mb-4">
-              Welcome, {user.name}!
+            {t("view_dashboard_welcome")} {user.name}!
             </h2>
           </div>
           <TransactionsSubcompany data={transactionsBySubcompany} />
-          <ReproductionsSubcompany data={subcompanyReproductions} />
+          <Prueba data={subcompanyReproductions} />
           <LastPayTransactions data={recentTransactions} />
         </>
       )}

@@ -1,6 +1,8 @@
 import { Card, CardContent, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 function ReproductionsCard({ screen, reproductions }) {
+  const { t } = useTranslation();
   return (
     <Card>
       <CardContent
@@ -16,7 +18,7 @@ function ReproductionsCard({ screen, reproductions }) {
           {screen.code}
         </Typography>
         <Typography variant="body2" sx={{ textAlign: "center", fontSize: 18 }}>
-          Reproductions: <b>{reproductions}</b>
+          {t("view_dashboard_reproductions")}: <b>{reproductions}</b>
         </Typography>
       </CardContent>
     </Card>
