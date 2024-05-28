@@ -8,14 +8,18 @@ import Button from "@mui/material/Button";
 import { useDispatch } from "react-redux";
 import Divider from "@mui/material/Divider";
 import { logout } from "../../../../features/authSlice";
+import { useNavigate } from "react-router-dom";
 
 function SidebarItemLogout({ item }) {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
 
   const handleLogout = () => {
     dispatch(logout());
     setOpen(false);
+    navigate("/login");
+
   };
 
   return (

@@ -162,6 +162,7 @@ function AppBarCompany({ drawerWidth, handleDrawerToggle }) {
               <Typography
                 variant="body2"
                 sx={{
+                  display: { xs: "none", sm: "block" },
                   bgcolor: getMembershipType(user.membership.type).color,
                   padding: "6px",
                   paddingX: "10px",
@@ -208,7 +209,10 @@ function AppBarCompany({ drawerWidth, handleDrawerToggle }) {
                 <Typography
                   variant="caption"
                   component="div"
-                  sx={{ color: "black" }}
+                  sx={{
+                    color: "black",
+                    maxWidth: "80px", // Ajusta esto según el tamaño que necesites
+                  }}
                 >
                   {user.name}
                 </Typography>

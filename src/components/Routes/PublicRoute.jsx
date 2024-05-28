@@ -11,6 +11,9 @@ export default function PublicRoute() {
     if (user.type === 22) {
       return "/employees";
     }
+    if (user.type === 24) {
+      return "/subcompanies";
+    }
     if (user.type === 25) {
       return "/distributors";
     }

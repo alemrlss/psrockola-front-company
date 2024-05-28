@@ -8,14 +8,18 @@ import Button from "@mui/material/Button";
 import { useDispatch } from "react-redux";
 import Divider from "@mui/material/Divider";
 import { logout } from "../../../../features/authSlice";
+import { useNavigate } from "react-router-dom";
 
 function SidebarEmployeeLogout({ item }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // Usar useNavigate en lugar de useHistory
+
   const [open, setOpen] = useState(false);
 
   const handleLogout = () => {
     dispatch(logout());
     setOpen(false);
+    navigate("/login-subcompany");
   };
 
   return (
@@ -73,7 +77,9 @@ function SidebarEmployeeLogout({ item }) {
             textAlign: "center",
           }}
         >
-          <p className="text-xl font-extrabold">Are you sure you want to log out?</p>
+          <p className="text-xl font-extrabold">
+            Are you sure you want to log out?
+          </p>
           <Divider
             sx={{
               marginTop: "30px",

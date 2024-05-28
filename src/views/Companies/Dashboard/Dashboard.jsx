@@ -60,7 +60,7 @@ const DashboardCompany = () => {
               {t("view_dashboard_welcome")} {user.name}!
             </h2>
 
-            <div className="bg-[#555CB3] text-white p-2 rounded-md">
+            <div className="bg-[#555CB3] text-white p-2 rounded-md mb-4">
               <p className="text-center text-lg font-bold">{t("view_dashboard_sales_own")}</p>
               <p className="text-xs">
                 {t("view_dashboard_sales")}: <b>{ownSales.countSales}</b>

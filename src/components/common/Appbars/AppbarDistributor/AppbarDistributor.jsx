@@ -98,7 +98,7 @@ function AppBarDistributor({ drawerWidth, handleDrawerToggle }) {
           {user.membership && user.type === 25 && (
             <Box
               sx={{
-                display: "flex",
+                display: { xs: "flex", sm: "flex" },
                 alignItems: "center",
                 borderRadius: "50px",
                 color: "black",
@@ -108,13 +108,15 @@ function AppBarDistributor({ drawerWidth, handleDrawerToggle }) {
                 variant="body2"
                 sx={{
                   bgcolor: "#555CB3",
-                  padding: "6px",
-                  paddingX: "10px",
+                  padding: "2px",
+                  paddingX: "6px",
                   ml: "2px",
+                  mr: "2px",
                   color: "white",
                   fontWeight: "bold",
                   fontStyle: "italic",
-                  borderRadius: "50px",
+                  borderRadius: { xs: "0px", sm: "20px" },
+                  fontSize: { xs: "10px", sm: "inherit" }, // Ajustar tamaño de texto
                 }}
               >
                 {user.membership.expiration
@@ -156,10 +158,18 @@ function AppBarDistributor({ drawerWidth, handleDrawerToggle }) {
                 <Typography
                   variant="caption"
                   component="div"
-                  sx={{ color: "black" }}
+                  sx={{
+                    color: "black",
+                    fontSize: "12px",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    maxWidth: "80px", // Ajusta esto según el tamaño que necesites
+                  }}
                 >
                   {user.name}
                 </Typography>
+
                 <Typography
                   variant="body2"
                   component="div"

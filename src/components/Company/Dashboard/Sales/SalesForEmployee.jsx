@@ -3,14 +3,14 @@ import { useTranslation } from "react-i18next";
 
 function SalesForEmployee({ salesForEmployee }) {
   const { t } = useTranslation();
-  const maxSlots = 5;
+  const maxSlots = 2; // Número máximo de tarjetas por fila en dispositivos móviles
   const numEmployees = Math.min(salesForEmployee.length, maxSlots);
 
   // Calcular las tarjetas para los empleados disponibles
   const employeesToShow = salesForEmployee
     .slice(0, numEmployees)
     .map((employee, index) => (
-      <Grid item xs={12 / maxSlots} key={index}>
+      <Grid item xs={12} sm={6} key={index}>
         <Card sx={{ borderRadius: "10px", height: "100%" }}>
           <CardContent sx={{ textAlign: "left" }}>
             <Avatar

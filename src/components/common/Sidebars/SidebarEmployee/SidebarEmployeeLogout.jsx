@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Importar useNavigate en lugar de useHistory
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
@@ -11,11 +12,13 @@ import { logout } from "../../../../features/authSlice";
 
 function SidebarEmployeeLogout({ item }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // Usar useNavigate en lugar de useHistory
   const [open, setOpen] = useState(false);
 
   const handleLogout = () => {
     dispatch(logout());
     setOpen(false);
+    navigate("/login-employee"); // Usar navigate para redirigir al usuario después del logout
   };
 
   return (

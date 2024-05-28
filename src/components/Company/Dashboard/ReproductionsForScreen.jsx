@@ -5,7 +5,9 @@ import { useTranslation } from "react-i18next";
 function ReproductionsForScreen({ data }) {
   const { t } = useTranslation();
   const availableScreens = data.length;
-  const columnSize = availableScreens > 0 ? 12 / availableScreens : 12;
+
+  // Calcula el tamaño de las columnas en función del número de pantallas disponibles
+  const columnSize = availableScreens > 0 ? Math.floor(12 / Math.min(availableScreens, 3)) : 12;
 
   return (
     <>
@@ -14,7 +16,7 @@ function ReproductionsForScreen({ data }) {
           <h2 className="text-center font-bold text-xl mb-2">
             {t("view_dashboard_screens_reproductions")}
           </h2>
-          <Grid container spacing={2} wrap="nowrap">
+          <Grid container spacing={2} wrap="wrap">
             {data.map((item, index) => (
               <Grid item xs={12} sm={6} md={4} lg={columnSize} key={index}>
                 <ReproductionsCard
@@ -26,10 +28,9 @@ function ReproductionsForScreen({ data }) {
           </Grid>
         </>
       ) : (
-        <p>
-          No screens reproductions available at the moment. Please, try again
-          later.
-        </p>
+        <Typography variant="body1" align="center" color="textSecondary">
+          {t("no_screens_available_message")}
+        </Typography>
       )}
     </>
   );
