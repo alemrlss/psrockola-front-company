@@ -29,6 +29,7 @@ function CurrentPlaysCompany() {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [isBanning, setIsBanning] = useState(false);
   const user = useSelector((state) => state.auth.user);
+  const token = useSelector((state) => state.auth.token);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -57,7 +58,11 @@ function CurrentPlaysCompany() {
 
   const currentPlayListData = async (screen) => {
     try {
-      const response = await api.get(`play-list-company/${screen.code}`);
+      const response = await api.get(`play-list-company/${screen.code}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setCurrentVideos({ [screen.id]: response.data.data.videos });
       setSelectAll(false);
       setSelectedVideos([]);
@@ -93,11 +98,19 @@ function CurrentPlaysCompany() {
   const confirmBanVideo = async (screen) => {
     setIsBanning(true); // Activar el estado de "baneando"
     try {
-      await api.patch(`play-list-company/${videoToBan.id}`, {
-        state: 3,
-        idCompany: videoToBan.id_company,
-        codeScreen: videoToBan.codeScreen,
-      });
+      await api.patch(
+        `play-list-company/${videoToBan.id}`,
+        {
+          state: 3,
+          idCompany: videoToBan.id_company,
+          codeScreen: videoToBan.codeScreen,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       const updatedVideos = currentVideos[currentScreen.id].filter(
         (video) => video.id !== videoToBan.id
@@ -135,11 +148,19 @@ function CurrentPlaysCompany() {
         selectedVideos.map(async (video) => {
           try {
             // Borrar el video
-            await api.patch(`play-list-company/${video.id}`, {
-              state: 3,
-              idCompany: video.id_company,
-              codeScreen: video.codeScreen,
-            });
+            await api.patch(
+              `play-list-company/${video.id}`,
+              {
+                state: 3,
+                idCompany: video.id_company,
+                codeScreen: video.codeScreen,
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
           } catch (error) {
             // Manejar el error si el video ya está completado
             if (
@@ -375,7 +396,10 @@ function CurrentPlaysCompany() {
                     </Grid>
                   ))
                 ) : (
-                  <Typography variant="h6" sx={{ fontWeight: "bold", m: 2, fontSize: 40 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: "bold", m: 2, fontSize: 40 }}
+                  >
                     No videos to show
                   </Typography>
                 )}

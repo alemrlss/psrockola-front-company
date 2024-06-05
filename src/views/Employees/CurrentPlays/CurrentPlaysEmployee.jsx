@@ -29,6 +29,7 @@ function CurrentPlaysEmployee() {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [isBanning, setIsBanning] = useState(false);
   const user = useSelector((state) => state.auth.user);
+  const token = useSelector((state) => state.auth.token);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,7 +41,11 @@ function CurrentPlaysEmployee() {
       }
 
       try {
-        const response = await api.get(`/screen/company/${userId}`);
+        const response = await api.get(`/screen/company/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setScreens(response.data.data.screens);
       } catch (error) {
         console.error("Error fetching screens:", error);
@@ -57,7 +62,11 @@ function CurrentPlaysEmployee() {
 
   const currentPlayListData = async (screen) => {
     try {
-      const response = await api.get(`play-list-company/${screen.code}`);
+      const response = await api.get(`play-list-company/${screen.code}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setCurrentVideos({ [screen.id]: response.data.data.videos });
       setSelectAll(false);
       setSelectedVideos([]);
@@ -93,11 +102,19 @@ function CurrentPlaysEmployee() {
   const confirmBanVideo = async (screen) => {
     setIsBanning(true); // Activar el estado de "baneando"
     try {
-      await api.patch(`play-list-company/${videoToBan.id}`, {
-        state: 3,
-        idCompany: videoToBan.id_company,
-        codeScreen: videoToBan.codeScreen,
-      });
+      await api.patch(
+        `play-list-company/${videoToBan.id}`,
+        {
+          state: 3,
+          idCompany: videoToBan.id_company,
+          codeScreen: videoToBan.codeScreen,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       const updatedVideos = currentVideos[currentScreen.id].filter(
         (video) => video.id !== videoToBan.id
