@@ -7,10 +7,10 @@ import getBenefits from "../../../../utils/getBenefits";
 import api from "../../../../api/api";
 import { useSelector, useDispatch } from "react-redux";
 import { updateUserMembership } from "../../../../features/authSlice";
-import { useTranslation } from "react-i18next";
 
 function Cancel() {
-  const { t } = useTranslation();
+  const token = useSelector((state) => state.auth.token);
+
   const [membership, setMembership] = useState(null);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
@@ -22,7 +22,11 @@ function Cancel() {
   useEffect(() => {
     const fetchMembership = async () => {
       try {
-        const userFound = await api.get(`/user/${user.id}`);
+        const userFound = await api.get(`/user/${user.id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setMembership(userFound.data.data.activeMembership);
       } catch (error) {
         console.log(error);
@@ -36,7 +40,12 @@ function Cancel() {
     const cancelMembership = async () => {
       try {
         const response = await api.post(
-          `/membership/cancel-subscription/${user.id}`
+          `/membership/cancel-subscription/${user.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         console.log(response);
         setMembership(null);
