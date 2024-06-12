@@ -10,13 +10,13 @@ import { updateUserMembership } from "../../../../features/authSlice";
 
 function Cancel() {
   const token = useSelector((state) => state.auth.token);
+  console.log(token);
 
   const [membership, setMembership] = useState(null);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
   const user = useSelector((state) => state.auth.user);
 
-  console.log(user);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -41,6 +41,7 @@ function Cancel() {
       try {
         const response = await api.post(
           `/membership/cancel-subscription/${user.id}`,
+          {},
           {
             headers: {
               Authorization: `Bearer ${token}`,
