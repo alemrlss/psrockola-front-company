@@ -80,8 +80,6 @@ function PayTransaction() {
           >
             {transaction.amount / 100}$
           </TableCell>
-
-         
         </TableRow>
       );
     }
@@ -110,8 +108,6 @@ function PayTransaction() {
           >
             {transaction.amount / 100}$
           </TableCell>
-
-        
         </TableRow>
       );
     }
@@ -139,8 +135,33 @@ function PayTransaction() {
           >
             {transaction.amount / 100}$
           </TableCell>
-
-         
+        </TableRow>
+      );
+    }
+    if (transaction.type === "gift_company") {
+      return (
+        <TableRow key={transaction.id}>
+          <TableCell
+            sx={{
+              textAlign: "center",
+            }}
+          >
+            {formatDate(transaction.createdAt)}
+          </TableCell>
+          <TableCell
+            sx={{
+              textAlign: "center",
+            }}
+          >
+            Regalo PSROCKOLA
+          </TableCell>
+          <TableCell
+            sx={{
+              textAlign: "center",
+            }}
+          >
+            {transaction.amount}$
+          </TableCell>
         </TableRow>
       );
     }
