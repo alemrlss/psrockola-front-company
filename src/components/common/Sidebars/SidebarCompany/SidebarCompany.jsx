@@ -25,10 +25,11 @@ import SidebarItemLogout from "./SidebarItemLogout";
 function SidebarCompany({ handleDrawerToggle }) {
   const { t } = useTranslation();
 
+
   const [activeItem, setActiveItem] = useState(location.pathname);
 
   const handleItemClick = (itemId) => {
-    localStorage.setItem("test", itemId);
+    localStorage.setItem("itemId", itemId);
     setActiveItem(itemId);
     handleDrawerToggle();
   };

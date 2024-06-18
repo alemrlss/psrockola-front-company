@@ -133,6 +133,14 @@ function CreateEmployees() {
         });
         return;
       }
+      if (error.response.data.message === "COMPANY_MEMBERSHIP_EXPIRED") {
+        setMessage({
+          type: "error",
+          content: "Membership Expired.",
+        });
+        return;
+      }
+
       setMessage({
         type: "error",
         content: "Error al crear el empleado. Por favor, inténtalo de nuevo.",
