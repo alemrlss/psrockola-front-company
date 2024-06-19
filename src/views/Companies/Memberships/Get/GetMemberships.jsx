@@ -11,7 +11,6 @@ import { Switch, FormControlLabel } from "@mui/material";
 const stripePromise = loadStripe(
   "pk_test_51M4ShsFeiEj6y242YNiI1u9Kf1HZM4eHjMZYMeHYrTCHwRfSIA3JwC5znJfpmk0EZWlLbsvQ9wXQZbLAdJZsdhUD00dehK0IeW"
 );
-
 const GetMemberships = () => {
   const { t } = useTranslation();
   const [selectedMembership, setSelectedMembership] = useState(null);

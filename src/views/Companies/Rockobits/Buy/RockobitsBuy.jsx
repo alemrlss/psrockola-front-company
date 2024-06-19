@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { Typography, Button, Card, CardContent, Grid } from "@mui/material";
 import { formatNumbers } from "../../../../utils/formatNumbers";
 import { useTranslation } from "react-i18next";
+import { jwtDecode } from "jwt-decode";
 
 function RockobitsBuy() {
   const { t } = useTranslation();
@@ -21,7 +22,12 @@ function RockobitsBuy() {
         setWalletBalance(walletResponse.data.data.amount);
         //
 
-        const response = await api.get("package-rockobits/companies");
+        const token = localStorage.getItem("token");
+        const decodedToken = jwtDecode(token);
+
+        const response = await api.get(
+          "package-rockobits/companies/" + decodedToken.countryId
+        );
         setPackages(response.data.data);
       } catch (error) {
         console.error("Error fetching packages:", error);

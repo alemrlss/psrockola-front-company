@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { Typography, Button, Card, CardContent, Grid } from "@mui/material";
 import { formatNumbers } from "../../../../../utils/formatNumbers";
 import { useTranslation } from "react-i18next";
+import { jwtDecode } from "jwt-decode";
 
 function RockobitsBuyDistributor() {
   const { t } = useTranslation();
@@ -15,7 +16,11 @@ function RockobitsBuyDistributor() {
   useEffect(() => {
     const fetchPackages = async () => {
       try {
-        const response = await api.get("package-rockobits/distributors");
+        const token = localStorage.getItem("token");
+        const decodedToken = jwtDecode(token);
+
+        const response = await api.get("package-rockobits/distributors/"+ decodedToken.countryId);
+
         setPackages(response.data.data);
       } catch (error) {
         console.error("Error fetching packages:", error);
