@@ -88,7 +88,9 @@ function ModalQr({
               )}
 
               <Button
-                onClick={handleDownloadQR}
+                onClick={() => {
+                  handleDownloadQR(selectedQr);
+                }}
                 variant="contained"
                 color="success"
                 startIcon={<CloudDownloadIcon />}

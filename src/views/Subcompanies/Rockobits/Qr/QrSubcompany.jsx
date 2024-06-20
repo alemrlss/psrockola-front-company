@@ -163,6 +163,14 @@ function QrSubcompany() {
         return;
       }
 
+      if (
+        error.response.data.statusCode === 400 &&
+        error.response.data.message === "AMOUNT_MUST_BE_GREATER_THAN_ZERO"
+      ) {
+        setErrorMessage("Amount must be greater than zero");
+        return;
+      }
+
       setErrorMessage("Error generating QR");
       setSuccessMessage("");
     }

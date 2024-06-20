@@ -164,6 +164,14 @@ function QrCompany() {
         return;
       }
 
+      if (
+        error.response.data.statusCode === 400 &&
+        error.response.data.message === "AMOUNT_MUST_BE_GREATER_THAN_ZERO"
+      ) {
+        setErrorMessage("AMOUNT MUST BE GREATER THAN ZERO");
+        return;
+      }
+
       setErrorMessage("Error generating QR");
       setSuccessMessage("");
     }

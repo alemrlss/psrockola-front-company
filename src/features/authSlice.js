@@ -34,10 +34,12 @@ export const loginEmployee = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await authService.loginEmployee(credentials);
+      console.log(response.user)
       localStorage.setItem("token", response.token);
       localStorage.setItem("tokenExpiration", response.tokenExpiration);
       localStorage.setItem("user", JSON.stringify(response.user));
       localStorage.setItem("language", response.user.language);
+
 
       return response;
     } catch (error) {

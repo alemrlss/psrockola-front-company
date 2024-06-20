@@ -15,6 +15,7 @@ import { updateUserBalance } from "../../../features/authSlice";
 import ModalQr from "./ModalQr";
 import { formatNumbers } from "../../../utils/formatNumbers";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 
 function QrList({
   qrList,
@@ -29,6 +30,7 @@ function QrList({
   playSound,
 }) {
   const { t } = useTranslation();
+  const userData = useSelector((state) => state.auth.user);
 
   const handleToggleQr = async (newState) => {
     try {
@@ -65,18 +67,61 @@ function QrList({
     const seconds = String(date.getSeconds()).padStart(2, "0");
     return `${day}/${month}/${year}-${hours}-${minutes}-${seconds}`;
   };
-  const handleDownloadQR = async () => {
-    const canvas = await (
-      await html2canvas(document.getElementById("canvas"))
-    ).toDataURL();
+  const handleDownloadQR = async (selectedQr) => {
+    console.log(selectedQr);
+
+    const qrCanvas = await html2canvas(document.getElementById("canvas"));
+
+    // Crear un nuevo canvas que sea más alto para incluir los textos
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    const textPadding = 30;
+
+    canvas.width = qrCanvas.width;
+    canvas.height = qrCanvas.height + 3 * textPadding;
+
+    // Dibujar un fondo blanco en el nuevo canvas
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Agregar el texto superior
+    ctx.fillStyle = "#000000";
+    ctx.font = "20px Arial";
+    ctx.textAlign = "center";
+
+    const companyName =
+      userData.type === 23 ? userData.name : userData.companyName;
+    ctx.fillText(companyName, canvas.width / 2, textPadding - 10);
+
+    // Dibujar el QR en el nuevo canvas
+    ctx.drawImage(qrCanvas, 0, textPadding);
+
+    // Calcular la posición y para el texto inferior
+    const textYPosition1 = qrCanvas.height + textPadding * 1.5;
+    const textYPosition2 = textYPosition1 + textPadding;
+
+    // Agregar los textos inferiores
+    ctx.fillText(
+      `${selectedQr.amount} Rockobits`,
+      canvas.width / 2,
+      textYPosition1
+    );
+    ctx.fillText(
+      `Expired ${formatExpirationDate(selectedQr.expiration)}`,
+      canvas.width / 2,
+      textYPosition2
+    );
+
+    // Convertir el canvas a Data URL
+    const dataURL = canvas.toDataURL("image/png");
 
     const fileName = `QR-${selectedQr.amount}_${formatDateToFile(
       selectedQr.expiration
     )}.png`;
-    if (canvas) {
+    if (dataURL) {
       const a = document.createElement("a");
       a.download = fileName;
-      a.href = canvas;
+      a.href = dataURL;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -196,7 +241,7 @@ function QrList({
                     {qr.state === 0
                       ? t("view_rockobits_qr_code_state_inactive")
                       : qr.state === 1
-                      ?  t("view_rockobits_qr_code_state_active")
+                      ? t("view_rockobits_qr_code_state_active")
                       : qr.state === 2
                       ? t("view_rockobits_qr_code_state_consumed")
                       : qr.state === 3

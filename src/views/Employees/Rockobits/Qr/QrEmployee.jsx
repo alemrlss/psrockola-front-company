@@ -164,6 +164,14 @@ function QrEmployee() {
         return;
       }
 
+      if (
+        error.response.data.statusCode === 400 &&
+        error.response.data.message === "AMOUNT_MUST_BE_GREATER_THAN_ZERO"
+      ) {
+        setErrorMessage("Amount must be greater than zero");
+        return;
+      }
+
       setErrorMessage("Error generating QR");
       setSuccessMessage("");
     }
@@ -208,7 +216,9 @@ function QrEmployee() {
           </Grid>
           <Grid item xs={12}>
             <FormControl component="fieldset">
-              <FormLabel component="legend">{t("view_rockobits_qr_expire")}</FormLabel>
+              <FormLabel component="legend">
+                {t("view_rockobits_qr_expire")}
+              </FormLabel>
               <RadioGroup
                 row
                 aria-label="expiration-time"
@@ -256,7 +266,7 @@ function QrEmployee() {
                 },
               }}
             >
-                {t("view_rockobits_qr_button")}
+              {t("view_rockobits_qr_button")}
             </Button>
           </Grid>
         </Grid>
@@ -269,7 +279,9 @@ function QrEmployee() {
       </div>
       <div>
         <Divider />
-        <h2 className="text-3xl text-center mt-2">{t("view_rockobits_qr_codes")}</h2>
+        <h2 className="text-3xl text-center mt-2">
+          {t("view_rockobits_qr_codes")}
+        </h2>
         <FormControl component="fieldset">
           <RadioGroup
             row
@@ -282,11 +294,31 @@ function QrEmployee() {
               );
             }}
           >
-            <FormControlLabel value="1" control={<Radio />} label={t("view_rockobits_qr_codes_active")} />
-            <FormControlLabel value="0" control={<Radio />} label={t("view_rockobits_qr_codes_inactive")} />
-            <FormControlLabel value="2" control={<Radio />} label={t("view_rockobits_qr_codes_consumed")} />
-            <FormControlLabel value="3" control={<Radio />} label={t("view_rockobits_qr_codes_expired")} />
-            <FormControlLabel value="null" control={<Radio />} label={t("view_rockobits_qr_codes_all")} />
+            <FormControlLabel
+              value="1"
+              control={<Radio />}
+              label={t("view_rockobits_qr_codes_active")}
+            />
+            <FormControlLabel
+              value="0"
+              control={<Radio />}
+              label={t("view_rockobits_qr_codes_inactive")}
+            />
+            <FormControlLabel
+              value="2"
+              control={<Radio />}
+              label={t("view_rockobits_qr_codes_consumed")}
+            />
+            <FormControlLabel
+              value="3"
+              control={<Radio />}
+              label={t("view_rockobits_qr_codes_expired")}
+            />
+            <FormControlLabel
+              value="null"
+              control={<Radio />}
+              label={t("view_rockobits_qr_codes_all")}
+            />
           </RadioGroup>
         </FormControl>
       </div>

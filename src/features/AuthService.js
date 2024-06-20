@@ -77,7 +77,7 @@ const authService = {
             phone: response.data.user.phone,
             language: response.data.user.language,
             photo: response.data.user.photo,
-
+            companyName: response.data.user.companyName,
           },
           token: response.data.token,
           tokenExpiration: response.data.tokenExpiration,
@@ -109,7 +109,6 @@ const authService = {
       });
 
       if (response.status === 201) {
-
         localStorage.setItem("language", response.data.user.language);
 
         return {
