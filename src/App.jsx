@@ -275,7 +275,9 @@ function App() {
           style={{ zIndex: 9999 }}
         >
           <div className="bg-white p-8 rounded-lg">
-            <h2 className="text-red-500 text-lg mb-4">Tu sesion ha expirado, por favor inicia sesion de nuevo</h2>
+            <h2 className="text-red-500 text-lg mb-4">
+              Tu sesion ha expirado, por favor inicia sesion de nuevo
+            </h2>
             <button
               className="bg-blue-500 text-white px-4 py-2 rounded"
               onClick={() => {

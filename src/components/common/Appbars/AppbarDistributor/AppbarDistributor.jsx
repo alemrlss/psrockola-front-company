@@ -116,7 +116,7 @@ function AppBarDistributor({ drawerWidth, handleDrawerToggle }) {
                   fontWeight: "bold",
                   fontStyle: "italic",
                   borderRadius: { xs: "0px", sm: "20px" },
-                  fontSize: { xs: "10px", sm: "inherit" }, // Ajustar tamaño de texto
+                  fontSize: { xs: "14px", sm: "inherit" }, // Ajustar tamaño de texto
                 }}
               >
                 {user.membership.expiration
