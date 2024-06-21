@@ -12,6 +12,7 @@ import {
   Modal,
   Stack,
   Typography,
+  TextField,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -30,6 +31,11 @@ function ScreenSubcompany() {
   const [videoToBan, setVideoToBan] = useState(null);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [isBanning, setIsBanning] = useState(false);
+  const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] =
+    useState(false);
+  const [newPassword, setNewPassword] = useState("");
+
+  const [setscreenToPassword, setSetscreenToPassword] = useState(null);
 
   useEffect(() => {
     const fetchScreens = async () => {
@@ -182,6 +188,34 @@ function ScreenSubcompany() {
     return `${day} ${monthName} ${year} - ${hours}:${minutes}:${seconds}`;
   };
 
+  const handleOpenChangePasswordModal = (screen) => {
+    setIsChangePasswordModalOpen(true);
+    setSetscreenToPassword(screen);
+  };
+
+  const handleCloseChangePasswordModal = () => {
+    setIsChangePasswordModalOpen(false);
+    setNewPassword("");
+    setSetscreenToPassword(null);
+  };
+
+  const handleChangePassword = async () => {
+    if (!newPassword) {
+      alert("Please enter a new password");
+      return;
+    }
+
+    try {
+      await api.patch(`/screen/change-password/${setscreenToPassword.id}`, {
+        newPassword: newPassword,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+
+    handleCloseChangePasswordModal();
+  };
+
   return (
     <Container maxWidth="lg">
       {!selectedScreen ? (
@@ -205,7 +239,11 @@ function ScreenSubcompany() {
                     gap: 2,
                   }}
                 >
-                  <Button variant="contained" color="primary">
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleOpenChangePasswordModal(screen)}
+                  >
                     Change Password
                   </Button>
                   <Button
@@ -279,240 +317,207 @@ function ScreenSubcompany() {
                     flexDirection={{ xs: "column", sm: "row" }}
                   >
                     <Checkbox
-                      checked={selectedVideos.includes(video)}
-                      onChange={(e) => handleCheckboxChange(e, video)}
+                      checked={selectedVideos.some((v) => v.id === video.id)}
+                      onChange={(event) => handleCheckboxChange(event, video)}
                     />
-
-                    <img
-                      src={video.thumbnail}
-                      alt="Thumbnail"
-                      className="mb-1"
-                      style={{
-                        width: "100px",
-                        height: "100px",
-                        objectFit: "cover",
-                      }}
-                    />
-                    <Box
+                    <Avatar
+                      variant="rounded"
                       sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        flex: 1,
-                        marginLeft: { xs: 0, sm: 2 }, // Agregamos margen a la izquierda solo en dispositivos de escritorio
-                        marginTop: { xs: 2, sm: 0 }, // Agregamos margen superior solo en dispositivos móviles
+                        width: { xs: "100%", sm: "250px" },
+                        height: { xs: "auto", sm: "140px" },
+                        marginBottom: { xs: 2, sm: 0 },
+                        marginRight: { sm: 2 },
                       }}
-                    >
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <Avatar
-                          src={
-                            video.typeModeplay === 1
-                              ? "/modeplays/vip.png"
-                              : video.typeModeplay === 2
-                              ? "/modeplays/normal.png"
-                              : "/modeplays/platinum.png"
-                          }
-                          alt="Emblem"
-                          variant="rounded"
-                          className="mb-1 mr-5"
-                        />
-                        <Typography
-                          variant="h6"
-                          sx={{
-                            fontWeight: "bold",
-                            alignSelf: "center",
-                          }}
-                        >
-                          {video.title}
-                        </Typography>
-                      </div>
-                      <Typography variant="body2">
-                        {formatDateTime(video.createdAt)}
+                      src={`${process.env.REACT_APP_BASE_URL}/uploads/thumbnails/${video.thumbnail}`}
+                    />
+                    <Box flex={1}>
+                      <Typography
+                        variant="h6"
+                        className="font-bold break-words"
+                      >
+                        {video.name}
                       </Typography>
-                      <Typography variant="body2">
+                      <Typography className="text-gray-600">
+                        {video.owner}
+                      </Typography>
+                      <Typography className="text-gray-600">
+                        {formatDateTime(video.created_at)}
+                      </Typography>
+                      <Typography className="text-gray-600">
                         {msToTime(video.duration)}
                       </Typography>
-                      <Typography variant="body2">
-                        {video.channelTitle}
-                      </Typography>
                     </Box>
-                    <Button
-                      variant="contained"
-                      color="error"
-                      onClick={() => handleBanClick(video)}
-                      sx={{ mt: { xs: 2, sm: 0 } }}
-                    >
-                      Ban
-                    </Button>
+                    <Box display="flex" flexDirection="column">
+                      <Button
+                        variant="outlined"
+                        color="secondary"
+                        onClick={() => handleBanClick(video)}
+                      >
+                        Ban
+                      </Button>
+                    </Box>
                   </Box>
                 </Grid>
               ))
-            ) : loading ? (
-              <p>Loading playlist...</p>
             ) : (
-              <p>No videos available</p>
+              <p>Cargando playlist...</p>
             )}
           </Grid>
-          <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-            <Box
-              sx={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                bgcolor: "background.paper",
-                boxShadow: 24,
-                p: 4,
-              }}
-            >
-              {isBanning ? null : (
-                <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Are you sure you want to ban this video?
-                </Typography>
-              )}
-              {isBanning ? ( // Si se está realizando la acción de "baneo", muestra un loader
-                <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
-                  <Box
-                    sx={{ display: "flex", justifyContent: "center", mt: 2 }}
-                  >
-                    <Typography
-                      variant="body"
-                      sx={{ fontWeight: "bold", fontSize: "30px" }}
-                    >
-                      Banning video...
-                    </Typography>
-                  </Box>{" "}
-                </Box>
-              ) : (
-                <>
-                  {videoToBan && (
-                    <div>
-                      <Typography
-                        id="modal-modal-description"
-                        sx={{ mt: 2, fontWeight: "bold" }}
-                      >
-                        {videoToBan.title}
-                      </Typography>
-                      <Typography sx={{ mt: 1 }}>
-                        Created At: {formatDateTime(videoToBan.createdAt)}
-                      </Typography>
-                      <Typography sx={{ mt: 1 }}>
-                        Duration: {msToTime(videoToBan.duration)}
-                      </Typography>
-                      <Typography sx={{ mt: 1 }}>
-                        Channel Title: {videoToBan.channelTitle}
-                      </Typography>
-                    </div>
-                  )}
-                  <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={confirmBanVideo}
-                      fullWidth
-                    >
-                      Yes, I'm sure
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="error"
-                      onClick={() => {
-                        setIsModalOpen(false);
-                        setVideoToBan(null);
-                      }}
-                      fullWidth
-                    >
-                      No, cancel
-                    </Button>
-                  </Stack>
-                </>
-              )}
-            </Box>
-          </Modal>
-          <Modal
-            open={showConfirmationModal}
-            onClose={() => setShowConfirmationModal(false)}
-            aria-labelledby="confirmation-modal-title"
-            aria-describedby="confirmation-modal-description"
-          >
-            <Box
-              sx={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                width: 400,
-                bgcolor: "background.paper",
-                border: "2px solid #000",
-                boxShadow: 24,
-                p: 4,
-              }}
-            >
-              {isBanning ? null : (
-                <Typography
-                  id="confirmation-modal-title"
-                  variant="h6"
-                  component="h2"
-                >
-                  Are you sure you want to ban the selected videos?
-                </Typography>
-              )}
-              <div style={{ maxHeight: "300px", overflowY: "auto" }}>
-                {" "}
-                {isBanning ? (
-                  <Box
-                    sx={{ display: "flex", justifyContent: "center", mt: 2 }}
-                  >
-                    <Typography
-                      variant="body"
-                      sx={{ fontWeight: "bold", fontSize: "30px" }}
-                    >
-                      Banning videos...
-                    </Typography>
-                  </Box>
-                ) : (
-                  selectedVideos.map((video) => (
-                    <div
-                      key={video.id}
-                      className="bg-gray-200 mt-2 p-2 rounded-lg overflow-y-auto"
-                    >
-                      <Typography variant="h6">{video.title}</Typography>
-                      <Typography>
-                        Created At: {formatDateTime(video.createdAt)}
-                      </Typography>
-                      <Typography>
-                        Duration: {msToTime(video.duration)}
-                      </Typography>
-                      <Typography>
-                        Channel Title: {video.channelTitle}
-                      </Typography>
-                    </div>
-                  ))
-                )}
-              </div>
-              {isBanning ? null : (
-                <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={confirmBanSelected}
-                    fullWidth
-                  >
-                    Yes, I'm sure
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="error"
-                    onClick={() => setShowConfirmationModal(false)}
-                    fullWidth
-                  >
-                    Cancel
-                  </Button>
-                </Stack>
-              )}
-            </Box>
-          </Modal>
         </>
       )}
+
+      {/* Modal for banning individual video */}
+      <Modal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: { xs: "90%", sm: "400px" },
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+            borderRadius: 2,
+          }}
+        >
+          <Typography id="modal-title" variant="h6" component="h2">
+            Confirm Ban
+          </Typography>
+          <Typography id="modal-description" sx={{ mt: 2 }}>
+            Are you sure you want to ban this video?
+          </Typography>
+          <Stack direction="row" spacing={2} justifyContent="flex-end" mt={4}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={confirmBanVideo}
+              disabled={isBanning}
+            >
+              Yes
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => setIsModalOpen(false)}
+              disabled={isBanning}
+            >
+              No
+            </Button>
+          </Stack>
+        </Box>
+      </Modal>
+
+      {/* Modal for banning selected videos */}
+      <Modal
+        open={showConfirmationModal}
+        onClose={() => setShowConfirmationModal(false)}
+        aria-labelledby="confirmation-modal-title"
+        aria-describedby="confirmation-modal-description"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: { xs: "90%", sm: "400px" },
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+            borderRadius: 2,
+          }}
+        >
+          <Typography id="confirmation-modal-title" variant="h6" component="h2">
+            Confirm Ban
+          </Typography>
+          <Typography id="confirmation-modal-description" sx={{ mt: 2 }}>
+            Are you sure you want to ban the selected videos?
+          </Typography>
+          <Stack direction="row" spacing={2} justifyContent="flex-end" mt={4}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={confirmBanSelected}
+              disabled={isBanning}
+            >
+              Yes
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => setShowConfirmationModal(false)}
+              disabled={isBanning}
+            >
+              No
+            </Button>
+          </Stack>
+        </Box>
+      </Modal>
+
+      {/* Modal for changing password */}
+      <Modal
+        open={isChangePasswordModalOpen}
+        onClose={handleCloseChangePasswordModal}
+      >
+        <Box
+          className="modal-box bg-white p-8 rounded-md shadow-lg"
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: { xs: "90%", sm: "400px" },
+            outline: "none",
+          }}
+        >
+          <Typography variant="h6" className="mb-4">
+            Change Password
+          </Typography>
+          <TextField
+            label="New Password"
+            type="password"
+            fullWidth
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            className="mb-4"
+            variant="outlined"
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "#E2E8F0",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#CBD5E0",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#4A5568",
+                },
+              },
+            }}
+          />
+          <Stack direction="row" spacing={2} justifyContent="flex-end">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleChangePassword}
+              className="bg-blue-500 hover:bg-blue-600 text-white"
+            >
+              Change
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleCloseChangePasswordModal}
+              className="bg-gray-500 hover:bg-gray-600 text-white"
+            >
+              Cancel
+            </Button>
+          </Stack>
+        </Box>
+      </Modal>
     </Container>
   );
 }

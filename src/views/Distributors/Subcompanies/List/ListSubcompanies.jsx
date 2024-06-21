@@ -32,6 +32,9 @@ function ListSubcompanies() {
   });
   const [loadingState, setLoadingState] = useState(false); // Nuevo estado de loading
 
+  const [previewImage, setPreviewImage] = useState(null);
+  const [photoFile, setPhotoFile] = useState(null); // Almacena el archivo de foto seleccionado
+
   useEffect(() => {
     const fetchSubcompanies = async () => {
       try {
@@ -50,10 +53,12 @@ function ListSubcompanies() {
   const handleEdit = (subcompany) => {
     setSelectedSubcompany(subcompany);
     setEditedSubcompany({
+      id: subcompany.id,
       name: subcompany.name,
       email: subcompany.email,
       phone: subcompany.phone,
       address: subcompany.address,
+      logo: subcompany.logo,
     });
     setEditModalOpen(true);
   };
@@ -61,6 +66,14 @@ function ListSubcompanies() {
   const handleCloseEditModal = () => {
     setEditModalOpen(false);
     setSelectedSubcompany(null);
+    setEditedSubcompany({
+      name: "",
+      email: "",
+      phone: "",
+      address: "",
+    });
+    setPreviewImage(null);
+    setPhotoFile(null);
   };
 
   const handleInputChange = (e) => {
@@ -78,7 +91,6 @@ function ListSubcompanies() {
       const response = await api.get("/subcompany/distributor/" + user.id);
       setSubcompanies(response.data);
       setEditModalOpen(false);
-      
     } catch (error) {
       console.error("Error updating subcompany:", error);
     } finally {
@@ -205,6 +217,11 @@ function ListSubcompanies() {
         handleSaveChanges={handleSaveChanges}
         loadingState={loadingState}
         handleChangePassword={handleChangePassword}
+        previewImage={previewImage}
+        setPreviewImage={setPreviewImage}
+        photoFile={photoFile}
+        setPhotoFile={setPhotoFile}
+        setSubcompanies={setSubcompanies}
       />
     </div>
   );
