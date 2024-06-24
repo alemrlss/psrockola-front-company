@@ -153,7 +153,7 @@ function PayTransaction() {
               textAlign: "center",
             }}
           >
-            Regalo PSROCKOLA
+            Regalo PSROCKOLA de {getTypeString(transaction.membership.type)}
           </TableCell>
           <TableCell
             sx={{

@@ -211,7 +211,8 @@ function PayTransactions() {
               textAlign: "center",
             }}
           >
-            Regalo PSROCKOLA
+            Regalo PSROCKOLA de{" "}
+            {getTypeDistributorString(transaction.membershipDistributor.type)}{" "}
           </TableCell>
           <TableCell
             sx={{
