@@ -3,7 +3,6 @@ import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import getBenefits from "../../../../utils/getBenefits";
 import api from "../../../../api/api";
 import { useSelector, useDispatch } from "react-redux";
 import { updateUserMembership } from "../../../../features/authSlice";

@@ -54,6 +54,8 @@ import { useState } from "react";
 
 function App() {
   const [sessionExpired, setSessionExpired] = useState(false);
+  const [sessionBanned, setSessionBanned] = useState(false);
+  const [sessionInactive, setSessionInactive] = useState(false);
 
   api.interceptors.response.use(
     (response) => response,
@@ -63,6 +65,30 @@ function App() {
         localStorage.removeItem("user"); // Elimina el usuario del localStorage
         localStorage.removeItem("tokenExpiration"); // Elimina el tiempo de expiración del localStorage
         setSessionExpired(true);
+      }
+
+      // Cuando un company este baneado
+      if (
+        error.response &&
+        error.response.status === 403 &&
+        error.response.data.message === "User is banned"
+      ) {
+        localStorage.removeItem("token"); // Elimina el token del localStorage
+        localStorage.removeItem("user"); // Elimina el usuario del localStorage
+        localStorage.removeItem("tokenExpiration"); // Elimina el tiempo de expiración del localStorage
+        setSessionBanned(true);
+      }
+
+      // Cuando un Employee este desactivado (Eliminado)
+      if (
+        error.response &&
+        error.response.status === 403 &&
+        error.response.data.message === "Employee is inactive"
+      ) {
+        localStorage.removeItem("token"); // Elimina el token del localStorage
+        localStorage.removeItem("user"); // Elimina el usuario del localStorage
+        localStorage.removeItem("tokenExpiration"); // Elimina el tiempo de expiración del localStorage
+        setSessionInactive(true);
       }
       return Promise.reject(error);
     }
@@ -277,6 +303,48 @@ function App() {
           <div className="bg-white p-8 rounded-lg">
             <h2 className="text-red-500 text-lg mb-4">
               Tu sesion ha expirado, por favor inicia sesion de nuevo
+            </h2>
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded"
+              onClick={() => {
+                window.location.href = "/login";
+              }}
+            >
+              Ir al Login
+            </button>
+          </div>
+        </div>
+      )}
+      {sessionBanned && (
+        <div
+          className="fixed inset-0 flex items-center justify-center  bg-black bg-opacity-50"
+          style={{ zIndex: 9999 }}
+        >
+          <div className="bg-white p-8 rounded-lg">
+            <h2 className="text-red-500 text-lg mb-4">
+              Oh! Tu cuenta esta baneada. Por favor contacta a soporte para mas
+              informacion
+            </h2>
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded"
+              onClick={() => {
+                window.location.href = "/login";
+              }}
+            >
+              Ir al Login
+            </button>
+          </div>
+        </div>
+      )}
+      {sessionInactive && (
+        <div
+          className="fixed inset-0 flex items-center justify-center  bg-black bg-opacity-50"
+          style={{ zIndex: 9999 }}
+        >
+          <div className="bg-white p-8 rounded-lg">
+            <h2 className="text-red-500 text-lg mb-4">
+              Oh! Tu cuenta fue eliminada. Contacta con la Empresa para mas
+              informacion
             </h2>
             <button
               className="bg-blue-500 text-white px-4 py-2 rounded"
