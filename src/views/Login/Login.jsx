@@ -11,6 +11,10 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Tooltip from "@mui/material/Tooltip";
 import BusinessIcon from "@mui/icons-material/Business";
 import { HouseOutlined } from "@mui/icons-material";
+import IconButton from "@mui/material/IconButton";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import Box from "@mui/material/Box";
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -19,6 +23,7 @@ function Login() {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false); // Nuevo estado de carga
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     dispatch({ type: "auth/clearError" });
@@ -81,7 +86,7 @@ function Login() {
         style={{ height: "100%" }}
       >
         <Grid item xs={12} sm={8} md={6} lg={4}>
-          <div className="flex  justify-between">
+          <div className="flex justify-between">
             <Tooltip title="Go to employee panel" arrow>
               <Avatar
                 sx={{
@@ -97,7 +102,7 @@ function Login() {
               </Avatar>
             </Tooltip>
             <Tooltip title="Go to distributor panel" arrow>
-            <Avatar
+              <Avatar
                 sx={{
                   color: "white",
                   backgroundColor: "#F79303",
@@ -117,10 +122,10 @@ function Login() {
             className="bg-white border rounded-xl p-4 py-8"
           >
             <Typography variant="h4" align="center" gutterBottom>
-              Log in{" "}
+              Log in
             </Typography>
             <Typography variant="body1" align="center" gutterBottom>
-              Sign in as a company{" "}
+              Sign in as a company
             </Typography>
             <BusinessIcon
               style={{ fontSize: 50, margin: "auto", display: "block" }}
@@ -136,17 +141,30 @@ function Login() {
               margin="normal"
               size="small"
             />
-            <TextField
-              id="password"
-              name="password"
-              onChange={handleInputChange}
-              label="Password"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              size="small"
-              type="password"
-            />
+            <Box sx={{ position: "relative", mb: 2 }}>
+              <TextField
+                id="password"
+                name="password"
+                onChange={handleInputChange}
+                label="Password"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                size="small"
+                type={showPassword ? "text" : "password"}
+              />
+              <IconButton
+                onClick={() => setShowPassword(!showPassword)}
+                sx={{
+                  position: "absolute",
+                  right: 0,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                }}
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </Box>
             <Button
               type="submit"
               variant="contained"

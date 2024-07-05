@@ -1,4 +1,3 @@
-import React from "react";
 import { Card, CardContent, Typography, Grid } from "@mui/material";
 
 function ReproductionsForScreen({ data }) {

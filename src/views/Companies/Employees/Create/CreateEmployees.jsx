@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
+import IconButton from "@mui/material/IconButton";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import api from "../../../../api/api";
 import { useSelector } from "react-redux";
 import { CloudUpload } from "@mui/icons-material";
@@ -20,9 +23,8 @@ function CreateEmployees() {
   });
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
-
   const [limitEmployees, setLimitEmployees] = useState(0);
-
+  const [showPassword, setShowPassword] = useState(false);
   const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
@@ -41,10 +43,8 @@ function CreateEmployees() {
   const handleChange = (e) => {
     setMessage(null);
     if (e.target.name === "photo") {
-      // Si el campo es de tipo archivo, actualiza solo el campo de foto en formData
       setFormData({ ...formData, photo: e.target.files[0] });
     } else {
-      // Actualiza otros campos de texto
       setFormData({
         ...formData,
         [e.target.name]: e.target.value,
@@ -62,7 +62,6 @@ function CreateEmployees() {
       return;
     }
 
-    // Verifica que los campos requeridos estén completos
     if (
       formData.name === "" ||
       formData.lastName === "" ||
@@ -79,10 +78,7 @@ function CreateEmployees() {
       return;
     }
 
-    // Crea una instancia de FormData
     const formDataInstance = new FormData();
-
-    // Agrega los campos de datos al formDataInstance
     formDataInstance.append("name", formData.name);
     formDataInstance.append("lastName", formData.lastName);
     formDataInstance.append("email", formData.email);
@@ -91,23 +87,18 @@ function CreateEmployees() {
     formDataInstance.append("phone", formData.phone);
     formDataInstance.append("userId", user.id);
 
-    // Si hay una foto de perfil seleccionada, agrégala al FormData
     if (formData.photo) {
       formDataInstance.append("photo", formData.photo);
     }
 
     try {
-      // Realiza la solicitud para crear el empleado con formData
       await api.post("/employee/create", formDataInstance, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
-      // Muestra un mensaje de éxito
       setMessage({ type: "success", content: "Empleado creado con éxito." });
-
-      // Restablece el formulario
       setFormData({
         name: "",
         lastName: "",
@@ -118,14 +109,12 @@ function CreateEmployees() {
         photo: null,
       });
 
-      // Elimina el mensaje después de 3 segundos
       setTimeout(() => {
         setMessage(null);
       }, 3000);
     } catch (error) {
       console.error("Error al crear el empleado:", error);
 
-      console.log(error.response.data.message);
       if (error.response.data.message === "EMPLOYEES_LIMIT_REACHED") {
         setMessage({
           type: "error",
@@ -184,15 +173,32 @@ function CreateEmployees() {
           onChange={handleChange}
           value={formData.email}
         />
-        <TextField
-          label={t("view_employees_create_password")}
-          name="password"
-          type="password"
-          variant="outlined"
-          fullWidth
-          onChange={handleChange}
-          value={formData.password}
-        />
+        <div style={{ position: "relative", width: "100%", gridColumn: "span 2" }}>
+          <TextField
+            label={t("view_employees_create_password")}
+            name="password"
+            type={showPassword ? "text" : "password"}
+            variant="outlined"
+            fullWidth
+            onChange={handleChange}
+            value={formData.password}
+            InputProps={{
+              endAdornment: (
+                <IconButton
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: "absolute",
+                    right: 8,
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                  }}
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              ),
+            }}
+          />
+        </div>
         <TextField
           label={t("view_employees_create_address")}
           name="address"
@@ -234,7 +240,6 @@ function CreateEmployees() {
             onChange={handleChange}
           />
         </Button>
-
         <div className="col-span-2 flex justify-center">
           <Button
             variant="contained"

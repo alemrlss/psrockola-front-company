@@ -31,7 +31,7 @@ function ModalCompanyEdit({ openModal, handleCloseModal, user }) {
         <Box
           sx={{
             width: 600, // Ancho fijo del modal
-            height: 400, // Altura fija del modal
+            height: 450, // Altura fija del modal
             bgcolor: "white",
             boxShadow: 24,
             p: 2,
