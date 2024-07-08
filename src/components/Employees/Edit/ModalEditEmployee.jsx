@@ -93,7 +93,7 @@ function ModalEditEmployee({
 
   const handleEdit = async () => {
     try {
-      const response = await apiFormData.patch(
+      const response = await api.patch(
         `/employee/${editedEmployee.id}`,
         {
           name: editedEmployee.name,
