@@ -17,6 +17,7 @@ import msToTime from "../../../utils/formatMsToTime";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import { useTranslation } from "react-i18next";
 
 function CurrentPlaysCompany() {
   const [screens, setScreens] = useState([]);
@@ -30,6 +31,8 @@ function CurrentPlaysCompany() {
   const [isBanning, setIsBanning] = useState(false);
   const user = useSelector((state) => state.auth.user);
   const token = useSelector((state) => state.auth.token);
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -247,7 +250,7 @@ function CurrentPlaysCompany() {
   return (
     <Container maxWidth="lg">
       <Typography variant="h4" className="text-center my-4 font-bold">
-        Current Plays
+        {t("view_currentplays_title")}
       </Typography>
       {currentScreen ? (
         <div>
@@ -298,7 +301,7 @@ function CurrentPlaysCompany() {
                   onClick={handleBanSelected}
                   className="mb-2"
                 >
-                  Ban Selected
+                  {t("view_currentplays_ban_selected")}
                 </Button>
 
                 <Typography
@@ -312,7 +315,8 @@ function CurrentPlaysCompany() {
                   }}
                 >
                   {selectedVideos.length} of{" "}
-                  {currentVideos[currentScreen.id].length} selected
+                  {currentVideos[currentScreen.id].length}{" "}
+                  {t("view_currentplays_selected")}
                 </Typography>
               </div>
               <Grid container spacing={2}>
@@ -390,7 +394,7 @@ function CurrentPlaysCompany() {
                           onClick={() => handleBanClick(video)}
                           sx={{ mt: { xs: 2, sm: 0 } }}
                         >
-                          Ban
+                          {t("view_currentplays_bam")}
                         </Button>
                       </Box>
                     </Grid>
@@ -400,7 +404,7 @@ function CurrentPlaysCompany() {
                     variant="h6"
                     sx={{ fontWeight: "bold", m: 2, fontSize: 40 }}
                   >
-                    No videos to show
+                    {t("view_currentplays_no_videos")}
                   </Typography>
                 )}
               </Grid>
@@ -436,7 +440,7 @@ function CurrentPlaysCompany() {
                 color="primary"
                 onClick={() => handleShowScreen(screen)}
               >
-                Show Playlist Screend
+                {t("view_currentplays_show_playlist")}
               </Button>
             </div>
           ))}
@@ -463,7 +467,7 @@ function CurrentPlaysCompany() {
         >
           {isBanning ? null : (
             <Typography id="modal-modal-title" variant="h6" component="h2">
-              Are you sure you want to ban this video?
+              {t("view_currentplays_modal_message")}
             </Typography>
           )}
           {isBanning ? ( // Si se está realizando la acción de "baneo", muestra un loader
@@ -473,7 +477,7 @@ function CurrentPlaysCompany() {
                   variant="body"
                   sx={{ fontWeight: "bold", fontSize: "30px" }}
                 >
-                  Banning video...
+                  {t("view_currentplays_banning")}
                 </Typography>
               </Box>{" "}
             </Box>
@@ -488,13 +492,16 @@ function CurrentPlaysCompany() {
                     {videoToBan.title}
                   </Typography>
                   <Typography sx={{ mt: 1 }}>
-                    Created At: {formatDateTime(videoToBan.createdAt)}
+                    {t("view_currentplays_modal_createdAt")}
+                    {formatDateTime(videoToBan.createdAt)}
                   </Typography>
                   <Typography sx={{ mt: 1 }}>
-                    Duration: {msToTime(videoToBan.duration)}
+                    {t("view_currentplays_modal_duration")}{" "}
+                    {msToTime(videoToBan.duration)}
                   </Typography>
                   <Typography sx={{ mt: 1 }}>
-                    Channel Title: {videoToBan.channelTitle}
+                    {t("view_currentplays_modal_channelTitle")}{" "}
+                    {videoToBan.channelTitle}
                   </Typography>
                 </div>
               )}
@@ -505,7 +512,7 @@ function CurrentPlaysCompany() {
                   onClick={confirmBanVideo}
                   fullWidth
                 >
-                  Yes, I'm sure
+                  {t("view_currentplays_modal_message_confirm")}{" "}
                 </Button>
                 <Button
                   variant="contained"
@@ -516,7 +523,7 @@ function CurrentPlaysCompany() {
                   }}
                   fullWidth
                 >
-                  No, cancel
+                  {t("view_currentplays_modal_message_cancel")}{" "}
                 </Button>
               </Stack>
             </>

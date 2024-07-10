@@ -5,11 +5,13 @@ import PayTransaction from "../../../components/Transactions/Pay/PayTransaction"
 import QrTransaction from "../../../components/Transactions/Qr/QrTransaction";
 import TransactionsRockobits from "../../../components/Transactions/Rockobits/RockobitTransaction";
 import TransactionRockobitsEmployee from "../../../components/Transactions/Rockobits/RockobitTransactionEmployee";
+import { useTranslation } from "react-i18next";
 
 function TransactionsCompany() {
   // Estado para controlar la pestaña seleccionada
   const [selectedTab, setSelectedTab] = useState(0);
   const user = useSelector((state) => state.auth.user);
+  const {t} = useTranslation();
 
   // Manejador de cambio de pestaña
   const handleChange = (event, newValue) => {
@@ -31,7 +33,7 @@ function TransactionsCompany() {
           textColor="primary"
         >
           {/* Mostrar las pestañas basadas en el tipo de usuario */}
-          {!isEmployee && <Tab label="Pay" />}{" "}
+          {!isEmployee && <Tab label={t("view_transactions_tabbar_pay")} />}{" "}
           {/* Mostrar solo si no es empleado */}
           <Tab label="Rockobits" />
           <Tab label="Qrs" />

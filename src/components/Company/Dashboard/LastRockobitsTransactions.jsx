@@ -180,7 +180,7 @@ function LastRockobitsTransactions({ data }) {
                   colSpan={4}
                   sx={{ textAlign: "center", fontSize: 18 }}
                 >
-                  No Rockobits Transactions
+                  {t("view_dashboard_no_transactions")}
                 </TableCell>
               </TableRow>
             )}

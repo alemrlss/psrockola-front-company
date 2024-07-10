@@ -18,6 +18,7 @@ import api from "../../../api/api";
 import { formatDate } from "../../../utils/formatDate";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 function TransactionsRockobits() {
   const user = useSelector((state) => state.auth.user);
@@ -26,6 +27,8 @@ function TransactionsRockobits() {
   const [take, setTake] = useState(20);
   const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+
+  const { t } = useTranslation();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedVoucher, setSelectedVoucher] = useState(null);
@@ -98,8 +101,6 @@ function TransactionsRockobits() {
           >
             {transaction.emitter.name}
           </TableCell>
-
-        
         </TableRow>
       );
     }
@@ -147,8 +148,6 @@ function TransactionsRockobits() {
           >
             {transaction.receiver.name}
           </TableCell>
-
-
         </TableRow>
       );
     }
@@ -190,8 +189,6 @@ function TransactionsRockobits() {
           >
             {transaction.receiverEmployee.name}
           </TableCell>
-
-         
         </TableRow>
       );
     }
@@ -231,8 +228,6 @@ function TransactionsRockobits() {
           >
             {transaction.emitterEmployee.name}
           </TableCell>
-
-         
         </TableRow>
       );
     }
@@ -272,8 +267,6 @@ function TransactionsRockobits() {
           >
             PLATAFORMA
           </TableCell>
-
-          
         </TableRow>
       );
     }
@@ -313,8 +306,6 @@ function TransactionsRockobits() {
           >
             {transaction.receiver.name}
           </TableCell>
-
-
         </TableRow>
       );
     }
@@ -343,7 +334,7 @@ function TransactionsRockobits() {
               fontSize: "20px",
             }}
           >
-             {transaction.amount}
+            {transaction.amount}
           </TableCell>
           <TableCell
             sx={{
@@ -352,8 +343,6 @@ function TransactionsRockobits() {
           >
             PSROCKOLA
           </TableCell>
-
-
         </TableRow>
       );
     }
@@ -383,7 +372,7 @@ function TransactionsRockobits() {
         >
           <CircularProgress size={120} />
           <Typography variant="h6" sx={{ marginTop: "16px", fontSize: "32px" }}>
-            Loading....{" "}
+            {t("view_trasactions_loading")}{" "}
           </Typography>
         </Box>
       ) : (
@@ -405,28 +394,28 @@ function TransactionsRockobits() {
                     textAlign: "center",
                   }}
                 >
-                  Date
+                  {t("view_transactions_table_date")}{" "}
                 </TableCell>
                 <TableCell
                   sx={{
                     textAlign: "center",
                   }}
                 >
-                  Type
+                  {t("view_transactions_table_type")}
                 </TableCell>
                 <TableCell
                   sx={{
                     textAlign: "center",
                   }}
                 >
-                  Amount
+                  {t("view_transactions_table_amount")}
                 </TableCell>
                 <TableCell
                   sx={{
                     textAlign: "center",
                   }}
                 >
-                  User
+                  {t("view_transactions_table_user")}
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -435,7 +424,7 @@ function TransactionsRockobits() {
                 <TableRow>
                   <TableCell colSpan={4} sx={{ textAlign: "center" }}>
                     <Typography variant="body1">
-                      No transactions to display{" "}
+                      {t("view_transactions_no_transactions")}
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -454,6 +443,7 @@ function TransactionsRockobits() {
             rowsPerPage={take}
             onRowsPerPageChange={handleChangeRowsPerPage}
             rowsPerPageOptions={[20, 10]}
+            labelRowsPerPage={t("view_transactions_pagination_rows")}
           />
         </TableContainer>
       )}

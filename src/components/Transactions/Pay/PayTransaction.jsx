@@ -15,6 +15,7 @@ import {
 import api from "../../../api/api";
 import { useSelector } from "react-redux";
 import { formatDate } from "../../../utils/formatDate";
+import { useTranslation } from "react-i18next";
 
 function PayTransaction() {
   const [transactions, setTransactions] = useState([]);
@@ -23,6 +24,7 @@ function PayTransaction() {
   const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const user = useSelector((state) => state.auth.user);
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchTransactions();
@@ -195,7 +197,7 @@ function PayTransaction() {
         >
           <CircularProgress size={120} />
           <Typography variant="h6" sx={{ marginTop: "16px", fontSize: "32px" }}>
-            Loading..{" "}
+            {t("view_trasactions_loading")}{" "}
           </Typography>
         </Box>
       ) : (
@@ -217,21 +219,21 @@ function PayTransaction() {
                     textAlign: "center",
                   }}
                 >
-                  Date
+                  {t("view_transactions_table_date")}
                 </TableCell>
                 <TableCell
                   sx={{
                     textAlign: "center",
                   }}
                 >
-                  Type
+                  {t("view_transactions_table_type")}
                 </TableCell>
                 <TableCell
                   sx={{
                     textAlign: "center",
                   }}
                 >
-                  Amount
+                  {t("view_transactions_table_amount")}
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -240,7 +242,7 @@ function PayTransaction() {
                 <TableRow>
                   <TableCell colSpan={4} sx={{ textAlign: "center" }}>
                     <Typography variant="body1">
-                      No transactions found
+                      {t("view_transactions_no_transactions")}
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -259,6 +261,7 @@ function PayTransaction() {
             rowsPerPage={take}
             onRowsPerPageChange={handleChangeRowsPerPage}
             rowsPerPageOptions={[20, 10]}
+            labelRowsPerPage={t("view_transactions_pagination_rows")}
           />
         </TableContainer>
       )}

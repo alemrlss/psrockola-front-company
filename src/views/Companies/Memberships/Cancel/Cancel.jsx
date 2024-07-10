@@ -7,10 +7,11 @@ import getBenefits from "../../../../utils/getBenefits";
 import api from "../../../../api/api";
 import { useSelector, useDispatch } from "react-redux";
 import { updateUserMembership } from "../../../../features/authSlice";
+import { useTranslation } from "react-i18next";
 
 function Cancel() {
   const token = useSelector((state) => state.auth.token);
-  console.log(token);
+  const { t } = useTranslation();
 
   const [membership, setMembership] = useState(null);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -71,21 +72,27 @@ function Cancel() {
       <div className="bg-blue-200 p-8 rounded-lg shadow-md text-center mb-4">
         {membership && (
           <div>
-            <p className="text-2xl font-semibold mb-4">Membresia activa: </p>
+            <p className="text-2xl font-semibold mb-4">
+              {t("view_memberships_cancel_title")}{" "}
+            </p>
             <p className="text-gray-600">{membership.name}</p>
             <p className="text-gray-600">
-              Tipo de membresia: {getBenefits(membership).type}
+              {t("view_memberships_cancel_type")} {getBenefits(membership).type}
             </p>
-            <p className="text-gray-600"> Beneficios: </p>
             <p className="text-gray-600">
-              Dispositivos de ventas: {getBenefits(membership).sales}
+              {" "}
+              {t("view_memberships_cancel_benefits")}{" "}
+            </p>
+            <p className="text-gray-600">
+              {t("view_memberships_cancel_devices")}{" "}
+              {getBenefits(membership).sales}
             </p>
             <p className="text-gray-600">
               {" "}
               Skins: {getBenefits(membership).skins}
             </p>
             <p className="text-gray-600">
-              Personalizar ModePlays:{" "}
+              {t("view_memberships_cancel_modeplays")}{" "}
               {getBenefits(membership).customModePlay ? "Si" : "No"}
             </p>
           </div>
@@ -98,7 +105,7 @@ function Cancel() {
             color="error"
             onClick={() => setShowConfirmationModal(true)}
           >
-            Cancelar Membresia
+            {t("view_memberships_cancel_btn_cancel")}
           </Button>
           <Modal
             open={showConfirmationModal}
@@ -118,7 +125,7 @@ function Cancel() {
               }}
             >
               <Typography variant="h6" component="div">
-                ¿Estás seguro de que deseas cancelar tu membresía?
+                {t("view_memberships_cancel_modal_description")}
               </Typography>
               <Button
                 variant="contained"
@@ -126,14 +133,14 @@ function Cancel() {
                 onClick={handleCancelConfirmation}
                 sx={{ m: 1 }}
               >
-                Confirmar Cancelación
+                {t("view_memberships_cancel_modal_btn_confirm")}
               </Button>
               <Button
                 variant="contained"
                 onClick={() => setShowConfirmationModal(false)}
                 sx={{ m: 1 }}
               >
-                Cancelar
+                {t("view_memberships_cancel_modal_btn_cancel")}
               </Button>
             </Box>
           </Modal>
@@ -143,7 +150,7 @@ function Cancel() {
       {!membership && (
         <div>
           <h2 className="text-red-400 text-6xl">
-            No cuentas con una membresía activa.
+            {t("view_memberships_cancel_no_membershio")}
           </h2>
         </div>
       )}

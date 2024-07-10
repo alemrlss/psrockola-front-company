@@ -4,6 +4,7 @@ import { Button, TextField, Autocomplete } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { updateUserBalance } from "../../../../features/authSlice";
 import Sound from "../../../../../public/audio/Coin.wav";
+import { useTranslation } from "react-i18next";
 
 function TransferRockobitsForm() {
   const audioRef = useRef(null);
@@ -12,6 +13,8 @@ function TransferRockobitsForm() {
   const [amount, setAmount] = useState("");
   const [transferResult, setTransferResult] = useState("");
   const [employees, setEmployees] = useState([]);
+
+  const {t} = useTranslation();
 
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
@@ -71,30 +74,32 @@ function TransferRockobitsForm() {
 
   return (
     <div>
-      <h2 className="text-3xl font-bold mt-8">Transfer Rockobits</h2>
+      <h2 className="text-3xl font-bold mt-8">
+        {t("view_employees_transfer_title")}
+      </h2>
       <form className="flex flex-col space-y-4">
         <Autocomplete
           options={employees}
-          getOptionLabel={(option) => `${option.name} ${option.lastName}` }
+          getOptionLabel={(option) => `${option.name} ${option.lastName}`}
           value={employeeId}
           onChange={(event, newValue) => setEmployeeId(newValue)}
           renderInput={(params) => (
             <TextField
               {...params}
-              label="Select Employee"
+              label={t("view_employees_transfer_select")}
               variant="outlined"
             />
           )}
         />
         <TextField
           type="number"
-          label="Amount"
+          label={t("view_employees_tranfer_amount")}
           variant="outlined"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
         />
         <Button variant="contained" onClick={handleTransfer}>
-          Transfer Rockobits
+          {t("view_employees_transfer_btn")}
         </Button>
 
         {transferResult && (
