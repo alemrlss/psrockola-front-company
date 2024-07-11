@@ -12,6 +12,7 @@ import { useState } from "react";
 import api from "../../../../api/api";
 import { useDispatch } from "react-redux";
 import { updateUser } from "../../../../features/authSlice";
+import { useTranslation } from "react-i18next";
 
 function UpdateUserCompany({ user }) {
   const [formData, setFormData] = useState({
@@ -24,6 +25,7 @@ function UpdateUserCompany({ user }) {
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -74,7 +76,7 @@ function UpdateUserCompany({ user }) {
       <Grid container spacing={2}>
         <Grid item xs={6}>
           <TextField
-            label="Name"
+            label={t("settings_update_user_name")}
             name="name"
             value={formData.name}
             onChange={handleInputChange}
@@ -84,7 +86,7 @@ function UpdateUserCompany({ user }) {
         </Grid>
         <Grid item xs={6}>
           <TextField
-            label="Email"
+            label={t("settings_update_user_email")}
             name="email"
             value={formData.email}
             onChange={handleInputChange}
@@ -94,7 +96,7 @@ function UpdateUserCompany({ user }) {
         </Grid>
         <Grid item xs={6}>
           <TextField
-            label="Phone"
+            label={t("settings_update_user_phone")}
             name="phone"
             value={formData.phone}
             onChange={handleInputChange}
@@ -104,7 +106,7 @@ function UpdateUserCompany({ user }) {
         </Grid>
         <Grid item xs={6}>
           <TextField
-            label="Address"
+            label={t("settings_update_user_address")}
             name="address"
             value={formData.address}
             onChange={handleInputChange}
@@ -115,7 +117,7 @@ function UpdateUserCompany({ user }) {
         <Grid item xs={6}>
           {user.type === 23 ? (
             <TextField
-              label="Postal Code"
+            label={t("settings_update_user_postalCode")}
               name="postalCode"
               value={formData.postalCode}
               onChange={handleInputChange}
@@ -148,7 +150,7 @@ function UpdateUserCompany({ user }) {
           startIcon={<SaveIcon />}
           disabled={loading}
         >
-          {loading ? <CircularProgress size={24} /> : "Save"}
+          {loading ? <CircularProgress size={24} /> : t("settings_update_user_save")}{" "}
         </Button>
       </Grid>
     </Box>

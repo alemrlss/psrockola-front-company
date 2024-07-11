@@ -1,12 +1,13 @@
 /* eslint-disable react/prop-types */
 import { Box, Button, TextField, Divider, Grid, Alert } from "@mui/material";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import SaveIcon from "@mui/icons-material/Save";
 import CircularProgress from "@mui/material/CircularProgress";
 import IconButton from "@mui/material/IconButton";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import api from "../../../../api/api";
+import { useTranslation } from "react-i18next";
 
 function ChangePasswordCompany({ user }) {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -18,6 +19,7 @@ function ChangePasswordCompany({ user }) {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { t } = useTranslation();
 
   const handleChangePassword = async () => {
     if (newPassword === confirmPassword) {
@@ -101,7 +103,7 @@ function ChangePasswordCompany({ user }) {
       <Box sx={{ position: "relative", mb: 2 }}>
         <TextField
           type={showCurrentPassword ? "text" : "password"}
-          label="Current Password"
+          label={t("settings_change_password_current")}
           fullWidth
           value={currentPassword}
           onChange={handleCurrentPasswordChange}
@@ -126,7 +128,7 @@ function ChangePasswordCompany({ user }) {
       <Box sx={{ position: "relative", mb: 2 }}>
         <TextField
           type={showNewPassword ? "text" : "password"}
-          label="New Password"
+          label={t("settings_change_password_new")}
           fullWidth
           value={newPassword}
           onChange={handleNewPasswordChange}
@@ -150,7 +152,7 @@ function ChangePasswordCompany({ user }) {
         <TextField
           size="small"
           type={showConfirmPassword ? "text" : "password"}
-          label="Confirm New Password"
+          label={t("settings_change_password_confirm")}
           fullWidth
           value={confirmPassword}
           onChange={handleConfirmPasswordChange}
@@ -177,7 +179,7 @@ function ChangePasswordCompany({ user }) {
             startIcon={<SaveIcon />}
             disabled={loading}
           >
-            {loading ? <CircularProgress size={20} /> : "Change"}
+            {loading ? <CircularProgress size={20} /> : t("settings_change_password_change")}
           </Button>
         </Grid>
         <Grid item>
@@ -192,7 +194,7 @@ function ChangePasswordCompany({ user }) {
             </Alert>
           )}
         </Grid>
-      </Grid> 
+      </Grid>
     </Box>
   );
 }

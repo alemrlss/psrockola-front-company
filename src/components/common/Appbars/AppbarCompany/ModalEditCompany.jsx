@@ -4,11 +4,13 @@ import CloseIcon from "@mui/icons-material/Close";
 import UpdateUserCompany from "../../Settings/Company/UpdateUserCompany";
 import ChangePasswordCompany from "../../Settings/Company/ChangePasswordCompany";
 import UpdatePhotoCompany from "../../Settings/Company/UpdatePhotoCompany";
+import { useTranslation } from "react-i18next";
 
 
 function ModalCompanyEdit({ openModal, handleCloseModal, user }) {
   const [tabValue, setTabValue] = useState(0);
 
+  const {t} = useTranslation();
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
@@ -64,9 +66,9 @@ function ModalCompanyEdit({ openModal, handleCloseModal, user }) {
               aria-label="User Settings Tabs"
               sx={{ mb: 2 }}
             >
-              <Tab label="Update user" />
-              {<Tab label="Change password" />}
-              <Tab label="Update profile photo" variant="contained" />
+              <Tab label={t("settings_update_user")}/>
+              {<Tab label={t("settings_change_password")} />}
+              <Tab label={t("settings_update_photo")}/>
             </Tabs>
 
             {tabValue === 0 && <UpdateUserCompany user={user} />}

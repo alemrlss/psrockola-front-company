@@ -18,7 +18,6 @@ import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./../../../LanguageSwitcher";
 import { formatExpirationDate } from "../../../../utils/formatDate";
 import { formatNumbers } from "../../../../utils/formatNumbers";
-import getBenefitsDistributorMembership from "../../../../utils/getBenefitsDistributorMembership";
 import ModalCompanyEdit from "./ModalEditCompany";
 
 function AppBarCompany({ drawerWidth, handleDrawerToggle }) {

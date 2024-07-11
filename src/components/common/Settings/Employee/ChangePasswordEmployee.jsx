@@ -1,10 +1,20 @@
-import { Box, Button, TextField, Divider, Grid, Alert, IconButton, InputAdornment } from "@mui/material";
+import {
+  Box,
+  Button,
+  TextField,
+  Divider,
+  Grid,
+  Alert,
+  IconButton,
+  InputAdornment,
+} from "@mui/material";
 import { useState } from "react";
 import SaveIcon from "@mui/icons-material/Save";
 import CircularProgress from "@mui/material/CircularProgress";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import api from "../../../../api/api";
+import { useTranslation } from "react-i18next";
 
 function ChangePasswordEmployee({ user }) {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -17,6 +27,7 @@ function ChangePasswordEmployee({ user }) {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const { t } = useTranslation();
   const handleChangePassword = async () => {
     if (newPassword === confirmPassword) {
       try {
@@ -101,7 +112,7 @@ function ChangePasswordEmployee({ user }) {
     >
       <TextField
         type={showCurrentPassword ? "text" : "password"}
-        label="Current Password"
+        label={t("settings_change_password_current")}
         fullWidth
         value={currentPassword}
         onChange={handleCurrentPasswordChange}
@@ -125,7 +136,7 @@ function ChangePasswordEmployee({ user }) {
 
       <TextField
         type={showNewPassword ? "text" : "password"}
-        label="New Password"
+        label={t("settings_change_password_new")}
         fullWidth
         value={newPassword}
         onChange={handleNewPasswordChange}
@@ -147,7 +158,7 @@ function ChangePasswordEmployee({ user }) {
       <TextField
         size="small"
         type={showConfirmPassword ? "text" : "password"}
-        label="Confirm New Password"
+        label={t("settings_change_password_confirm")}
         fullWidth
         value={confirmPassword}
         onChange={handleConfirmPasswordChange}
@@ -174,7 +185,11 @@ function ChangePasswordEmployee({ user }) {
             startIcon={<SaveIcon />}
             disabled={loading}
           >
-            {loading ? <CircularProgress size={20} /> : "Change"}
+            {loading ? (
+              <CircularProgress size={20} />
+            ) : (
+              t("settings_change_password_change")
+            )}
           </Button>
         </Grid>
         <Grid item>

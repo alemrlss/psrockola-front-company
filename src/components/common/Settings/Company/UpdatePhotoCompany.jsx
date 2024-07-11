@@ -3,12 +3,14 @@ import { Box, Avatar, Button, Input, Typography } from "@mui/material";
 import apiFormData from "../../../../api/apiFormData";
 import { useDispatch } from "react-redux";
 import { updatePhoto } from "../../../../features/authSlice";
+import { useTranslation } from "react-i18next";
 
 function UpdatePhotoCompany({ user }) {
   const [newPhoto, setNewPhoto] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
   const dispatch = useDispatch();
 
+  const {t} = useTranslation();
   const handleChangePhoto = (event) => {
     const file = event.target.files[0];
     setNewPhoto(file);
@@ -77,7 +79,7 @@ function UpdatePhotoCompany({ user }) {
         onClick={handleUploadPhoto}
         disabled={!newPhoto}
       >
-        Upload Photo
+       {t("settings_update_photo_upload")}
       </Button>
       {successMessage && (
         <Typography sx={{ mt: 1, color: "green" }}>{successMessage}</Typography>

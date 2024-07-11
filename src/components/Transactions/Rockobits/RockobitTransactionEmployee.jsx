@@ -18,6 +18,7 @@ import api from "../../../api/api";
 import { formatDate } from "../../../utils/formatDate";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 function TransactionRockobitsEmployee() {
   const user = useSelector((state) => state.auth.user);
@@ -29,6 +30,8 @@ function TransactionRockobitsEmployee() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedVoucher, setSelectedVoucher] = useState(null);
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchTransactions();
@@ -257,7 +260,7 @@ function TransactionRockobitsEmployee() {
         >
           <CircularProgress size={120} />
           <Typography variant="h6" sx={{ marginTop: "16px", fontSize: "32px" }}>
-            Loading....{" "}
+            {t("view_trasactions_loading")}
           </Typography>
         </Box>
       ) : (
@@ -279,21 +282,21 @@ function TransactionRockobitsEmployee() {
                     textAlign: "center",
                   }}
                 >
-                  Date
+                  {t("view_transactions_table_date")}
                 </TableCell>
                 <TableCell
                   sx={{
                     textAlign: "center",
                   }}
                 >
-                  Amount
+                  {t("view_transactions_table_amount")}
                 </TableCell>
                 <TableCell
                   sx={{
                     textAlign: "center",
                   }}
                 >
-                  User
+                  {t("view_transactions_table_user")}
                 </TableCell>
 
                 <TableCell
@@ -301,7 +304,7 @@ function TransactionRockobitsEmployee() {
                     textAlign: "center",
                   }}
                 >
-                  Type
+                  {t("view_transactions_table_type")}
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -310,7 +313,7 @@ function TransactionRockobitsEmployee() {
                 <TableRow>
                   <TableCell colSpan={4} sx={{ textAlign: "center" }}>
                     <Typography variant="body1">
-                      No transactions to display{" "}
+                      {t("view_transactions_no_transactions")}
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -329,6 +332,7 @@ function TransactionRockobitsEmployee() {
             rowsPerPage={take}
             onRowsPerPageChange={handleChangeRowsPerPage}
             rowsPerPageOptions={[20, 10]}
+            labelRowsPerPage={t("view_transactions_pagination_rows")}
           />
         </TableContainer>
       )}
