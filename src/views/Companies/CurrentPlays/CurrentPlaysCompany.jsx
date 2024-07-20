@@ -394,7 +394,7 @@ function CurrentPlaysCompany() {
                           onClick={() => handleBanClick(video)}
                           sx={{ mt: { xs: 2, sm: 0 } }}
                         >
-                          {t("view_currentplays_bam")}
+                          {t("view_currentplays_ban")}
                         </Button>
                       </Box>
                     </Grid>

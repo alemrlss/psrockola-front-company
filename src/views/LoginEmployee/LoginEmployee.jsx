@@ -20,14 +20,28 @@ function Login() {
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false); // Nuevo estado de carga
+  const [selectedLanguage, setSelectedLanguage] = useState("en"); // Default to English
 
   const dispatch = useDispatch();
   const goTo = useNavigate();
   const auth = useSelector((state) => state.auth);
 
   useEffect(() => {
+    const userLanguages = navigator.languages;
+    const supportedLanguages = ["es", "en", "pt"];
+
+    const foundLanguage = userLanguages.find((language) =>
+      supportedLanguages.includes(language.split("-")[0])
+    );
+
+    if (foundLanguage) {
+      setSelectedLanguage(foundLanguage.split("-")[0]);
+    }
+  }, []);
+
+  useEffect(() => {
     dispatch({ type: "auth/clearError" });
-  }, []); // Ejecutar solo cuando el componente se monta
+  }, [dispatch]);
 
   const handleInputChange = (e) => {
     setError("");
@@ -38,12 +52,12 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.email.trim() || !formData.password.trim()) {
-      setError("Please complete all fields.");
+      setError(translations[selectedLanguage].completeFields);
       return;
     }
 
     if (!validateEmail(formData.email) || formData.password.length < 8) {
-      setError("Invalid email or password.");
+      setError(translations[selectedLanguage].invalidEmailOrPassword);
       return;
     }
 
@@ -66,6 +80,50 @@ function Login() {
     return emailRegex.test(email);
   };
 
+  const translations = {
+    en: {
+      login: "Log in",
+      signIn: "Sign in as an employee",
+      email: "Email",
+      password: "Password",
+      submit: "Log in",
+      loading: "Loading...",
+      completeFields: "Please complete all fields.",
+      invalidEmailOrPassword: "Invalid email or password.",
+      forgotPassword: "Forgot Password?",
+      companyPanel: "Go to company panel",
+      distributorPanel: "Go to distributor panel"
+    },
+    es: {
+      login: "Iniciar sesión",
+      signIn: "Iniciar sesión como empleado",
+      email: "Correo electrónico",
+      password: "Contraseña",
+      submit: "Iniciar sesión",
+      loading: "Cargando...",
+      completeFields: "Por favor, complete todos los campos.",
+      invalidEmailOrPassword: "Correo electrónico o contraseña inválidos.",
+      forgotPassword: "¿Olvidó su contraseña?",
+      companyPanel: "Ir al panel de la empresa",
+      distributorPanel: "Ir al panel de distribuidores"
+    },
+    pt: {
+      login: "Entrar",
+      signIn: "Entrar como funcionário",
+      email: "E-mail",
+      password: "Senha",
+      submit: "Entrar",
+      loading: "Carregando...",
+      completeFields: "Por favor, preencha todos os campos.",
+      invalidEmailOrPassword: "E-mail ou senha inválidos.",
+      forgotPassword: "Esqueceu a senha?",
+      companyPanel: "Ir para o painel da empresa",
+      distributorPanel: "Ir para o painel do distribuidor"
+    },
+  };
+
+  const currentTranslations = translations[selectedLanguage];
+
   return (
     <div
       style={{ position: "relative", height: "100vh" }}
@@ -78,8 +136,8 @@ function Login() {
         style={{ height: "100%" }}
       >
         <Grid item xs={12} sm={8} md={6} lg={4}>
-        <div className="flex  justify-between">
-            <Tooltip title="Go to company panel" arrow>
+          <div className="flex justify-between">
+            <Tooltip title={currentTranslations.companyPanel} arrow>
               <Avatar
                 sx={{
                   color: "white",
@@ -93,7 +151,7 @@ function Login() {
                 <StorefrontIcon style={{ width: "80%", height: "80%" }} />
               </Avatar>
             </Tooltip>
-            <Tooltip title="Go to distributor panel" arrow>
+            <Tooltip title={currentTranslations.distributorPanel} arrow>
               <Avatar
                 sx={{
                   color: "white",
@@ -113,10 +171,10 @@ function Login() {
             className="bg-white border rounded-xl p-4 py-8"
           >
             <Typography variant="h4" align="center" gutterBottom>
-              Log in
+              {currentTranslations.login}
             </Typography>
             <Typography variant="body1" align="center" gutterBottom>
-              Sign in as a employee{" "}
+              {currentTranslations.signIn}
             </Typography>
             <SupervisorAccountIcon
               style={{ fontSize: 50, margin: "auto", display: "block" }}
@@ -126,7 +184,7 @@ function Login() {
               id="email"
               name="email"
               type="email"
-              label="Email"
+              label={currentTranslations.email}
               variant="outlined"
               onChange={handleInputChange}
               fullWidth
@@ -137,7 +195,7 @@ function Login() {
               id="password"
               name="password"
               onChange={handleInputChange}
-              label="Password"
+              label={currentTranslations.password}
               variant="outlined"
               fullWidth
               size="small"
@@ -157,7 +215,7 @@ function Login() {
               }}
               disabled={loading} // Desactivar el botón mientras se realiza la petición
             >
-              {loading ? "Loading..." : "Log in"}
+              {loading ? currentTranslations.loading : currentTranslations.submit}
             </Button>
             {auth.status === "failed" && (
               <Typography
