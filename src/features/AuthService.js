@@ -5,7 +5,7 @@ import api from "../api/api";
 const authService = {
   async login(credentials) {
     try {
-      const response = await api.post("auth/login/companies", {
+      const response = await api.post("auth/login-company", {
         email: credentials.email,
         password: credentials.password,
       });
