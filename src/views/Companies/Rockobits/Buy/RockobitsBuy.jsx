@@ -12,14 +12,11 @@ function RockobitsBuy() {
   const user = useSelector((state) => state.auth.user);
 
   //test
-  const [walletBalance, setWalletBalance] = useState(null);
 
   useEffect(() => {
     const fetchPackages = async () => {
       try {
         //test
-        const walletResponse = await api.get(`/wallet/${user.id}`);
-        setWalletBalance(walletResponse.data.data.amount);
         //
 
         const token = localStorage.getItem("token");
