@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Crear instancia de Axios
 const api = axios.create({
-  baseURL: "https://psrockola-backend-develop.onrender.com/api", // Reemplaza con la URL de tu servidor NestJS
+  baseURL: "http://localhost:5000/api", // Reemplaza con la URL de tu servidor NestJS
   headers: {
     "Content-Type": "application/json",
   },

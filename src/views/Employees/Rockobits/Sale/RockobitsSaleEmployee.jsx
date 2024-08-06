@@ -116,7 +116,8 @@ function RockobitsSaleEmployee() {
 
       const transferData = {
         client_id: userData.id,
-        company_id: user.id,
+        employee_id: user.id,
+        company_id: user.companyId,
         amount: parseInt(quantity),
         type: user.type,
       };
@@ -136,7 +137,7 @@ function RockobitsSaleEmployee() {
       }
 
       const response = await apiFormData.post(
-        "rockobits/transferToClient",
+        "rockobits/transferEmployeeToClient",
         formData
       );
 
